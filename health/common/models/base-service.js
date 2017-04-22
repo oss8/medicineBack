@@ -46,7 +46,7 @@ module.exports = function (Baseservice) {
                         cb(null, { status: 1, "result": "" });
                         EWTRACE("PublicUserGetRand End");
                     }, function (err) {
-                        cb(err, { status: 0, "result": err.message });
+                        cb(null, { status: 0, "result": err.message });
                         EWTRACE("PublicUserGetRand End");
                         return;
                     });
@@ -67,7 +67,7 @@ module.exports = function (Baseservice) {
                             EWTRACE("PublicUserGetRand End");
                         })
                     }, function (err) {
-                        cb(err, { status: 0, "result": err.message });
+                        cb(null, { status: 0, "result": err.message });
                         EWTRACE("PublicUserGetRand End");
                         return;
                     });
