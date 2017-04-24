@@ -4,6 +4,7 @@ module.exports = function (Baseservice) {
 
     var app = require('../../server/server');
     app.DisableSystemMethod(Baseservice);
+    var _ = require('underscore');
 
     Baseservice.CheckOpenID = function (CheckOpenID, cb) {
         EWTRACE("CheckOpenID Begin");
@@ -126,11 +127,20 @@ module.exports = function (Baseservice) {
 
         DoSQL(bsSQL).then(function (result) {
 
-            if ( result.length == 0 ){
+            if ( result.length == 0 || ( _.isEmpty(PublicUserInputDetailCode.cardNo) && _.isEmpty(PublicUserInputDetailCode.medicalNo))){
                 cb( null, { status: 0, "result": "找不到用户" });
             }
             else{
-                bsSQL = "update hh_publicUser(cardNo, medicalNo) values('"+ PublicUserInputDetailCode.cardNo+"','"+ PublicUserInputDetailCode.medicalNo + "' where mobile = '" + PublicUserInputDetailCode.mobile + "'";
+                var _updateCardNo = "";
+                if ( ! _.isEmpty(PublicUserInputDetailCode.cardNo)){
+                    _updateCardNo = " cardNo = '" + PublicUserInputDetailCode.cardNo + "'";
+                }
+                var _updateMedicalNo = "";
+                if ( ! _.isEmpty(PublicUserInputDetailCode.medicalNo)){
+                    _updateMedicalNo = "medicalNo = '" + PublicUserInputDetailCode.medicalNo + "'";
+                }
+
+                bsSQL = "update hh_publicUser set "+ _updateCardNo + _updateCardNo.length > 0?",":"" + _updateMedicalNo + " where mobile = '" + PublicUserInputDetailCode.mobile + "'";
                 DoSQL(bsSQL).then(function(){
                     cb( null, { status: 1, "result": "" });
                 },function(err){
@@ -147,7 +157,7 @@ module.exports = function (Baseservice) {
         {
             http: { verb: 'post' },
             description: '普通用户更新身份证、病历号(op_smscode)',
-            accepts: { arg: 'PublicUserInputDetailCode', type: 'object', description: '{"mobile":"18958064659"}' },
+            accepts: { arg: 'PublicUserInputDetailCode', type: 'object', description: '{"mobile":"18958064659","cardNo":"","medicalNo":""}' },
             returns: { arg: 'PublicUserInputDetailCode', type: 'object', root: true }
         }
     );    
