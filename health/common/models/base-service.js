@@ -5,6 +5,34 @@ module.exports = function (Baseservice) {
     var app = require('../../server/server');
     app.DisableSystemMethod(Baseservice);
 
+    Baseservice.CheckOpenID = function (CheckOpenID, cb) {
+        EWTRACE("CheckOpenID Begin");
+
+        var bsSQL = "select * from hh_publicuser where openid = '" + CheckOpenID.openid + "'";
+
+        DoSQL(bsSQL).then(function (result) {
+            if ( result.length == 0 ){
+                cb(null, { status: 0, "result": "" });
+            }
+            else{
+                cb(null, { status: 1, "result": "" });
+            }
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        });
+    }
+
+    Baseservice.remoteMethod(
+        'CheckOpenID',
+        {
+            http: { verb: 'post' },
+            description: '',
+            accepts: { arg: 'CheckOpenID', type: 'object', description: '{"openid":""}' },
+            returns: { arg: 'CheckOpenID', type: 'object', root: true }
+        }
+    );
+
+
     Baseservice.RegPublicUser = function (RegPublicUser, cb) {
         EWTRACE("RegPublicUser Begin");
 
@@ -109,8 +137,6 @@ module.exports = function (Baseservice) {
                     cb( err, { status: 1, "result": err.message });
                 });
             }
-           
-
         }, function (err) {
             cb(err, { status: 0, "result": "" });
         });
