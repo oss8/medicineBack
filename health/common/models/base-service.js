@@ -12,10 +12,10 @@ module.exports = function (Baseservice) {
         var bsSQL = "select * from hh_publicuser where openid = '" + CheckOpenID.openid + "'";
 
         DoSQL(bsSQL).then(function (result) {
-            if ( result.length == 0 ){
+            if (result.length == 0) {
                 cb(null, { status: 0, "result": "" });
             }
-            else{
+            else {
                 cb(null, { status: 1, "result": "" });
             }
         }, function (err) {
@@ -127,25 +127,30 @@ module.exports = function (Baseservice) {
 
         DoSQL(bsSQL).then(function (result) {
 
-            if ( result.length == 0 || ( _.isEmpty(PublicUserInputDetailCode.cardNo) && _.isEmpty(PublicUserInputDetailCode.medicalNo))){
-                cb( null, { status: 0, "result": "找不到用户" });
+            if (result.length == 0 || (_.isEmpty(PublicUserInputDetailCode.cardNo) && _.isEmpty(PublicUserInputDetailCode.medicalNo))) {
+                cb(null, { status: 0, "result": "找不到用户" });
             }
-            else{
-                var _updateCardNo = "";
-                if ( ! _.isEmpty(PublicUserInputDetailCode.cardNo)){
-                    _updateCardNo = " cardNo = '" + PublicUserInputDetailCode.cardNo + "'";
+            else {
+                var _update = "";
+                if (!_.isEmpty(PublicUserInputDetailCode.cardNo)) {
+                    _update += " cardNo = '" + PublicUserInputDetailCode.cardNo + "',";
                 }
-                var _updateMedicalNo = "";
-                if ( ! _.isEmpty(PublicUserInputDetailCode.medicalNo)){
-                    _updateMedicalNo = "medicalNo = '" + PublicUserInputDetailCode.medicalNo + "'";
+                if (!_.isEmpty(PublicUserInputDetailCode.medicalNo)) {
+                    _update = "medicalNo = '" + PublicUserInputDetailCode.medicalNo + "',";
                 }
 
-                bsSQL = "update hh_publicUser set "+ _updateCardNo + _updateCardNo.length > 0?",":"" + _updateMedicalNo + " where mobile = '" + PublicUserInputDetailCode.mobile + "'";
-                DoSQL(bsSQL).then(function(){
-                    cb( null, { status: 1, "result": "" });
-                },function(err){
-                    cb( err, { status: 1, "result": err.message });
-                });
+                if (_update.length > 1) {
+                    _update = _update.substring(0, _update.length - 2);
+                    bsSQL = "update hh_publicUser set " + _update + " where mobile = '" + PublicUserInputDetailCode.mobile + "'";
+                    DoSQL(bsSQL).then(function () {
+                        cb(null, { status: 1, "result": "" });
+                    }, function (err) {
+                        cb(err, { status: 1, "result": err.message });
+                    });
+                }
+                else {
+                    cb(null, { status: 1, "result": "" });
+                }
             }
         }, function (err) {
             cb(err, { status: 0, "result": "" });
@@ -160,5 +165,49 @@ module.exports = function (Baseservice) {
             accepts: { arg: 'PublicUserInputDetailCode', type: 'object', description: '{"mobile":"18958064659","cardNo":"","medicalNo":""}' },
             returns: { arg: 'PublicUserInputDetailCode', type: 'object', root: true }
         }
-    );    
+    );
+
+
+    Baseservice.PublicUserLogin = function (PublicUserLogin, cb) {
+        EWTRACE("PublicUserLogin Begin");
+
+        var _openid = null;
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(PublicUserLogin.token);
+            _openid = OpenID.openId;
+        }
+        catch (err) {
+            EWTRACE(err.message);
+            cb(err, { status: 0, "result": err.message });
+            EWTRACE("PublicUserLogin End");
+            return;
+        }
+
+
+        var bsSQL = "select * from hh_publicuser where openid = '" + _openid + "'";
+
+        DoSQL(bsSQL).then(function (result) {
+
+            if (result.length == 0) {
+                cb(null, { status: 0, "result": "找不到用户" });
+            }
+            else {
+                cb(null, { status: 1, "result": result });
+            }
+
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        });
+    }
+
+    Baseservice.remoteMethod(
+        'PublicUserLogin',
+        {
+            http: { verb: 'post' },
+            description: '普通用户获取个人信息(op_smscode)',
+            accepts: { arg: 'PublicUserLogin', type: 'object', description: '{"token":"18958064659"}' },
+            returns: { arg: 'PublicUserLogin', type: 'object', root: true }
+        }
+    );
 };
