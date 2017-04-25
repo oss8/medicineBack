@@ -36,8 +36,12 @@
     "dataSource": "db",
     "public": true
   },
-  "common":{
+  "common": {
     "dataSource": "db",
+    "public": true
+  },
+  "Doctor": {
+    "dataSource": "main_DBConnect",
     "public": true
   }
 }

@@ -37,11 +37,11 @@ module.exports = function (common) {
                 } else {
                     var _result = DelOKPacket(result);
                     if ( _.isEmpty(_result) || _result.length == 0 ){
-                        _result = [];
+                        _result = {};
                         resolve(_result);
                     }
                     else{
-                        resolve(_result[0]);
+                        resolve(_result);
                     }
                     
                 }
@@ -60,7 +60,7 @@ module.exports = function (common) {
             EWTRACE(SQL);
             var dataSource = Connect;
             if (dataSource == undefined)
-                dataSource = common.app.datasources.sqlserverdb;
+                dataSource = common.app.datasources.main_DBConnect;
 
             dataSource.connector.executeSQL(SQL, {}, { transaction: tx }, resultFun);
         } catch (ex) {

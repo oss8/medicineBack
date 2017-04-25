@@ -17,6 +17,7 @@
     "loopback-component-explorer": "^4.0.0",
     "loopback-connector-mysql": "^4.0.0",
     "loopback-connector-rest": "^2.1.0",
+    "node-uuid": "^1.4.8",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^1.0.1"
   },

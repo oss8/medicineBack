@@ -41,7 +41,7 @@ module.exports = function (Baseservice) {
 
         DoSQL(bsSQL).then(function (result) {
 
-            cb(null, { status: 1, "result": result });
+            cb(null, { status: 1, "result": result[0] });
         }, function (err) {
             cb(err, { status: 0, "result": "" });
         });
@@ -66,7 +66,7 @@ module.exports = function (Baseservice) {
         DoSQL(bsSQL).then(function (result) {
 
             if (result.length == 0) {
-                bsSQL = "INSERT INTO hh_publicUser (id, mobile,  randCode, status) VALUES (uuid(),'" + PublicUserGetRand.mobile + "', 8888, 0 );";
+                bsSQL = "INSERT INTO hh_publicUser (id, mobile,  randCode, status, type) VALUES (uuid(),'" + PublicUserGetRand.mobile + "', 8888, 0,0);";
                 DoSQL(bsSQL).then(function (result) {
 
                     var smspv = SendSMS(PublicUserGetRand.mobile, '8888');
@@ -88,9 +88,9 @@ module.exports = function (Baseservice) {
                 bsSQL = "select usp_NewRandomNumber(4) as rand;";
                 DoSQL(bsSQL).then(function (result) {
 
-                    var smspv = SendSMS(PublicUserGetRand.mobile, result.rand);
+                    var smspv = SendSMS(PublicUserGetRand.mobile, result[0].rand);
                     smspv.then(function () {
-                        bsSQL = "update hh_publicUser set randCode = " + result.rand + " where mobile = '" + PublicUserGetRand.mobile + "'";
+                        bsSQL = "update hh_publicUser set randCode = " + result[0].rand + " where mobile = '" + PublicUserGetRand.mobile + "'";
                         DoSQL(bsSQL).then(function (result) {
                             cb(null, { status: 1, "result": "" });
                             EWTRACE("PublicUserGetRand End");
