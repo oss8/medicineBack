@@ -169,7 +169,9 @@ module.exports = function (Doctor) {
     Doctor.AddPantientFollow = function (AddPantientFollow, cb) {
         EWTRACE("AddPantientFollow Begin");
 
-        var bsSQL = "insert into hh_followup (id,addtime,addtime2,context) values('" + AddPantientFollow.pantientid + "',now(), UNIX_TIMESTAMP(now()),'" +AddPantientFollow.context+ "')";
+        var bsSQL = "insert into hh_followup (id,addtime,addtime2,context) values('" + AddPantientFollow.pantientid + "',now(), UNIX_TIMESTAMP(now()),'" +AddPantientFollow.context+ "');";
+
+        bsSQL += "update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '" + AddPantientFollow.context+ "' where id = '"+ AddPantientFollow.pantientid+"';"
 
         DoSQL(bsSQL).then(function () {
 
