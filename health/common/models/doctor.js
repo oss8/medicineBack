@@ -113,11 +113,11 @@ module.exports = function (Doctor) {
     Doctor.RequestPatientList = function (RequestPatientList, cb) {
         EWTRACE("RequestPatientList Begin");
 
-        var bsSQL = "select * from hh_publicUser where id in(SELECT patientid FROM hh_doctorpatient where doctorid = '" + RequestPatientList.doctorid + "')";
-
-        DoSQL(bsSQL).then(function (result) {
+        var bsSQL = "select a.*,b.lastfollowuptime, b.lastfollowupcontext from hh_publicUser a, hh_doctorpatient b where b.patientid = a.id and b.doctorid = '"+RequestPatientList .doctorid+"'";
+        
+        DoSQL(bsSQL).then(function(result){
             cb(null, { status: 1, "result": result });
-        }, function (err) {
+        },function(err){
             cb(err, { status: 0, "result": "" });
         });
     }
@@ -141,15 +141,15 @@ module.exports = function (Doctor) {
         var _patientInfo = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _patientInfo));
 
-        bsSQL = "select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='" + AddPatient.doctorid + "')";
+        bsSQL = "select * from hh_doctorpatient where doctorid = '" + AddPatient.doctorid + "'";
         var _DoctorpatientInfo = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _DoctorpatientInfo));
 
         Promise.all(ps).then(function () {
 
-            var _uuid = uuid.v4();
+            var _uuid = "";
             if (_patientInfo.Result.length == 0) {
-                var _uuid = uuid.v4();
+                _uuid = uuid.v4();
                 bsSQL = "INSERT INTO hh_publicUser (id, mobile, cardNo, status, name, type, sex, casetype, province, city, region, address) VALUES ('" + _uuid + "', '" + AddPatient.pmobile + "', '" + AddPatient.pcardno + "',  0,  '" + AddPatient.pname + "', 0, " + AddPatient.psex + ", " + AddPatient.casetype + ", '" + AddPatient.province + "', '" + AddPatient.city + "', '" + AddPatient.region + "', '" + AddPatient.address + "');";
             } else {
                 _uuid = _patientInfo.Result[0].id;
@@ -170,7 +170,7 @@ module.exports = function (Doctor) {
                 cb(err, { status: 1, "result": err.message });
             })
         }, function (err) {
-
+            cb(err, { status: 1, "result": err.message });
         });
     }
 
