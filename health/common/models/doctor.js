@@ -92,15 +92,7 @@ module.exports = function (Doctor) {
                 cb(null, { status: 0, "result": "用户不存在" });
             }
             else {
-
-                bsSQL = "select * from hh_publicUser where id in(SELECT patientid FROM hh_doctorpatient where doctorid = '" + result[0].id + "')";
-                DoSQL(bsSQL).then(function (result1) {
-                    var _result = {};
-
-                    _result.DoctorInfo = result[0];
-                    _result.PatientList = result1;
-                    cb(null, { status: 1, "result": _result });
-                })
+                cb(null, { status: 1, "result": result[0] });
             }
 
         }, function (err) {
@@ -115,6 +107,28 @@ module.exports = function (Doctor) {
             description: '医生登录',
             accepts: { arg: 'DoctorLogin', type: 'object', description: '{"mobile":"18958064659","password":""}' },
             returns: { arg: 'DoctorLogin', type: 'object', root: true }
+        }
+    );
+
+    Doctor.RequestPatientList = function (RequestPatientList, cb) {
+        EWTRACE("RequestPatientList Begin");
+
+        var bsSQL = "select * from hh_publicUser where id in(SELECT patientid FROM hh_doctorpatient where doctorid = '" + RequestPatientList.doctorid + "')";
+
+        DoSQL(bsSQL).then(function (result) {
+            cb(null, { status: 1, "result": result });
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        });
+    }
+
+    Doctor.remoteMethod(
+        'RequestPatientList',
+        {
+            http: { verb: 'post' },
+            description: '获得对应医生的病人列表',
+            accepts: { arg: 'RequestPatientList', type: 'object', description: '{"doctorid":"18958064659"}' },
+            returns: { arg: 'RequestPatientList', type: 'object', root: true }
         }
     );
 
@@ -150,15 +164,11 @@ module.exports = function (Doctor) {
             if (_.isEmpty(find)) {
                 bsSQL += "insert into hh_doctorpatient(doctorid,patientid) values('" + AddPatient.doctorid + "','" + _uuid + "')";
             }
-
-
             DoSQL(bsSQL).then(function () {
                 cb(null, { status: 1, "result": "" });
             }, function (err) {
                 cb(err, { status: 1, "result": err.message });
             })
-
-
         }, function (err) {
 
         });
@@ -178,7 +188,7 @@ module.exports = function (Doctor) {
     Doctor.RequestPantientFollow = function (RequestPantientFollow, cb) {
         EWTRACE("RequestPantientFollow Begin");
 
-        var bsSQL = "select addtime,context from hh_followup where id = '" + RequestPantientFollow.pantientid + "' order by addtime2 desc";
+        var bsSQL = "select addtime,context from hh_followup where id = '" + RequestPantientFollow.pantientid + "' order by addtime2 desc limit 12";
 
         DoSQL(bsSQL).then(function (result) {
 
@@ -203,7 +213,7 @@ module.exports = function (Doctor) {
 
         var bsSQL = "insert into hh_followup (id,addtime,addtime2,context) values('" + AddPantientFollow.pantientid + "',now(), UNIX_TIMESTAMP(now()),'" + AddPantientFollow.context + "');";
 
-        bsSQL += "update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '" + AddPantientFollow.context + "' where id = '" + AddPantientFollow.pantientid + "';"
+        bsSQL += "update hh_doctorpatient set lastfollowuptime = now(), lastfollowupcontext = '" + AddPantientFollow.context + "' where id = '" + AddPantientFollow.pantientid + "' and doctorid = '" + AddPantientFollow.doctorid + "';"
 
         DoSQL(bsSQL).then(function () {
 
@@ -218,7 +228,7 @@ module.exports = function (Doctor) {
         {
             http: { verb: 'post' },
             description: '添加患者随访内容',
-            accepts: { arg: 'AddPantientFollow', type: 'object', description: '{"pantientid":"","context":""}' },
+            accepts: { arg: 'AddPantientFollow', type: 'object', description: '{"doctorid":"","pantientid":"","context":""}' },
             returns: { arg: 'AddPantientFollow', type: 'object', root: true }
         }
     );
