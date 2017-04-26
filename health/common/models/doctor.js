@@ -10,29 +10,23 @@ module.exports = function (Doctor) {
     Doctor.AddDoctor = function (AddDoctor, cb) {
         EWTRACE("AddDoctor Begin");
 
-        var bsSQL = "select * from hh_publicuser where mobile = '" + AddDoctor.mobile + "'";
+        var bsSQL = "select * from hh_sendsms where mobile = '" + AddDoctor.mobile + "' and randcode = " + AddDoctor.randcode;
 
         DoSQL(bsSQL).then(function (result) {
 
             if (result.length == 0) {
-                bsSQL = "INSERT INTO hh_publicUser (id, mobile,  randCode, status, type) VALUES (uuid(),'" + AddDoctor.mobile + "', 8888, 0,1);";
+                cb(null, { status: 0, "result": "验证码错误" });
+            } else {
+                bsSQL = "delete from hh_sendsms where mobile = '" + AddDoctor.mobile + "' and randcode = " + AddDoctor.randcode + ";INSERT INTO hh_publicUser (id, mobile,  randCode, status, type,name) VALUES (uuid(),'" + AddDoctor.mobile + "', '" + AddDoctor.password + "', 0,1,'" + AddDoctor.name + "');";
                 DoSQL(bsSQL).then(function (result) {
-
-                    var smspv = SendSMS(PublicUserGetRand.mobile, '8888');
-                    smspv.then(function () {
-
-                        cb(null, { status: 1, "result": "" });
-                        EWTRACE("AddDoctor End");
-                    }, function (err) {
-                        cb(null, { status: 0, "result": err.message });
-                        EWTRACE("AddDoctor End");
-                        return;
-                    });
+                    cb(null, { status: 1, "result": "" });
+                    EWTRACE("AddDoctor End");
                 }, function (err) {
-                    cb(err, { status: 0, "result": "" });
+                    cb(null, { status: 0, "result": err.message });
+                    EWTRACE("AddDoctor End");
+                    return;
                 });
             }
-            cb(null, { status: 1, "result": "" });
         }, function (err) {
             cb(err, { status: 0, "result": "" });
         });
@@ -43,15 +37,53 @@ module.exports = function (Doctor) {
         {
             http: { verb: 'post' },
             description: '添加医生',
-            accepts: { arg: 'AddDoctor', type: 'object', description: '{"mobile":""}' },
+            accepts: { arg: 'AddDoctor', type: 'object', description: '{"mobile":"","randcode":"","password":"","name":""}' },
             returns: { arg: 'AddDoctor', type: 'object', root: true }
+        }
+    );
+
+    Doctor.DoctorGetRandCode = function (DoctorGetRandCode, cb) {
+        EWTRACE("DoctorGetRandCode Begin");
+
+        var bsSQL = "select usp_NewRandomNumber(4) as rand;";
+
+        DoSQL(bsSQL).then(function (result) {
+            bsSQL = "delete from hh_sendsms where mobile = '" + DoctorGetRandCode.mobile + "';";
+            bsSQL += "insert into hh_sendsms(mobile,randcode) values('" + DoctorGetRandCode.mobile + "'," + result[0].rand + ");";
+
+            DoSQL(bsSQL).then(function () {
+                var smspv = SendSMS(DoctorGetRandCode.mobile, result[0].rand);
+                smspv.then(function () {
+
+                    cb(null, { status: 1, "result": "" });
+                    EWTRACE("DoctorGetRandCode End");
+                }, function (err) {
+                    cb(null, { status: 0, "result": err.message });
+                    EWTRACE("DoctorGetRandCode End");
+                    return;
+                });
+            }, function (err) {
+                cb(err, { status: 0, "result": "" });
+            });
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        });
+    }
+
+    Doctor.remoteMethod(
+        'DoctorGetRandCode',
+        {
+            http: { verb: 'post' },
+            description: '医生获取验证码',
+            accepts: { arg: 'DoctorGetRandCode', type: 'object', description: '{"mobile":""}' },
+            returns: { arg: 'DoctorGetRandCode', type: 'object', root: true }
         }
     );
 
     Doctor.DoctorLogin = function (DoctorLogin, cb) {
         EWTRACE("DoctorLogin Begin");
 
-        var bsSQL = "select * from hh_publicuser where mobile = '" + DoctorLogin.mobile + "' and type = 1";
+        var bsSQL = "select * from hh_publicuser where mobile = '" + DoctorLogin.mobile + "' and type = 1 and randcode = '" + DoctorLogin.password + "'";
 
         DoSQL(bsSQL).then(function (result) {
 
@@ -81,7 +113,7 @@ module.exports = function (Doctor) {
         {
             http: { verb: 'post' },
             description: '医生登录',
-            accepts: { arg: 'DoctorLogin', type: 'object', description: '{"mobile":"18958064659"}' },
+            accepts: { arg: 'DoctorLogin', type: 'object', description: '{"mobile":"18958064659","password":""}' },
             returns: { arg: 'DoctorLogin', type: 'object', root: true }
         }
     );
@@ -169,9 +201,9 @@ module.exports = function (Doctor) {
     Doctor.AddPantientFollow = function (AddPantientFollow, cb) {
         EWTRACE("AddPantientFollow Begin");
 
-        var bsSQL = "insert into hh_followup (id,addtime,addtime2,context) values('" + AddPantientFollow.pantientid + "',now(), UNIX_TIMESTAMP(now()),'" +AddPantientFollow.context+ "');";
+        var bsSQL = "insert into hh_followup (id,addtime,addtime2,context) values('" + AddPantientFollow.pantientid + "',now(), UNIX_TIMESTAMP(now()),'" + AddPantientFollow.context + "');";
 
-        bsSQL += "update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '" + AddPantientFollow.context+ "' where id = '"+ AddPantientFollow.pantientid+"';"
+        bsSQL += "update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '" + AddPantientFollow.context + "' where id = '" + AddPantientFollow.pantientid + "';"
 
         DoSQL(bsSQL).then(function () {
 
@@ -189,7 +221,7 @@ module.exports = function (Doctor) {
             accepts: { arg: 'AddPantientFollow', type: 'object', description: '{"pantientid":"","context":""}' },
             returns: { arg: 'AddPantientFollow', type: 'object', root: true }
         }
-    );    
+    );
 };
 
 

@@ -193,7 +193,7 @@ module.exports = function (Baseservice) {
                 cb(null, { status: 0, "result": "找不到用户" });
             }
             else {
-                cb(null, { status: 1, "result": result });
+                cb(null, { status: 1, "result": result[0] });
             }
 
         }, function (err) {
@@ -210,4 +210,146 @@ module.exports = function (Baseservice) {
             returns: { arg: 'PublicUserLogin', type: 'object', root: true }
         }
     );
+
+    Baseservice.RequestMyQRCode = function (RequestMyQRCode, cb) {
+        EWTRACE("RequestMyQRCode Begin");
+
+        var _openid = null;
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(RequestMyQRCode.token);
+            _openid = OpenID.openId;
+        }
+        catch (err) {
+            EWTRACE(err.message);
+            cb(err, { status: 0, "result": err.message });
+            EWTRACE("PublicUserLogin End");
+            return;
+        }
+
+
+        var bsSQL = "select id from hh_publicuser where openid = '" + _openid + "'";
+
+        DoSQL(bsSQL).then(function (result) {
+
+            if (result.length == 0) {
+                cb(null, { status: 0, "result": "找不到用户" });
+            }
+            else {
+                cb(null, { status: 1, "result": result[0] });
+            }
+
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        });
+    }
+
+    Baseservice.remoteMethod(
+        'RequestMyQRCode',
+        {
+            http: { verb: 'post' },
+            description: '获取个人二维码()',
+            accepts: { arg: 'RequestMyQRCode', type: 'object', description: '{"token":"18958064659"}' },
+            returns: { arg: 'RequestMyQRCode', type: 'object', root: true }
+        }
+    );    
+
+
+    Baseservice.AddPatientContact = function (AddPatientContact, cb) {
+        EWTRACE("AddPatientContact Begin");
+
+        var _openid = null;
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(AddPatientContact.token);
+            _openid = OpenID.openId;
+        }
+        catch (err) {
+            EWTRACE(err.message);
+            cb(err, { status: 0, "result": err.message });
+            EWTRACE("PublicUserLogin End");
+            return;
+        }
+
+        var bsSQL = "select id from hh_publicuser where openid = '" + _openid + "'";
+
+        DoSQL(bsSQL).then(function (result) {
+
+            if (result.length == 0) {
+                cb(null, { status: 0, "result": "找不到用户" });
+            }
+            else {
+
+                bsSQL = "update hh_publicuser set contactmobile = '"+AddPatientContact.contactmobile + "', contactname = '" + AddPatientContact.contactname + "' where openid = '" + AddPatientContact.openId + "';"
+                DoSQL(bsSQL).then(function(){
+                    cb(null, { status: 1, "result": "" });
+                },function(err){
+                    cb(err, { status: 0, "result": err.message });
+                });
+                
+            }
+
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        });
+    }
+
+    Baseservice.remoteMethod(
+        'AddPatientContact',
+        {
+            http: { verb: 'post' },
+            description: '病人添加紧急联系人',
+            accepts: { arg: 'AddPatientContact', type: 'object', description: '{"token":"18958064659","contactmobile":"","contactname":""}' },
+            returns: { arg: 'AddPatientContact', type: 'object', root: true }
+        }
+    );   
+
+    Baseservice.RequestPatientFollow = function (RequestPatientFollow, cb) {
+        EWTRACE("RequestPatientFollow Begin");
+
+        var _openid = null;
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(RequestPatientFollow.token);
+            _openid = OpenID.openId;
+        }
+        catch (err) {
+            EWTRACE(err.message);
+            cb(err, { status: 0, "result": err.message });
+            EWTRACE("PublicUserLogin End");
+            return;
+        }
+
+        var bsSQL = "select id from hh_publicuser where openid = '" + _openid + "'";
+
+        DoSQL(bsSQL).then(function (result) {
+
+            if (result.length == 0) {
+                cb(null, { status: 0, "result": "找不到用户" });
+            }
+            else {
+
+                bsSQL = "select addtime,context hh_followup where id = '" + result[0].id + "' order by addtime desc limit 12;"
+                DoSQL(bsSQL).then(function(result1){
+                    cb(null, { status: 1, "result": result1 });
+                },function(err){
+                    cb(err, { status: 0, "result": err.message });
+                });
+                
+            }
+
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        });
+    }
+
+    Baseservice.remoteMethod(
+        'RequestPatientFollow',
+        {
+            http: { verb: 'post' },
+            description: '病人查看随访记录',
+            accepts: { arg: 'RequestPatientFollow', type: 'object', description: '{"token":"18958064659"}' },
+            returns: { arg: 'RequestPatientFollow', type: 'object', root: true }
+        }
+    );       
 };
