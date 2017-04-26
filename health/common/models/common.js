@@ -37,7 +37,7 @@ module.exports = function (common) {
                 } else {
                     var _result = DelOKPacket(result);
                     if ( _.isEmpty(_result) || _result.length == 0 ){
-                        _result = {};
+                        _result = [];
                         resolve(_result);
                     }
                     else{

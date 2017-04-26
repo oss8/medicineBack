@@ -1,60 +1,63 @@
-[2017-04-25 14:40:43.114] [INFO] DEBUG_OSS:: - DoctorLogin Begin
-[2017-04-25 14:40:43.115] [INFO] DEBUG_OSS:: - select * from hh_publicuser where mobile = '18958064659' and type = 1
-[2017-04-25 14:40:43.119] [INFO] DEBUG_OSS:: - select * from hh_publicUser where id in(SELECT patientid FROM hh_doctorpatient where doctorid = '123')
-[2017-04-25 14:40:43.120] [INFO] DEBUG_OSS:: - select id,max(addtime),context from hh_followup where id in(SELECT patientid FROM hh_doctorpatient where doctorid = '123')
-[2017-04-25 15:05:35.366] [INFO] DEBUG_OSS:: - DoctorLogin Begin
-[2017-04-25 15:05:35.367] [INFO] DEBUG_OSS:: - select * from hh_publicuser where mobile = '18958064659' and type = 1
-[2017-04-25 15:05:35.374] [INFO] DEBUG_OSS:: - select * from hh_publicUser where id in(SELECT patientid FROM hh_doctorpatient where doctorid = '123')
-[2017-04-25 15:32:51.608] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:33:12.522] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:33:12.523] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = 'undefined' and type = 0
-[2017-04-25 15:33:12.525] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123' and type = 1)
-[2017-04-25 15:33:12.535] [INFO] DEBUG_OSS:: - INSERT INTO hh_publicUser (id, mobile, cardNo, status, name, type, sex, casetype, province, city, region, address) VALUES ('947a2d22-6e6e-4a89-9b63-bafded8315e0', '13857194279', '',  0,  '', 0, , '', '', '', '', '');
-[2017-04-25 15:33:46.978] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:33:46.979] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = 'undefined' and type = 0
-[2017-04-25 15:33:46.979] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123' and type = 1)
-[2017-04-25 15:33:46.982] [INFO] DEBUG_OSS:: - INSERT INTO hh_publicUser (id, mobile, cardNo, status, name, type, sex, casetype, province, city, region, address) VALUES ('b05218fb-64db-4c00-84dd-e6e29fcf386f', '13857194279', '',  0,  '', 0, 0, '', '', '', '', '');
-[2017-04-25 15:34:20.876] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:34:20.877] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = 'undefined' and type = 0
-[2017-04-25 15:34:20.879] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123' and type = 1)
-[2017-04-25 15:34:20.888] [INFO] DEBUG_OSS:: - INSERT INTO hh_publicUser (id, mobile, cardNo, status, name, type, sex, casetype, province, city, region, address) VALUES ('3a8fdfea-882c-46f4-b9b3-ff49ff13bf94', '13857194279', '',  0,  '', 0, 0, '', '', '', '', '');
-[2017-04-25 15:36:16.415] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:36:16.416] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = 'undefined' and type = 0
-[2017-04-25 15:36:16.417] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123' and type = 1)
-[2017-04-25 15:36:16.426] [INFO] DEBUG_OSS:: - INSERT INTO hh_publicUser (id, mobile, cardNo, status, name, type, sex, casetype, province, city, region, address) VALUES ('21819f2f-60f6-42a0-b8c0-c55a321a413e', '13857194279', '',  0,  '', 0, 0, , '', '', '', '');
-[2017-04-25 15:36:35.842] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:36:35.842] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = 'undefined' and type = 0
-[2017-04-25 15:36:35.843] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123' and type = 1)
-[2017-04-25 15:36:35.845] [INFO] DEBUG_OSS:: - INSERT INTO hh_publicUser (id, mobile, cardNo, status, name, type, sex, casetype, province, city, region, address) VALUES ('c6943c8d-c7fb-41b0-8ef3-3664f4a2a5b5', '13857194279', '',  0,  '', 0, 0, 0, '', '', '', '');
-[2017-04-25 15:38:02.781] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:38:02.782] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = 'undefined' and type = 0
-[2017-04-25 15:38:02.783] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123' and type = 1)
-[2017-04-25 15:38:02.840] [INFO] DEBUG_OSS:: - INSERT INTO hh_publicUser (id, mobile, cardNo, status, name, type, sex, casetype, province, city, region, address) VALUES ('ad4410e7-d380-4d13-ae0b-d862631372bf', '13857194279', '',  0,  '', 0, 0, 0, '', '', '', '');
-[2017-04-25 15:38:42.340] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:38:42.341] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
-[2017-04-25 15:38:42.343] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123' and type = 1)
-[2017-04-25 15:38:42.355] [INFO] DEBUG_OSS:: - update hh_publicuser set name = 'undefined', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279'
-[2017-04-25 15:39:03.984] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:39:03.985] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
-[2017-04-25 15:39:03.986] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123' and type = 1)
-[2017-04-25 15:39:03.996] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279'
-[2017-04-25 15:39:29.093] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:39:29.094] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
-[2017-04-25 15:39:29.094] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123' and type = 1)
-[2017-04-25 15:39:29.096] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '123', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279'
-[2017-04-25 15:42:25.993] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:42:25.994] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
-[2017-04-25 15:42:25.996] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123')
-[2017-04-25 15:42:26.006] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '123', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279'
-[2017-04-25 15:46:05.598] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:46:05.598] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
-[2017-04-25 15:46:05.599] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123')
-[2017-04-25 15:46:05.601] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '123', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279'
-[2017-04-25 15:46:15.369] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:46:15.370] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
-[2017-04-25 15:46:15.371] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123')
-[2017-04-25 15:46:15.377] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '123', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279'
-[2017-04-25 15:46:41.912] [INFO] DEBUG_OSS:: - AddPatient Begin
-[2017-04-25 15:46:41.913] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
-[2017-04-25 15:46:41.915] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123')
-[2017-04-25 15:47:41.321] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '123', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279'insert into hh_doctorpatient(doctorid,patientid) values('123','ad4410e7-d380-4d13-ae0b-d862631372bf')
+[2017-04-25 15:47:41.331] [INFO] DEBUG_OSS:: - AddPatient Begin
+[2017-04-25 15:47:41.332] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
+[2017-04-25 15:47:41.332] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123')
+[2017-04-25 15:47:41.359] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '123', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279'insert into hh_doctorpatient(doctorid,patientid) values('123','ad4410e7-d380-4d13-ae0b-d862631372bf')
+[2017-04-25 15:48:12.485] [INFO] DEBUG_OSS:: - AddPatient Begin
+[2017-04-25 15:48:12.486] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
+[2017-04-25 15:48:12.488] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123')
+[2017-04-25 15:48:12.497] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '123', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279';insert into hh_doctorpatient(doctorid,patientid) values('123','ad4410e7-d380-4d13-ae0b-d862631372bf')
+[2017-04-25 15:48:22.585] [INFO] DEBUG_OSS:: - AddPatient Begin
+[2017-04-25 15:48:22.585] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
+[2017-04-25 15:48:22.586] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123')
+[2017-04-25 15:48:22.589] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '123', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279';insert into hh_doctorpatient(doctorid,patientid) values('123','ad4410e7-d380-4d13-ae0b-d862631372bf')
+[2017-04-25 15:48:24.246] [INFO] DEBUG_OSS:: - AddPatient Begin
+[2017-04-25 15:48:24.246] [INFO] DEBUG_OSS:: - select * from hh_publicUser where mobile = '13857194279' and type = 0
+[2017-04-25 15:48:24.248] [INFO] DEBUG_OSS:: - select * from hh_doctorpatient where doctorid in ( select id from hh_publicuser where id ='123')
+[2017-04-25 15:48:24.253] [INFO] DEBUG_OSS:: - update hh_publicuser set name = '123', cardNo = '',sex ='0',casetype = 0,province='',city='',region='',address='' where mobile = '13857194279';insert into hh_doctorpatient(doctorid,patientid) values('123','ad4410e7-d380-4d13-ae0b-d862631372bf')
+[2017-04-25 15:52:39.646] [INFO] DEBUG_OSS:: - GetPantientFollow Begin
+[2017-04-25 15:52:39.647] [INFO] DEBUG_OSS:: - select addtime,context from hh_followup where id = 'undefined' order by addtime2 desc
+[2017-04-25 15:52:58.239] [INFO] DEBUG_OSS:: - GetPantientFollow Begin
+[2017-04-25 15:52:58.240] [INFO] DEBUG_OSS:: - select addtime,context from hh_followup where id = 'c9349850-275e-11e7-a0bf-a42ceb1bc177' order by addtime2 desc
+[2017-04-25 15:52:58.334] [INFO] DEBUG_OSS:: - GetPantientFollow Begin
+[2017-04-25 15:52:58.335] [INFO] DEBUG_OSS:: - select addtime,context from hh_followup where id = 'c9349850-275e-11e7-a0bf-a42ceb1bc177' order by addtime2 desc
+[2017-04-25 15:56:54.414] [INFO] DEBUG_OSS:: - AddPantientFollow Begin
+[2017-04-25 15:56:54.415] [INFO] DEBUG_OSS:: - insert into hh_followup values(id,addtime,addtime2,context) values('c9349850-275e-11e7-a0bf-a42ceb1bc177',now(), UNIX_TIMESTAMP(now()),'333333333'
+[2017-04-25 15:57:28.996] [INFO] DEBUG_OSS:: - AddPantientFollow Begin
+[2017-04-25 15:57:28.998] [INFO] DEBUG_OSS:: - insert into hh_followup values(id,addtime,addtime2,context) values('c9349850-275e-11e7-a0bf-a42ceb1bc177',now(), UNIX_TIMESTAMP(now()),'333333333')
+[2017-04-25 15:58:49.926] [INFO] DEBUG_OSS:: - AddPantientFollow Begin
+[2017-04-25 15:58:49.927] [INFO] DEBUG_OSS:: - insert into hh_followup (id,addtime,addtime2,context) values('c9349850-275e-11e7-a0bf-a42ceb1bc177',now(), UNIX_TIMESTAMP(now()),'333333333')
+[2017-04-25 16:09:11.468] [INFO] DEBUG_OSS:: - AddPantientFollow Begin
+[2017-04-25 16:09:11.469] [INFO] DEBUG_OSS:: - update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '44444444444';
+[2017-04-25 16:11:51.972] [INFO] DEBUG_OSS:: - AddPantientFollow Begin
+[2017-04-25 16:11:51.973] [INFO] DEBUG_OSS:: - update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '5555555' where id = 'undefined';
+[2017-04-25 16:12:14.700] [INFO] DEBUG_OSS:: - AddPantientFollow Begin
+[2017-04-25 16:12:14.701] [INFO] DEBUG_OSS:: - update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '5555555' where id = 'c9349850-275e-11e7-a0bf-a42ceb1bc177';
+[2017-04-25 16:12:38.911] [INFO] DEBUG_OSS:: - AddPantientFollow Begin
+[2017-04-25 16:12:38.912] [INFO] DEBUG_OSS:: - insert into hh_followup (id,addtime,addtime2,context) values('c9349850-275e-11e7-a0bf-a42ceb1bc177',now(), UNIX_TIMESTAMP(now()),'5555555');update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '5555555' where id = 'c9349850-275e-11e7-a0bf-a42ceb1bc177';
+[2017-04-25 16:12:40.427] [INFO] DEBUG_OSS:: - AddPantientFollow Begin
+[2017-04-25 16:12:40.428] [INFO] DEBUG_OSS:: - insert into hh_followup (id,addtime,addtime2,context) values('c9349850-275e-11e7-a0bf-a42ceb1bc177',now(), UNIX_TIMESTAMP(now()),'5555555');update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '5555555' where id = 'c9349850-275e-11e7-a0bf-a42ceb1bc177';
+[2017-04-25 16:12:41.380] [INFO] DEBUG_OSS:: - AddPantientFollow Begin
+[2017-04-25 16:12:41.381] [INFO] DEBUG_OSS:: - insert into hh_followup (id,addtime,addtime2,context) values('c9349850-275e-11e7-a0bf-a42ceb1bc177',now(), UNIX_TIMESTAMP(now()),'5555555');update hh_publicuser set lastfollowuptime = now(), lastfollowupcontext = '5555555' where id = 'c9349850-275e-11e7-a0bf-a42ceb1bc177';
+[2017-04-26 10:28:08.120] [INFO] DEBUG_OSS:: - DoctorLogin Begin
+[2017-04-26 10:28:08.123] [INFO] DEBUG_OSS:: - select * from hh_publicuser where mobile = '18958064659' and type = 1
+[2017-04-26 10:28:08.134] [INFO] DEBUG_OSS:: - select * from hh_publicUser where id in(SELECT patientid FROM hh_doctorpatient where doctorid = '123')
+[2017-04-26 10:45:44.040] [INFO] DEBUG_OSS:: - DoctorGetRandCode Begin
+[2017-04-26 10:45:44.041] [INFO] DEBUG_OSS:: - select usp_NewRandomNumber(4) as rand;
+[2017-04-26 10:45:44.054] [INFO] DEBUG_OSS:: - delete from hh_sendsms where mobile = '15868177542';insert into hh_sendsms(mobile,randcode) values('15868177542',1284);
+[2017-04-26 10:45:44.117] [INFO] DEBUG_OSS:: - DoctorGetRandCode End
+[2017-04-26 11:35:05.800] [INFO] DEBUG_OSS:: - AddDoctor Begin
+[2017-04-26 11:35:05.802] [INFO] DEBUG_OSS:: - select * from hh_sendsms where mobile = '15868177542' and randcode = 1111
+[2017-04-26 11:35:05.814] [INFO] DEBUG_OSS:: - delete from hh_sendsms where mobile = '15868177542' and randcode = 1111;INSERT INTO hh_publicUser (id, mobile,  randCode, status, type,name) VALUES (uuid(),'15868177542', 'e10adc3949ba59abbe56e057f20f883e', 0,1,'undefined');
+[2017-04-26 11:35:05.826] [INFO] DEBUG_OSS:: - AddDoctor End
+[2017-04-26 11:36:21.026] [INFO] DEBUG_OSS:: - DoctorLogin Begin
+[2017-04-26 11:36:21.026] [INFO] DEBUG_OSS:: - select * from hh_publicuser where mobile = '18958064659' and type = 1 and randcode = ''
+[2017-04-26 11:39:11.105] [INFO] DEBUG_OSS:: - DoctorLogin Begin
+[2017-04-26 11:39:11.106] [INFO] DEBUG_OSS:: - select * from hh_publicuser where mobile = '18958064659' and type = 1 and randcode = ''
+[2017-04-26 11:39:47.230] [INFO] DEBUG_OSS:: - DoctorLogin Begin
+[2017-04-26 11:39:47.231] [INFO] DEBUG_OSS:: - select * from hh_publicuser where mobile = '18958064659' and type = 1 and randcode = ''
+[2017-04-26 11:40:01.884] [INFO] DEBUG_OSS:: - DoctorLogin Begin
+[2017-04-26 11:40:01.887] [INFO] DEBUG_OSS:: - select * from hh_publicuser where mobile = '18958064659' and type = 1 and randcode = ''
+[2017-04-26 11:41:05.826] [INFO] DEBUG_OSS:: - AddDoctor Begin
+[2017-04-26 11:41:05.826] [INFO] DEBUG_OSS:: - select * from hh_sendsms where mobile = '15868177543' and randcode = 1111
+[2017-04-26 11:42:12.416] [INFO] DEBUG_OSS:: - AddDoctor Begin
+[2017-04-26 11:42:12.417] [INFO] DEBUG_OSS:: - select * from hh_sendsms where mobile = '15868177542' and randcode = 1111

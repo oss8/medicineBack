@@ -67,7 +67,7 @@ module.exports = function (Baseservice) {
 
             if (result.length == 0) {
                 bsSQL = "INSERT INTO hh_publicUser (id, mobile,  randCode, status, type) VALUES (uuid(),'" + PublicUserGetRand.mobile + "', 8888, 0,0);";
-                DoSQL(bsSQL).then(function (result) {
+                DoSQL(bsSQL).then(function () {
 
                     var smspv = SendSMS(PublicUserGetRand.mobile, '8888');
                     smspv.then(function () {
@@ -205,7 +205,7 @@ module.exports = function (Baseservice) {
         'PublicUserLogin',
         {
             http: { verb: 'post' },
-            description: '普通用户获取个人信息(op_smscode)',
+            description: '普通用户获取个人信息',
             accepts: { arg: 'PublicUserLogin', type: 'object', description: '{"token":"18958064659"}' },
             returns: { arg: 'PublicUserLogin', type: 'object', root: true }
         }
