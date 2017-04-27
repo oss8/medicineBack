@@ -214,21 +214,7 @@ module.exports = function (Baseservice) {
     Baseservice.RequestMyQRCode = function (RequestMyQRCode, cb) {
         EWTRACE("RequestMyQRCode Begin");
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(RequestMyQRCode.token);
-            _openid = OpenID.openId;
-        }
-        catch (err) {
-            EWTRACE(err.message);
-            cb(err, { status: 0, "result": err.message });
-            EWTRACE("PublicUserLogin End");
-            return;
-        }
-
-
-        var bsSQL = "select id from hh_publicuser where openid = '" + _openid + "'";
+        var bsSQL = "select id from hh_publicuser where od = '" + RequestMyQRCode.id + "'";
 
         DoSQL(bsSQL).then(function (result) {
 
@@ -249,7 +235,7 @@ module.exports = function (Baseservice) {
         {
             http: { verb: 'post' },
             description: '获取个人二维码()',
-            accepts: { arg: 'RequestMyQRCode', type: 'object', description: '{"token":"18958064659"}' },
+            accepts: { arg: 'RequestMyQRCode', type: 'object', description: '{"id":"18958064659"}' },
             returns: { arg: 'RequestMyQRCode', type: 'object', root: true }
         }
     );    
@@ -258,20 +244,7 @@ module.exports = function (Baseservice) {
     Baseservice.AddPatientContact = function (AddPatientContact, cb) {
         EWTRACE("AddPatientContact Begin");
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(AddPatientContact.token);
-            _openid = OpenID.openId;
-        }
-        catch (err) {
-            EWTRACE(err.message);
-            cb(err, { status: 0, "result": err.message });
-            EWTRACE("PublicUserLogin End");
-            return;
-        }
-
-        var bsSQL = "select id from hh_publicuser where openid = '" + _openid + "'";
+        var bsSQL = "select id from hh_publicuser where id = '" + AddPatientContact.id + "'";
 
         DoSQL(bsSQL).then(function (result) {
 
@@ -280,7 +253,7 @@ module.exports = function (Baseservice) {
             }
             else {
 
-                bsSQL = "update hh_publicuser set contactmobile = '"+AddPatientContact.contactmobile + "', contactname = '" + AddPatientContact.contactname + "' where openid = '" + AddPatientContact.openId + "';"
+                bsSQL = "update hh_publicuser set contactmobile = '"+AddPatientContact.contactmobile + "', contactname = '" + AddPatientContact.contactname + "' where id = '" + AddPatientContact.id + "';"
                 DoSQL(bsSQL).then(function(){
                     cb(null, { status: 1, "result": "" });
                 },function(err){
@@ -299,7 +272,7 @@ module.exports = function (Baseservice) {
         {
             http: { verb: 'post' },
             description: '病人添加紧急联系人',
-            accepts: { arg: 'AddPatientContact', type: 'object', description: '{"token":"18958064659","contactmobile":"","contactname":""}' },
+            accepts: { arg: 'AddPatientContact', type: 'object', description: '{"id":"18958064659","contactmobile":"","contactname":""}' },
             returns: { arg: 'AddPatientContact', type: 'object', root: true }
         }
     );   
@@ -307,20 +280,7 @@ module.exports = function (Baseservice) {
     Baseservice.RequestPatientFollow = function (RequestPatientFollow, cb) {
         EWTRACE("RequestPatientFollow Begin");
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(RequestPatientFollow.token);
-            _openid = OpenID.openId;
-        }
-        catch (err) {
-            EWTRACE(err.message);
-            cb(err, { status: 0, "result": err.message });
-            EWTRACE("PublicUserLogin End");
-            return;
-        }
-
-        var bsSQL = "select id from hh_publicuser where openid = '" + _openid + "'";
+        var bsSQL = "select id from hh_publicuser where id = '" + RequestPatientFollow.id + "'";
 
         DoSQL(bsSQL).then(function (result) {
 
@@ -348,7 +308,7 @@ module.exports = function (Baseservice) {
         {
             http: { verb: 'post' },
             description: '病人查看随访记录',
-            accepts: { arg: 'RequestPatientFollow', type: 'object', description: '{"token":"18958064659"}' },
+            accepts: { arg: 'RequestPatientFollow', type: 'object', description: '{"id":"18958064659"}' },
             returns: { arg: 'RequestPatientFollow', type: 'object', root: true }
         }
     );       

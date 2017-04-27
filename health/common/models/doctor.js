@@ -150,10 +150,10 @@ module.exports = function (Doctor) {
             var _uuid = "";
             if (_patientInfo.Result.length == 0) {
                 _uuid = uuid.v4();
-                bsSQL = "INSERT INTO hh_publicUser (id, mobile, cardNo, status, name, type, sex, casetype, province, city, region, address) VALUES ('" + _uuid + "', '" + AddPatient.pmobile + "', '" + AddPatient.pcardno + "',  0,  '" + AddPatient.pname + "', 0, " + AddPatient.psex + ", " + AddPatient.casetype + ", '" + AddPatient.province + "', '" + AddPatient.city + "', '" + AddPatient.region + "', '" + AddPatient.address + "');";
+                bsSQL = "INSERT INTO hh_publicUser (id, mobile, cardNo, medicalNo, status, name, type, sex, casetype, province, city, region, address) VALUES ('" + _uuid + "', '" + AddPatient.pmobile + "', '" + AddPatient.pcardno + "','"+AddPatient.pmedicalNo+"',  0,  '" + AddPatient.pname + "', 0, " + AddPatient.psex + ", '" + AddPatient.casetype + "', '" + AddPatient.province + "', '" + AddPatient.city + "', '" + AddPatient.region + "', '" + AddPatient.address + "');";
             } else {
                 _uuid = _patientInfo.Result[0].id;
-                bsSQL = "update hh_publicuser set name = '" + AddPatient.pname + "', cardNo = '" + AddPatient.pcardno + "',sex ='" + AddPatient.psex + "',casetype = " + AddPatient.casetype + ",province='" + AddPatient.province + "',city='" + AddPatient.city + "',region='" + AddPatient.region + "',address='" + AddPatient.address + "' where mobile = '" + AddPatient.pmobile + "';";
+                bsSQL = "update hh_publicuser set name = '" + AddPatient.pname + "', cardNo = '" + AddPatient.pcardno + "',sex ='" + AddPatient.psex + "',casetype = '" + AddPatient.casetype + "',province='" + AddPatient.province + "',city='" + AddPatient.city + "',region='" + AddPatient.region + "',address='" + AddPatient.address + "' where mobile = '" + AddPatient.pmobile + "';";
             }
 
 
@@ -179,7 +179,7 @@ module.exports = function (Doctor) {
         {
             http: { verb: 'post' },
             description: '添加病人',
-            accepts: { arg: 'AddPatient', type: 'object', description: '{"doctorid":"123","pmobile":"13857194279","pcardno":"","pname":"","psex":"0","province":"","city":"","region":"","address":"","casetype":"0"}' },
+            accepts: { arg: 'AddPatient', type: 'object', description: '{"doctorid":"123","pmobile":"13857194279","pcardno":"","pmedicalNo":"","pname":"","psex":"0","province":"","city":"","region":"","address":"","casetype":"0"}' },
             returns: { arg: 'AddPatient', type: 'object', root: true }
         }
     );
@@ -213,7 +213,7 @@ module.exports = function (Doctor) {
 
         var bsSQL = "insert into hh_followup (id,addtime,addtime2,context) values('" + AddPantientFollow.pantientid + "',now(), UNIX_TIMESTAMP(now()),'" + AddPantientFollow.context + "');";
 
-        bsSQL += "update hh_doctorpatient set lastfollowuptime = now(), lastfollowupcontext = '" + AddPantientFollow.context + "' where id = '" + AddPantientFollow.pantientid + "' and doctorid = '" + AddPantientFollow.doctorid + "';"
+        bsSQL += "update hh_doctorpatient set lastfollowuptime = now(), lastfollowupcontext = '" + AddPantientFollow.context + "' where patientid = '" + AddPantientFollow.pantientid + "' and doctorid = '" + AddPantientFollow.doctorid + "';"
 
         DoSQL(bsSQL).then(function () {
 
