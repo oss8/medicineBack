@@ -173,17 +173,17 @@ module.exports = function (Baseservice) {
 
         var _openid = null;
         var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(PublicUserLogin.token);
-            _openid = OpenID.openId;
-        }
-        catch (err) {
-            EWTRACE(err.message);
-            cb(err, { status: 0, "result": err.message });
-            EWTRACE("PublicUserLogin End");
-            return;
-        }
-
+        // try {
+        //     OpenID = GetOpenIDFromToken(PublicUserLogin.token);
+        //     _openid = OpenID.openId;
+        // }
+        // catch (err) {
+        //     EWTRACE(err.message);
+        //     cb(err, { status: 0, "result": err.message });
+        //     EWTRACE("PublicUserLogin End");
+        //     return;
+        // }
+        _openid = 'oROpyw64xys168PYZVdfBL9T0WyA';
 
         var bsSQL = "select * from hh_publicuser where openid = '" + _openid + "'";
 
@@ -193,7 +193,13 @@ module.exports = function (Baseservice) {
                 cb(null, { status: 0, "result": "找不到用户" });
             }
             else {
-                cb(null, { status: 1, "result": result[0] });
+                var userInfo = result[0];
+                if(userInfo.cardNo || userInfo.medicalNo) {
+                    cb(null, { status: 2, "result": result[0] });
+                } else {
+                    cb(null, { status: 1, "result": result[0] });
+                }
+                
             }
 
         }, function (err) {
@@ -289,7 +295,7 @@ module.exports = function (Baseservice) {
             }
             else {
 
-                bsSQL = "select addtime,context hh_followup where id = '" + result[0].id + "' order by addtime desc limit 12;"
+                bsSQL = "select addtime,context from hh_followup where id = '" + result[0].id + "' order by addtime desc limit 12;"
                 DoSQL(bsSQL).then(function(result1){
                     cb(null, { status: 1, "result": result1 });
                 },function(err){
