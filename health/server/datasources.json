@@ -4,7 +4,7 @@
     "connector": "memory"
   },
   "main_DBConnect": {
-    "host": "115.159.108.238",
+    "host": "localhost",
     "port": "3306",
     "database": "health",
     "password": "123456",
