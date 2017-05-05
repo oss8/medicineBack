@@ -10,7 +10,7 @@
     "password": "123456",
     "name": "main_DBConnect",
     "connector": "mysql",
-    "user": "root",
+    "user": "summerge",
     "multipleStatements": true,
     "pool": {
       "min": 0,

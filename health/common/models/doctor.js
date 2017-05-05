@@ -159,9 +159,9 @@ module.exports = function (Doctor) {
                 bsSQL = "update hh_publicuser set name = '" + AddPatient.pname + "', cardNo = '" + AddPatient.pcardno + "',sex ='" + AddPatient.psex + "',casetype = '" + AddPatient.casetype + "',province='" + AddPatient.province + "',city='" + AddPatient.city + "',region='" + AddPatient.region + "',address='" + AddPatient.address + "',mobile = '" + AddPatient.pmobile + "',birthday = '"+ AddPatient.birthday +"' where id = '"+ _uuid +"';";
             }
 
-
             var find = _.find(_DoctorpatientInfo.Result, function (detail) {
-                return detail.patiendid == _uuid;
+                return detail.patientid == _uuid;
+                
             });
 
             if (_.isEmpty(find)) {
@@ -170,10 +170,10 @@ module.exports = function (Doctor) {
             DoSQL(bsSQL).then(function () {
                 cb(null, { status: 1, "result": "" });
             }, function (err) {
-                cb(err, { status: 1, "result": err.message });
+                cb(err, { status: 0, "result": err.message });
             })
         }, function (err) {
-            cb(err, { status: 1, "result": err.message });
+            cb(err, { status: 0, "result": err.message });
         });
     }
 
