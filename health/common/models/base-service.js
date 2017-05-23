@@ -231,7 +231,7 @@ module.exports = function (Baseservice) {
             }
             else {
                 var userInfo = result[0];
-                if (userInfo.cardNo || userInfo.medicalNo) {
+                if (!userInfo.cardNo && !userInfo.medicalNo) {
                     cb(null, { status: 2, "result": result[0] });
                 } else {
                     cb(null, { status: 1, "result": result[0] });
