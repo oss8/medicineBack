@@ -147,7 +147,20 @@ module.exports = function (Baseservice) {
     Baseservice.PublicUserInputDetailCode = function (PublicUserInputDetailCode, cb) {
         EWTRACE("PublicUserInputDetailCode Begin");
 
-        var bsSQL = "select * from hh_publicuser where mobile = '" + PublicUserInputDetailCode.mobile + "'";
+        var _openid = null;
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(PublicUserLogin.token);
+            _openid = OpenID.openId;
+        }
+        catch (err) {
+            EWTRACE(err.message);
+            cb(err, { status: 0, "result": err.message });
+            EWTRACE("PublicUserLogin End");
+            return;
+        }
+
+        var bsSQL = "select * from hh_publicuser where openid = '" + _openid + "'";
 
         DoSQL(bsSQL).then(function (result) {
 
@@ -165,7 +178,7 @@ module.exports = function (Baseservice) {
 
                 if (_update.length > 1) {
                     _update = _update.substring(0, _update.length - 2);
-                    bsSQL = "update hh_publicUser set " + _update + " where mobile = '" + PublicUserInputDetailCode.mobile + "'";
+                    bsSQL = "update hh_publicUser set " + _update + " where openid = '" + _openid + "'";
                     DoSQL(bsSQL).then(function () {
                         cb(null, { status: 1, "result": "" });
                     }, function (err) {
@@ -186,7 +199,7 @@ module.exports = function (Baseservice) {
         {
             http: { verb: 'post' },
             description: '普通用户更新身份证、病历号(op_smscode)',
-            accepts: { arg: 'PublicUserInputDetailCode', type: 'object', description: '{"mobile":"18958064659","cardNo":"","medicalNo":""}' },
+            accepts: { arg: 'PublicUserInputDetailCode', type: 'object', description: '{"cardNo":"","medicalNo":"","token":""}' },
             returns: { arg: 'PublicUserInputDetailCode', type: 'object', root: true }
         }
     );
