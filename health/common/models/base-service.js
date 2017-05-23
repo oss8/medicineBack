@@ -37,8 +37,6 @@ module.exports = function (Baseservice) {
     Baseservice.RegPublicUser = function (RegPublicUser, cb) {
         EWTRACE("RegPublicUser Begin");
 
-
-
         var bsSQL = "select * from hh_publicuser where mobile = '" + RegPublicUser.mobile + "' and randCode = '" + RegPublicUser.randcode + "'";
 
         DoSQL(bsSQL).then(function (result) {
