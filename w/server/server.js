@@ -80,7 +80,7 @@ app.get('/auth/weixin/callback', function(req, res, next) {
   })(req, res, next);
 });
 */
-app.get('/auth/wechat', passport.authenticate('wechat', {
+app.get('/wechat', passport.authenticate('wechat', {
   scope: function (req) {
     var scope = req.query.scope;
     return scope || "snsapi_userinfo";
@@ -91,7 +91,7 @@ app.get('/auth/wechat', passport.authenticate('wechat', {
     //return "http://w.downtown8.cn/auth/wechat/callback?"+querystring.stringify({bu: bu});
   }
 }));
-app.get('/auth/wechat/callback', passport.authenticate('wechat', { session: false }),
+app.get('/wechat/callback', passport.authenticate('wechat', { session: false }),
   function (req, res) {
     // If this function gets called, authentication was successful.
     // `req.user` contains the authenticated user.
