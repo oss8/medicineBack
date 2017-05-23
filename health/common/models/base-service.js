@@ -173,17 +173,17 @@ module.exports = function (Baseservice) {
 
         var _openid = null;
         var OpenID = {};
-        // try {
-        //     OpenID = GetOpenIDFromToken(PublicUserLogin.token);
-        //     _openid = OpenID.openId;
-        // }
-        // catch (err) {
-        //     EWTRACE(err.message);
-        //     cb(err, { status: 0, "result": err.message });
-        //     EWTRACE("PublicUserLogin End");
-        //     return;
-        // }
-        _openid = 'oROpyw64xys168PYZVdfBL9T0WyA';
+        try {
+            OpenID = GetOpenIDFromToken(PublicUserLogin.token);
+            _openid = OpenID.openId;
+        }
+        catch (err) {
+            EWTRACE(err.message);
+            cb(err, { status: 0, "result": err.message });
+            EWTRACE("PublicUserLogin End");
+            return;
+        }
+        // _openid = 'oROpyw64xys168PYZVdfBL9T0WyA';
 
         var bsSQL = "select * from hh_publicuser where openid = '" + _openid + "'";
 
