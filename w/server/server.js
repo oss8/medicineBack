@@ -87,7 +87,10 @@ app.get('/wechat', passport.authenticate('wechat', {
   },
   callbackURL: function (req) {
     var bu = req.query.bu;
-    return "http://" + req.headers.host + "/auth/wechat/callback?" + querystring.stringify({ bu: bu });
+    
+    var url = "http://" + req.headers.host + "/auth/wechat/callback?" + querystring.stringify({ bu: bu });
+    console.log(url);
+    return url;
     //return "http://w.downtown8.cn/auth/wechat/callback?"+querystring.stringify({bu: bu});
   }
 }));
@@ -100,7 +103,8 @@ app.get('/wechat/callback', passport.authenticate('wechat', { session: false }),
     var nowsecond = Math.floor(Date.now() / 1000);
     payload.iat = nowsecond;
     payload.exp = nowsecond + (5 * 60);
-
+    console.log(bu);
+    console.log(payload);
 
     var statusEntries = {};
     statusEntries.CheckOpenID = {};
