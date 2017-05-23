@@ -109,25 +109,25 @@ app.get('/wechat/callback', passport.authenticate('wechat', { session: false }),
     var statusEntries = {};
     statusEntries.CheckOpenID = {};
     statusEntries.CheckOpenID.openid = payload.openid;
-
-    var _repStatus = 0;
-    var needle = require('needle');
-    needle.post('http://0.0.0.0:6688/api/baseServices/CheckOpenID', statusEntries, { json: true }, function (err, resp) {
-      if ( err ){
-        res.sendStatus(403);
-        return;
-      }
-      _repStatus = resp.body.status;
+    // _repStatus = resp.body.status;
       jwttoken.encode(payload, function (err, token) {
         if (err) {
           res.sendStatus(403);
         } else {
-          res.redirect(bu + (bu.indexOf('?') > 0 ? "&" : "?") + querystring.stringify({ token: token }) + "&status=" + _repStatus);
+          res.redirect(bu + (bu.indexOf('?') > 0 ? "&" : "?") + querystring.stringify({ token: token }));
         }
       });
-    }, function (err) {
-      res.sendStatus(403);
-    });
+    // var _repStatus = 0;
+    // var needle = require('needle');
+    // needle.post('http://0.0.0.0:6688/api/baseServices/CheckOpenID', statusEntries, { json: true }, function (err, resp) {
+    //   if ( err ){
+    //     res.sendStatus(403);
+    //     return;
+    //   }
+      
+    // }, function (err) {
+    //   res.sendStatus(403);
+    // });
 
 
   }
