@@ -37,9 +37,35 @@ module.exports = function (Baseservice) {
     Baseservice.RegPublicUser = function (RegPublicUser, cb) {
         EWTRACE("RegPublicUser Begin");
 
+
+
         var bsSQL = "select * from hh_publicuser where mobile = '" + RegPublicUser.mobile + "' and randCode = '" + RegPublicUser.randcode + "'";
 
         DoSQL(bsSQL).then(function (result) {
+
+            if (result.length == 0) {
+                cb(err, { status: 0, "result": "验证码错误" });
+            } else {
+                var _openid = null;
+                var OpenID = {};
+                try {
+                    OpenID = GetOpenIDFromToken(RegPublicUser.token);
+                    _openid = OpenID.openId;
+
+                    bsSQL = "update hh_publicuser set openid = '" + _openid + "' where mobile = '" + RegPublicUser.mobile + "'";
+                    DoSQL(bsSQL).then(function(){
+                        cb(err, { status: 1, "result": "绑定成功！" });
+                    },function(err){
+                        cb(err, { status: 0, "result": "" });
+                    })
+                }
+                catch (err) {
+                    EWTRACE(err.message);
+                    cb(err, { status: 0, "result": err.message });
+                    EWTRACE("RegPublicUser End");
+                    return;
+                }
+            }
 
             cb(null, { status: 1, "result": result[0] });
         }, function (err) {
@@ -52,7 +78,7 @@ module.exports = function (Baseservice) {
         {
             http: { verb: 'post' },
             description: '注册普通用户(op_smscode)',
-            accepts: { arg: 'RegPublicUser', type: 'object', description: '{"mobile":"18958064659","randcode":""}' },
+            accepts: { arg: 'RegPublicUser', type: 'object', description: '{"mobile":"18958064659","randcode":"","token":""}' },
             returns: { arg: 'RegPublicUser', type: 'object', root: true }
         }
     );
@@ -194,12 +220,12 @@ module.exports = function (Baseservice) {
             }
             else {
                 var userInfo = result[0];
-                if(userInfo.cardNo || userInfo.medicalNo) {
+                if (userInfo.cardNo || userInfo.medicalNo) {
                     cb(null, { status: 2, "result": result[0] });
                 } else {
                     cb(null, { status: 1, "result": result[0] });
                 }
-                
+
             }
 
         }, function (err) {
@@ -244,7 +270,7 @@ module.exports = function (Baseservice) {
             accepts: { arg: 'RequestMyQRCode', type: 'object', description: '{"id":"18958064659"}' },
             returns: { arg: 'RequestMyQRCode', type: 'object', root: true }
         }
-    );    
+    );
 
 
     Baseservice.AddPatientContact = function (AddPatientContact, cb) {
@@ -259,13 +285,13 @@ module.exports = function (Baseservice) {
             }
             else {
 
-                bsSQL = "update hh_publicuser set contactmobile = '"+AddPatientContact.contactmobile + "', contactname = '" + AddPatientContact.contactname + "' where id = '" + AddPatientContact.id + "';"
-                DoSQL(bsSQL).then(function(){
+                bsSQL = "update hh_publicuser set contactmobile = '" + AddPatientContact.contactmobile + "', contactname = '" + AddPatientContact.contactname + "' where id = '" + AddPatientContact.id + "';"
+                DoSQL(bsSQL).then(function () {
                     cb(null, { status: 1, "result": "" });
-                },function(err){
+                }, function (err) {
                     cb(err, { status: 0, "result": err.message });
                 });
-                
+
             }
 
         }, function (err) {
@@ -281,7 +307,7 @@ module.exports = function (Baseservice) {
             accepts: { arg: 'AddPatientContact', type: 'object', description: '{"id":"18958064659","contactmobile":"","contactname":""}' },
             returns: { arg: 'AddPatientContact', type: 'object', root: true }
         }
-    );   
+    );
 
     Baseservice.RequestPatientFollow = function (RequestPatientFollow, cb) {
         EWTRACE("RequestPatientFollow Begin");
@@ -296,12 +322,12 @@ module.exports = function (Baseservice) {
             else {
 
                 bsSQL = "select addtime,context from hh_followup where id = '" + result[0].id + "' order by addtime desc limit 12;"
-                DoSQL(bsSQL).then(function(result1){
+                DoSQL(bsSQL).then(function (result1) {
                     cb(null, { status: 1, "result": result1 });
-                },function(err){
+                }, function (err) {
                     cb(err, { status: 0, "result": err.message });
                 });
-                
+
             }
 
         }, function (err) {
@@ -317,5 +343,5 @@ module.exports = function (Baseservice) {
             accepts: { arg: 'RequestPatientFollow', type: 'object', description: '{"id":"18958064659"}' },
             returns: { arg: 'RequestPatientFollow', type: 'object', root: true }
         }
-    );       
+    );
 };
