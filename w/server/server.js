@@ -88,7 +88,7 @@ app.get('/wechat', passport.authenticate('wechat', {
   callbackURL: function (req) {
     var bu = req.query.bu;
     
-    var url = "http://" + req.headers.host + "/auth/wechat/callback?" + querystring.stringify({ bu: bu });
+    var url = "http://w.man-kang.com" + "/auth/wechat/callback?" + querystring.stringify({ bu: bu });
     console.log(url);
     return url;
     //return "http://w.downtown8.cn/auth/wechat/callback?"+querystring.stringify({bu: bu});
