@@ -128,7 +128,7 @@ app.get('/auth/wechat/callback', passport.authenticate('wechat', { session: fals
 
   }
 );
-const path = require('path');
-app.use(express.static(path.join(__dirname, 'public')));
-app.listen(10401);
-console.log(__dirname);
+//const path = require('path');
+//app.use(express.static(path.join(__dirname, 'public')));
+app.listen(6699);
+//console.log(__dirname);
