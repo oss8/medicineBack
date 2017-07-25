@@ -64,8 +64,6 @@ module.exports = function (Baseservice) {
                     return;
                 }
             }
-
-            cb(null, { status: 1, "result": result[0] });
         }, function (err) {
             cb(err, { status: 0, "result": "" });
         });
