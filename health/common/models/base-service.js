@@ -150,13 +150,13 @@ module.exports = function (Baseservice) {
         var _openid = null;
         var OpenID = {};
         try {
-            OpenID = GetOpenIDFromToken(PublicUserLogin.token);
+            OpenID = GetOpenIDFromToken(PublicUserInputDetailCode.token);
             _openid = OpenID.openId;
         }
         catch (err) {
             EWTRACE(err.message);
             cb(err, { status: 0, "result": err.message });
-            EWTRACE("PublicUserLogin End");
+            EWTRACE("PublicUserInputDetailCode End");
             return;
         }
 
