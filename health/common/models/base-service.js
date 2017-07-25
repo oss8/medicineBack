@@ -52,7 +52,7 @@ module.exports = function (Baseservice) {
 
                     bsSQL = "update hh_publicuser set openid = '" + _openid + "' where mobile = '" + RegPublicUser.mobile + "'";
                     DoSQL(bsSQL).then(function(){
-                        cb(err, { status: 1, "result": "绑定成功！" });
+                        cb(null, { status: 1, "result": "绑定成功！" });
                     },function(err){
                         cb(err, { status: 0, "result": "" });
                     })
