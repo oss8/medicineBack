@@ -175,7 +175,7 @@ module.exports = function (Baseservice) {
                 }
 
                 if (_update.length > 1) {
-                    _update = _update.substring(0, _update.length - 2);
+                    _update = _update.substring(0, _update.length - 1);
                     bsSQL = "update hh_publicUser set " + _update + " where openid = '" + _openid + "'";
                     DoSQL(bsSQL).then(function () {
                         cb(null, { status: 1, "result": "" });
