@@ -48,7 +48,7 @@ module.exports = function (Baseservice) {
                 var OpenID = {};
                 try {
                     OpenID = GetOpenIDFromToken(RegPublicUser.token);
-                    _openid = OpenID.openId;
+                    _openid = OpenID.openid;
 
                     bsSQL = "update hh_publicuser set openid = '" + _openid + "' where mobile = '" + RegPublicUser.mobile + "'";
                     DoSQL(bsSQL).then(function(){
@@ -151,7 +151,7 @@ module.exports = function (Baseservice) {
         var OpenID = {};
         try {
             OpenID = GetOpenIDFromToken(PublicUserInputDetailCode.token);
-            _openid = OpenID.openId;
+            _openid = OpenID.openid;
         }
         catch (err) {
             EWTRACE(err.message);
@@ -212,7 +212,7 @@ module.exports = function (Baseservice) {
         var OpenID = {};
         try {
             OpenID = GetOpenIDFromToken(PublicUserLogin.token);
-            _openid = OpenID.openId;
+            _openid = OpenID.openid;
         }
         catch (err) {
             EWTRACE(err.message);
