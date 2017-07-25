@@ -229,6 +229,8 @@ module.exports = function (Baseservice) {
             }
             else {
                 var userInfo = result[0];
+                EWTRACE(userInfo.cardNo);
+                EWTRACE(userInfo.medicalNo);
                 if (!_.isEmpty(userInfo.cardNo) || !_.isEmpty(userInfo.medicalNo)) {
                     cb(null, { status: 2, "result": result[0] });
                 } else {
