@@ -255,7 +255,7 @@ module.exports = function (Baseservice) {
     Baseservice.RequestMyQRCode = function (RequestMyQRCode, cb) {
         EWTRACE("RequestMyQRCode Begin");
 
-        var bsSQL = "select id from hh_publicuser where od = '" + RequestMyQRCode.id + "'";
+        var bsSQL = "select id from hh_publicuser where id = '" + RequestMyQRCode.id + "'";
 
         DoSQL(bsSQL).then(function (result) {
 
