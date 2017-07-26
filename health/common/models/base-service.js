@@ -390,9 +390,9 @@ module.exports = function (Baseservice) {
     Baseservice.remoteMethod(
         'CreatWechatQRCode',
         {
-            http: { verb: 'post' },
+            http: { verb: 'get' },
             description: '生成公众号二维码',
-            accepts: { arg: 'p', type: 'object', description: '{"iccid":"898602b11816c0389700"}' },
+            accepts: { arg: 'iccid', type: 'string', description: '898602b11816c0389700' },
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
