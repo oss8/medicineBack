@@ -355,4 +355,18 @@ module.exports = function (Baseservice) {
             returns: { arg: 'RequestPatientFollow', type: 'object', root: true }
         }
     );
+
+    Baseservice.CreatWechatQRCode = function (p,cb) {
+        var tokenUrl = 'http://106.14.159.108:2567/token';
+    }
+
+    Baseservice.remoteMethod(
+        'CreatWechatQRCode',
+        {
+            http: { verb: 'post' },
+            description: '生成公众号二维码',
+            accepts: { arg: 'p', type: 'object', description: '{"iccid":"898602b11816c0389700"}' },
+            returns: { arg: 'p', type: 'object', root: true }
+        }
+    );
 };
