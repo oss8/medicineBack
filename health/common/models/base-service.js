@@ -51,9 +51,9 @@ module.exports = function (Baseservice) {
                     _openid = OpenID.openid;
 
                     bsSQL = "update hh_publicuser set openid = '" + _openid + "' where mobile = '" + RegPublicUser.mobile + "'";
-                    DoSQL(bsSQL).then(function(){
+                    DoSQL(bsSQL).then(function () {
                         cb(null, { status: 1, "result": "绑定成功！" });
-                    },function(err){
+                    }, function (err) {
                         cb(err, { status: 0, "result": "" });
                     })
                 }
@@ -356,8 +356,35 @@ module.exports = function (Baseservice) {
         }
     );
 
-    Baseservice.CreatWechatQRCode = function (p,cb) {
+    Baseservice.CreatWechatQRCode = function (p, cb) {
         var tokenUrl = 'http://106.14.159.108:2567/token';
+        var needle = require('needle');
+        needle.get(encodeURI(tokenUrl), null, function (err, resp) {
+            // you can pass params as a string or as an object.
+            if (err) {
+                //cb(err, { status: 0, "result": "" });
+                EWTRACE(err.message);
+                cb(err, { status: 1, "result": ""});
+            }
+            else {
+                var pp = {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": p.iccid}}};
+                var url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + resp.body.access_token;
+                needle.post(encodeURI(url),pp, {json:true},function (err, resp) {
+                    // you can pass params as a string or as an object.
+                    if (err) {
+                        //cb(err, { status: 0, "result": "" });
+                        EWTRACE(err.message);
+                        cb(err, { status: 1, "result": ""});
+                    }
+                    else {
+                        cb(null, { status: 1, "result": resp.body.url });
+                    }
+                });
+            }
+        });
+
+
+
     }
 
     Baseservice.remoteMethod(
