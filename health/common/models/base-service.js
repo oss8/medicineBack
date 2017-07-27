@@ -403,10 +403,11 @@ module.exports = function (Baseservice) {
       EWTRACE('t'+timestamp);
       EWTRACE('n'+nonce);
       var sha1 = require('sha1');
-      var str = ['mankang', timestamp, nonce].sort().join('');
+      var token = 'mankang';
+      var str = [timestamp, nonce,token].sort().join('');
       EWTRACE(str);
       EWTRACE(sha1(str));
-      if (sha1(str) === signature) {
+      if (sha1(str) == signature) {
           cb(null,echostr+'');
       } else {
         cb(null,false);
