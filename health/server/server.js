@@ -5,7 +5,6 @@ var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
 var config = require('../config/config')
-var utils = require('../util/util')
 app.start = function() {
   // start the web server
   return app.listen(function() {
