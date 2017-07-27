@@ -424,7 +424,7 @@ module.exports = function (Baseservice) {
                       { arg: 'timestamp', type: 'string', description: 'dasdad' },
                       { arg: 'nonce', type: 'string', description: 'dasdad' }
                     ],
-            returns: { arg: 'echostr', type: 'string'}
+            returns: { arg: 'echostr', type: 'string',root:true}
         }
     );
 };
