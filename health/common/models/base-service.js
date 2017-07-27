@@ -408,7 +408,7 @@ module.exports = function (Baseservice) {
       EWTRACE(str);
       EWTRACE(sha1(str));
       if (sha1(str) == signature) {
-          cb(null,echostr+'');
+          cb(null,true);
       } else {
         cb(null,false);
       }
