@@ -408,9 +408,9 @@ module.exports = function (Baseservice) {
       EWTRACE('加密前Str: '+str);
       EWTRACE('加密后Str: '+sha1(str));
       if (sha1(str) == signature) {
-          cb(null,echostr+'');
+          cb(null,echostr+'','application/text');
       } else {
-        cb(null,false);
+        cb(null,false,'application/text');
       }
     };
 
@@ -424,7 +424,8 @@ module.exports = function (Baseservice) {
                       { arg: 'timestamp', type: 'string', description: 'dasdad' },
                       { arg: 'nonce', type: 'string', description: 'dasdad' }
                     ],
-            returns: { arg: 'echostr', type: 'string',root:true}
+            returns: [{ arg: 'echostr', type: 'string'},
+                      {arg: 'Content-Type', type: 'string', http: { target: 'header' }}]
         }
     );
 };
