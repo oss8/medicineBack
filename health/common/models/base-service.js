@@ -403,7 +403,7 @@ module.exports = function (Baseservice) {
       EWTRACE('timestamp: '+timestamp);
       EWTRACE('nonce: '+nonce);
       var sha1 = require('sha1');
-      var token = 'mankang';
+      var token = 'weixin';
       var str = [timestamp, nonce,token].sort().join('');
       EWTRACE('加密前Str: '+str);
       EWTRACE('加密后Str: '+sha1(str));
