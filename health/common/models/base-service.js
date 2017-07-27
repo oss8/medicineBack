@@ -398,17 +398,17 @@ module.exports = function (Baseservice) {
     );
 
     Baseservice.ValidateWechatToken = function (signature,echostr,timestamp,nonce,cb) {
-      EWTRACE('s'+signature);
-      EWTRACE('e'+echostr);
-      EWTRACE('t'+timestamp);
-      EWTRACE('n'+nonce);
+      EWTRACE('signature: '+signature);
+      EWTRACE('echostr: '+echostr);
+      EWTRACE('timestamp: '+timestamp);
+      EWTRACE('nonce: '+nonce);
       var sha1 = require('sha1');
       var token = 'mankang';
       var str = [timestamp, nonce,token].sort().join('');
-      EWTRACE(str);
-      EWTRACE(sha1(str));
+      EWTRACE('加密前Str: '+str);
+      EWTRACE('加密后Str: '+sha1(str));
       if (sha1(str) == signature) {
-          cb(null,true);
+          cb(null,echostr+'');
       } else {
         cb(null,false);
       }
@@ -424,7 +424,7 @@ module.exports = function (Baseservice) {
                       { arg: 'timestamp', type: 'string', description: 'dasdad' },
                       { arg: 'nonce', type: 'string', description: 'dasdad' }
                     ],
-            returns: { arg: 'p', type: 'object', root: true }
+            returns: { arg: 'p', type: 'string', root: true }
         }
     );
 };
