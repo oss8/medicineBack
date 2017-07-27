@@ -408,9 +408,9 @@ module.exports = function (Baseservice) {
       EWTRACE('加密前Str: '+str);
       EWTRACE('加密后Str: '+sha1(str));
       if (sha1(str) == signature) {
-          cb(null,echostr+'','application/text');
+          cb(null,echostr+'','text');
       } else {
-        cb(null,false,'application/text');
+        cb(null,echostr,'application/text');
       }
     };
 
