@@ -398,8 +398,13 @@ module.exports = function (Baseservice) {
     );
 
     Baseservice.ValidateWechatToken = function (signature,echostr,timestamp,nonce,cb) {
-       var sha1 = require('sha1');
+      EWTRACE(signature);
+      EWTRACE(echostr);
+      EWTRACE(timestamp);
+      EWTRACE(nonce);
+      var sha1 = require('sha1');
        var str = ['mankang', timestamp, nonce].sort().join('');
+       EWTRACE(str);
        if (sha1(str) === signature) {
             cb(null,echostr+'');
        } else {
