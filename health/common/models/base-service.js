@@ -396,4 +396,28 @@ module.exports = function (Baseservice) {
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
+
+    Baseservice.ValidateWechatToken = function (signature,echostr,timestamp,nonce,cb) {
+       var sha1 = require('sha1');
+       var str = ['mankang', timestamp, nonce].sort().join('');
+       if (sha1(str) === signature) {
+            cb(null,echostr+'');
+       } else {
+         cb(null,false);
+       }
+    };
+
+    Baseservice.remoteMethod(
+        'ValidateWechatToken',
+        {
+            http: { verb: 'get' },
+            description: '微信服务器验证',
+            accepts: [{ arg: 'signature', type: 'string', description: '898602b11816c0389700' },
+                      { arg: 'echostr', type: 'string', description: 'dasdad' },
+                      { arg: 'timestamp', type: 'string', description: 'dasdad' },
+                      { arg: 'nonce', type: 'string', description: 'dasdad' }
+                    ],
+            returns: { arg: 'p', type: 'object', root: true }
+        }
+    );
 };
