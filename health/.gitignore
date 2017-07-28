@@ -17,4 +17,4 @@
 coverage
 node_modules
 npm-debug.log
-／logs/log4js.log.*
+logs/log4js.log.*
