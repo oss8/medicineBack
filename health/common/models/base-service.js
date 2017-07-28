@@ -364,17 +364,17 @@ module.exports = function (Baseservice) {
             if (err) {
                 //cb(err, { status: 0, "result": "" });
                 EWTRACE(err.message);
-                cb(err, { status: 1, "result": ""});
+                cb(err, { status: 1, "result": "" });
             }
             else {
-                var pp = {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": p.iccid}}};
+                var pp = { "expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": { "scene": { "scene_id": p.iccid } } };
                 var url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + resp.body.access_token;
-                needle.post(encodeURI(url),pp, {json:true},function (err, resp) {
+                needle.post(encodeURI(url), pp, { json: true }, function (err, resp) {
                     // you can pass params as a string or as an object.
                     if (err) {
                         //cb(err, { status: 0, "result": "" });
                         EWTRACE(err.message);
-                        cb(err, { status: 1, "result": ""});
+                        cb(err, { status: 1, "result": "" });
                     }
                     else {
                         cb(null, { status: 1, "result": resp.body.url });
@@ -396,4 +396,30 @@ module.exports = function (Baseservice) {
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
+
+
+    Baseservice.Demo = function (cb) {
+        var smspv = SendSMS('18958064659', '8888');
+        smspv.then(function () {
+
+            cb(null, { status: 1, "result": "" });
+            EWTRACE("PublicUserGetRand End");
+        }, function (err) {
+            cb(null, { status: 0, "result": err.message });
+            EWTRACE("PublicUserGetRand End");
+            return;
+        });
+    }
+
+    Baseservice.remoteMethod(
+        'Demo',
+        {
+            http: { verb: 'get' },
+            description: '生成公众号二维码',
+            returns: { arg: 'p', type: 'object', root: true }
+        }
+    );
 };
+
+
+
