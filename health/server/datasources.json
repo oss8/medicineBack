@@ -25,7 +25,7 @@
     "options": {
       "auth": {
         "user": "api",
-        "pass": "key-bd1f2230ac16f26e79f4bdc9eccb75bc"
+        "pass": "key-2723dfc9b9e0272912e25f69e575c2ae"
       }
     },
     "operations": [
@@ -39,7 +39,7 @@
           "type": "form",
           "form": {
             "mobile": "{!mobile}",
-            "message": "您的验证码是{!code}, {ttl=5}分钟内有效。【当堂信息】"
+            "message": "您的验证码是{!code}, {ttl=5}分钟内有效。【曼康信息】"
           },
           "responsePath": "$"
         },

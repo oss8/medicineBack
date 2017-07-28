@@ -364,17 +364,17 @@ module.exports = function (Baseservice) {
             if (err) {
                 //cb(err, { status: 0, "result": "" });
                 EWTRACE(err.message);
-                cb(err, { status: 1, "result": ""});
+                cb(err, { status: 1, "result": "" });
             }
             else {
-                var pp = {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": p.iccid}}};
+                var pp = { "expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": { "scene": { "scene_id": p.iccid } } };
                 var url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + resp.body.access_token;
-                needle.post(encodeURI(url),pp, {json:true},function (err, resp) {
+                needle.post(encodeURI(url), pp, { json: true }, function (err, resp) {
                     // you can pass params as a string or as an object.
                     if (err) {
                         //cb(err, { status: 0, "result": "" });
                         EWTRACE(err.message);
-                        cb(err, { status: 1, "result": ""});
+                        cb(err, { status: 1, "result": "" });
                     }
                     else {
                         cb(null, { status: 1, "result": resp.body.url });
@@ -397,21 +397,23 @@ module.exports = function (Baseservice) {
         }
     );
 
-    Baseservice.ValidateWechatToken = function (signature,echostr,timestamp,nonce,cb) {
-      EWTRACE('signature: '+signature);
-      EWTRACE('echostr: '+echostr);
-      EWTRACE('timestamp: '+timestamp);
-      EWTRACE('nonce: '+nonce);
-      var sha1 = require('sha1');
-      var token = 'weixin';
-      var str = [timestamp, nonce,token].sort().join('');
-      EWTRACE('加密前Str: '+str);
-      EWTRACE('加密后Str: '+sha1(str));
-      if (sha1(str) == signature) {
-          cb(null,echostr+'','text/xml');
-      } else {
-        cb(null,echostr,'text/xml');
-      }
+
+
+    Baseservice.ValidateWechatToken = function (signature, echostr, timestamp, nonce, cb) {
+        EWTRACE('signature: ' + signature);
+        EWTRACE('echostr: ' + echostr);
+        EWTRACE('timestamp: ' + timestamp);
+        EWTRACE('nonce: ' + nonce);
+        var sha1 = require('sha1');
+        var token = 'weixin';
+        var str = [timestamp, nonce, token].sort().join('');
+        EWTRACE('加密前Str: ' + str);
+        EWTRACE('加密后Str: ' + sha1(str));
+        if (sha1(str) == signature) {
+            cb(null, echostr + '', 'text/xml');
+        } else {
+            cb(null, echostr, 'text/xml');
+        }
     };
 
     Baseservice.remoteMethod(
@@ -420,12 +422,15 @@ module.exports = function (Baseservice) {
             http: { verb: 'get' },
             description: '微信服务器验证',
             accepts: [{ arg: 'signature', type: 'string', description: '898602b11816c0389700' },
-                      { arg: 'echostr', type: 'string', description: 'dasdad' },
-                      { arg: 'timestamp', type: 'string', description: 'dasdad' },
-                      { arg: 'nonce', type: 'string', description: 'dasdad' }
-                    ],
-            returns: [{ arg: 'echostr', type: 'string',root:true},
-                      {arg: 'Content-Type', type: 'string', http: { target: 'header' }}]
+            { arg: 'echostr', type: 'string', description: 'dasdad' },
+            { arg: 'timestamp', type: 'string', description: 'dasdad' },
+            { arg: 'nonce', type: 'string', description: 'dasdad' }
+            ],
+            returns: [{ arg: 'echostr', type: 'string', root: true },
+            { arg: 'Content-Type', type: 'string', http: { target: 'header' } }]
         }
     );
 };
+
+
+
