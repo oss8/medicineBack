@@ -1,0 +1,9 @@
+{
+	"wechat":{
+    	"appId": "wx397644d24ec87fd1",
+    	"appSecret":"57e9a3e879a08b817e1163a20e767ca3",
+    	"token": "mankang",
+    	"prefix": "https://api.weixin.qq.com/cgi-bin/",
+    	"mpPrefix": "https://mp.weixin.qq.com/cgi-bin/"
+	}
+}

@@ -4,7 +4,7 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
-
+var config = require('../config/config')
 app.start = function() {
   // start the web server
   return app.listen(function() {
@@ -17,7 +17,7 @@ app.start = function() {
     }
   });
 };
-
+// app.use(utils.sign(config));
 app.DisableSystemMethod = function (_basemodel) {
   _basemodel.disableRemoteMethodByName("create", true);
   _basemodel.disableRemoteMethodByName("upsert", true);

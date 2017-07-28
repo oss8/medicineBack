@@ -398,25 +398,36 @@ module.exports = function (Baseservice) {
     );
 
 
-    Baseservice.Demo = function (cb) {
-        var smspv = SendSMS('18958064659', '8888');
-        smspv.then(function () {
 
-            cb(null, { status: 1, "result": "" });
-            EWTRACE("PublicUserGetRand End");
-        }, function (err) {
-            cb(null, { status: 0, "result": err.message });
-            EWTRACE("PublicUserGetRand End");
-            return;
-        });
-    }
+    Baseservice.ValidateWechatToken = function (signature, echostr, timestamp, nonce, cb) {
+        EWTRACE('signature: ' + signature);
+        EWTRACE('echostr: ' + echostr);
+        EWTRACE('timestamp: ' + timestamp);
+        EWTRACE('nonce: ' + nonce);
+        var sha1 = require('sha1');
+        var token = 'weixin';
+        var str = [timestamp, nonce, token].sort().join('');
+        EWTRACE('加密前Str: ' + str);
+        EWTRACE('加密后Str: ' + sha1(str));
+        if (sha1(str) == signature) {
+            cb(null, echostr + '', 'text/xml');
+        } else {
+            cb(null, echostr, 'text/xml');
+        }
+    };
 
     Baseservice.remoteMethod(
-        'Demo',
+        'ValidateWechatToken',
         {
             http: { verb: 'get' },
-            description: '生成公众号二维码',
-            returns: { arg: 'p', type: 'object', root: true }
+            description: '微信服务器验证',
+            accepts: [{ arg: 'signature', type: 'string', description: '898602b11816c0389700' },
+            { arg: 'echostr', type: 'string', description: 'dasdad' },
+            { arg: 'timestamp', type: 'string', description: 'dasdad' },
+            { arg: 'nonce', type: 'string', description: 'dasdad' }
+            ],
+            returns: [{ arg: 'echostr', type: 'string', root: true },
+            { arg: 'Content-Type', type: 'string', http: { target: 'header' } }]
         }
     );
 };
