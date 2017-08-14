@@ -357,6 +357,7 @@ module.exports = function (Baseservice) {
     );
 
     Baseservice.CreatWechatQRCode = function (p, cb) {
+        EWTRACE("CreatWechatQRCode:"+p);
         var tokenUrl = 'http://106.14.159.108:2567/token';
         var needle = require('needle');
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
@@ -382,7 +383,7 @@ module.exports = function (Baseservice) {
                 });
             }
         });
-
+        EWTRACE("CreatWechatQRCode");
 
 
     }
