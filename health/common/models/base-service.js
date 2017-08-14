@@ -374,7 +374,7 @@ module.exports = function (Baseservice) {
                     if (err) {
                         //cb(err, { status: 0, "result": "" });
                         EWTRACE(err.message);
-                        cb(err, { status: 1, "result": "" });
+                        cb(err, { status: 0, "result": "" });
                     }
                     else {
                         cb(null, { status: 1, "result": resp.body.url });
@@ -426,6 +426,26 @@ module.exports = function (Baseservice) {
             { arg: 'timestamp', type: 'string', description: 'dasdad' },
             { arg: 'nonce', type: 'string', description: 'dasdad' }
             ],
+            returns: [{ arg: 'echostr', type: 'string', root: true },
+            { arg: 'Content-Type', type: 'string', http: { target: 'header' } }]
+        }
+    );
+
+
+    Baseservice.demo = function (cb) {
+        var smspv = SendSMS('13958000180', '8888');
+        smspv.then(function () {
+            cb(null, { status: 0, "result": "" });
+        },function(err){
+            cb(err, { status: 0, "result": "" });
+        });
+    };
+
+    Baseservice.remoteMethod(
+        'demo',
+        {
+            http: { verb: 'get' },
+            description: '微信服务器验证',
             returns: [{ arg: 'echostr', type: 'string', root: true },
             { arg: 'Content-Type', type: 'string', http: { target: 'header' } }]
         }

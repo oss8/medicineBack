@@ -2,6 +2,7 @@
 
 var loopback = require('loopback');
 var boot = require('loopback-boot');
+var xmlparser = require('express-xml-bodyparser');
 
 var app = module.exports = loopback();
 var config = require('../config/config')
@@ -17,6 +18,9 @@ app.start = function() {
     }
   });
 };
+
+app.use(xmlparser());
+
 // app.use(utils.sign(config));
 app.DisableSystemMethod = function (_basemodel) {
   _basemodel.disableRemoteMethodByName("create", true);
