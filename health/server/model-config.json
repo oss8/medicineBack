@@ -43,5 +43,13 @@
   "Doctor": {
     "dataSource": "main_DBConnect",
     "public": true
+  },
+  "watch": {
+    "dataSource": "db",
+    "public": true
+  },
+  "patient": {
+    "dataSource": "db",
+    "public": true
   }
 }

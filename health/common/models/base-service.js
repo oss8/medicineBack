@@ -357,6 +357,7 @@ module.exports = function (Baseservice) {
     );
 
     Baseservice.CreatWechatQRCode = function (p, cb) {
+        EWTRACE("CreatWechatQRCode:"+p);
         var tokenUrl = 'http://106.14.159.108:2567/token';
         var needle = require('needle');
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
@@ -367,22 +368,23 @@ module.exports = function (Baseservice) {
                 cb(err, { status: 1, "result": "" });
             }
             else {
-                var pp = { "expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": { "scene": { "scene_id": p.iccid } } };
+                var pp = { "expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": { "scene": { "scene_id": p } } };
                 var url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + resp.body.access_token;
                 needle.post(encodeURI(url), pp, { json: true }, function (err, resp) {
                     // you can pass params as a string or as an object.
                     if (err) {
                         //cb(err, { status: 0, "result": "" });
                         EWTRACE(err.message);
-                        cb(err, { status: 1, "result": "" });
+                        cb(err, { status: 0, "result": "" });
                     }
                     else {
+                        EWTRACE(resp.body.url);
                         cb(null, { status: 1, "result": resp.body.url });
                     }
                 });
             }
         });
-
+        EWTRACE("CreatWechatQRCode");
 
 
     }
@@ -426,6 +428,26 @@ module.exports = function (Baseservice) {
             { arg: 'timestamp', type: 'string', description: 'dasdad' },
             { arg: 'nonce', type: 'string', description: 'dasdad' }
             ],
+            returns: [{ arg: 'echostr', type: 'string', root: true },
+            { arg: 'Content-Type', type: 'string', http: { target: 'header' } }]
+        }
+    );
+
+
+    Baseservice.demo = function (cb) {
+        var smspv = SendSMS('13958000180', '8888');
+        smspv.then(function () {
+            cb(null, { status: 0, "result": "" });
+        },function(err){
+            cb(err, { status: 0, "result": "" });
+        });
+    };
+
+    Baseservice.remoteMethod(
+        'demo',
+        {
+            http: { verb: 'get' },
+            description: '微信服务器验证',
             returns: [{ arg: 'echostr', type: 'string', root: true },
             { arg: 'Content-Type', type: 'string', http: { target: 'header' } }]
         }
