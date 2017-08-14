@@ -378,6 +378,7 @@ module.exports = function (Baseservice) {
                         cb(err, { status: 0, "result": "" });
                     }
                     else {
+                        EWTRACE(resp.body.url);
                         cb(null, { status: 1, "result": resp.body.url });
                     }
                 });
