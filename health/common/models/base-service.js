@@ -368,7 +368,7 @@ module.exports = function (Baseservice) {
                 cb(err, { status: 1, "result": "" });
             }
             else {
-                var pp = { "expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": { "scene": { "scene_id": p } } };
+                var pp = { "expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": { "scene": { "scene_str": p } } };
                 var url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + resp.body.access_token;
                 needle.post(encodeURI(url), pp, { json: true }, function (err, resp) {
                     // you can pass params as a string or as an object.
