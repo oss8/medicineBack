@@ -18,7 +18,11 @@ coverage
 node_modules
 npm-debug.log
 <<<<<<< HEAD
+<<<<<<< HEAD
 logs/log4js.log.*
 =======
 ／logs/log4js.log.*
 >>>>>>> ac539a022c1b611146e34def0c52c842fcbf7ef2
+=======
+logs/log4js.log.*
+>>>>>>> 1aa7d59f35f22791d61ad80681948c0cf5a97ea1
