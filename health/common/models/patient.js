@@ -69,7 +69,7 @@ module.exports = function (Patient) {
 
             DoSQL(bsSQL).then(function () {
 
-                var urlInfo = {"method":"updateUser"};
+                var urlInfo = {"method":"updateUser.open"};
                 CreateURL(urlInfo);
 
                 needle.post(encodeURI(urlInfo.url),q, urlInfo.options, function (err, resp) {
@@ -100,7 +100,7 @@ module.exports = function (Patient) {
         {
             http: { verb: 'post' },
             description: '微信事件通知',
-            accepts: [{ arg: 'q', type: 'object', description: '{"sex":"1","age":"12","height":"120","weight":"25","mobile":"12345678"}' }
+            accepts: [{ arg: 'q', type: 'object', http: { source: 'body' }, description: '{"sex":"1","age":"12","height":"120","weight":"25","mobile":"12345678"}' }
                 // , {
                 //     arg: 'token', type: 'string',
                 //     http: function (ctx) {
@@ -283,8 +283,8 @@ module.exports = function (Patient) {
                         AddWatch.weight = 1;
 
                         var urlInfo = {"method":"registerUser.open"};
-                        CreateURL(urlInfo, false)
-                        //CreateURL(urlInfo)
+                        //CreateURL(urlInfo, false)
+                        CreateURL(urlInfo)
 
                         needle.post(encodeURI(urlInfo.url), AddWatch, urlInfo.options, function (err, resp) {
                             // you can pass params as a string or as an object.
@@ -305,10 +305,10 @@ module.exports = function (Patient) {
                                 var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
                                 DoSQL(bsSQL).then(function (userResult) {
                                     if (userResult.length == 0) {
-                                        bsSQL = "update hh_pubcliUser set watchuserid = '' where watchuserid = '" + watch_iccid + "';"
+                                        bsSQL = "update hh_pubcliUser set watchuserid = '' where iccid = '" + watch_iccid + "';"
                                         bsSQL += "INSERT INTO hh_publicUser (id, openid, iccid, watchuserid) VALUES (uuid(),'" + openid + "','" + watch_iccid + "','" + resp.body.data.userId + "');";
                                     } else {
-                                        bsSQL = "update hh_pubcliUser set watchuserid = '' where watchuserid = '" + watch_iccid + "';"
+                                        bsSQL = "update hh_pubcliUser set watchuserid = '' where iccid = '" + watch_iccid + "';"
                                         bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = '" + resp.body.data.userId + "' where openid ='" + openid + "'";
                                     }
 
@@ -339,16 +339,39 @@ module.exports = function (Patient) {
         var rnd = req.query.rnd;
         var body = req.body;
 
+        EWTRACE("appId:"+appId);
+        EWTRACE("appSecret:"+appSecret);
+        EWTRACE("sign:"+sign);
+        EWTRACE("rnd:"+rnd);
+        EWTRACEIFY(body);
+
         var localSign = CreateMD5(rnd);
         
         if ( localSign.toUpperCase() == sign.toUpperCase() ){
 
-            
+            var bsSQL = "select openid from hh_publicuser where iccid = '" +body.iccid+ "'";
+            DoSQL(bsSQL).then(function(UserInfo){
 
-            cb(null, { status: 0, "result": "" });
+                if ( UserInfo.length == 0 ){
+                    cb(null, { status: 1, "result": "" }); 
+                    return;
+                }
+
+                bsSQL = "insert into hh_userwatchdata(iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,addtime) values('"+body.iccid+"','"+UserInfo[0].openid+"','"+body.sn+"',"+body.highPress+","+body.lowPress+","+body.hrCount+","+body.anb+","+body.pwv+","+body.absoluteRisk+","+body.relativeRisk+",'"+body.testTime+"',unix_timestamp(now()));";
+
+                DoSQL(bsSQL).then(function(){
+                    cb(null, { code: 0, "message": "operate success" });
+                },function(err){
+                    cb(null, { code: -1, "message": err.message }); 
+                })
+
+                
+            },function(err){
+                cb(err, { code: -1, "message": err.message }); 
+            })
         }
         else{
-            cb(null, { status: 1, "result": "" });
+            cb(null, { code: 1001, "message": "数字签名错误，appId未授权" }); 
         }
     }
         
