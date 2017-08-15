@@ -36,14 +36,14 @@ module.exports = function (common) {
                     reject(err);
                 } else {
                     var _result = DelOKPacket(result);
-                    if ( _.isEmpty(_result) || _result.length == 0 ){
+                    if (_.isEmpty(_result) || _result.length == 0) {
                         _result = [];
                         resolve(_result);
                     }
-                    else{
+                    else {
                         resolve(_result);
                     }
-                    
+
                 }
             });
         }
@@ -456,6 +456,35 @@ module.exports = function (common) {
                     return alias.address;
                 }
             }
+        }
+    }
+
+    CreateMD5 = function(now){
+        require('dotenv').config({ path: './config/.env' });
+        var tmpCode = process.env.APP_ID + process.env.APP_SECRET + now;
+
+        var crypto = require('crypto');
+        var sign = crypto.createHash('md5').update(tmpCode, 'utf8').digest('hex');      return sign;
+    }
+
+    CreateURL = function (URLInfo, noAuth) {
+        var now = (new Date()).getTime();
+        var sign = CreateMD5(now);
+
+        URLInfo.url = process.env.REQUEST_WATCH_URL + URLInfo.method;
+        if ( _.isUndefined(noAuth)){
+
+            URLInfo.url += "?rnd=" + now.toString();
+            URLInfo.options = {
+                headers: {
+                    'appId': process.env.APP_ID,
+                    'appSecret': process.env.APP_SECRET,
+                    'sign': sign.toUpperCase()
+                }
+            }            
+        }
+        else{
+            URLInfo.options = { json: true };
         }
     }
 };    
