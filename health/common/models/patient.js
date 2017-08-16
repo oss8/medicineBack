@@ -7,6 +7,8 @@ module.exports = function (Patient) {
     var uuid = require('node-uuid');
     var needle = require('needle');
 
+    var schedule = require("node-schedule");   //定时任务  
+    var rule = new schedule.RecurrenceRule();
 
     Patient.modifyUserInfo = function (q, token, cb) {
         EWTRACE("modifyUserInfo Begin");
@@ -377,15 +379,17 @@ module.exports = function (Patient) {
         }
     );
 
-    Patient.getEveryDayData = function ( cb) {
+    var pageSize = 10;
+
+    function getEveryDayData(getDay) {
         EWTRACE("getEveryDayData Begin");
 
-        var bsSQL = "select count(*) as counts from hh_publicuser where watchuserid is not null";
+        var bsSQL = "select count(*) as counts from hh_publicuser where watchuserid is not null and watchuserid not in (select userid from hh_usersportdata where addtime = '"+getDay+"')";
         DoSQL(bsSQL).then(function (result) {
-            var count = Math.ceil(result[0].counts / 10);
+            var count = Math.ceil(result[0].counts / pageSize);
 
             for (var _dolimit = 0; _dolimit < count; _dolimit++) {
-                _getLimitUserData(_dolimit).then(function(result){
+                _getLimitUserData(_dolimit, getDay).then(function(result){
 
                 },function(err){
                     EWTRACE('数据获取失败')
@@ -401,10 +405,10 @@ module.exports = function (Patient) {
 
     }
 
-    function _getLimitUserData(pageIndex) {
+    function _getLimitUserData(pageIndex, getDay) {
         return new Promise(function (resolve, reject) {
 
-            var bsSQL = "select watchuserid,openid,DATE_FORMAT(now(),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null limit " + (pageIndex * 10) + ",10";
+            var bsSQL = "select watchuserid,openid,DATE_FORMAT(now(),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null and watchuserid not in (select userid from hh_usersportdata where addtime = '"+getDay+"') limit " + (pageIndex * pageSize) + ","+ pageSize;
             DoSQL(bsSQL).then(function (result) {
                 if ( result.length == 0 ){
                     resolve(0);
@@ -427,7 +431,12 @@ module.exports = function (Patient) {
                             return fitem.watchuserid == item.userId;
                         });
 
-                        bsSQL += "insert into hh_usersportdata(userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadom,sober,addtime) values("+item.userId+",'"+openId.openid+"','"+item.belongDate+"',"+item.sport.walkNum+","+item.sport.runNum+","+item.sport.mileage+","+item.sport.caloric+","+item.sleep.deepSleep+","+item.sleep.lightSleep+","+item.sleep.noAdorn+","+item.sleep.sober+");";
+                        var _openid = '';
+                        if ( !_.isUndefined(openId)){
+                            _openid = openId.openid;
+                        }
+
+                        bsSQL += "insert into hh_usersportdata(userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadom,sober,addtime) values("+item.userId+",'"+_openid+"','"+item.belongDate+"',"+item.sport.walkNum+","+item.sport.runNum+","+item.sport.mileage+","+item.sport.caloric+","+item.sleep.deepSleep+","+item.sleep.lightSleep+","+item.sleep.noAdorn+","+item.sleep.sober+",'"+getDay+"');";
                     })
                     DoSQL(bsSQL).then(function(){
                         resolve(0);
@@ -442,15 +451,51 @@ module.exports = function (Patient) {
         });
     }
 
-    Patient.remoteMethod(
-        'getEveryDayData',
-        {
-            http: { verb: 'post' },
-            description: '微信事件通知',
 
-            returns: { arg: 'UserInfo', type: 'object', root: true }
-        }
-    );
+    function initTimer() {
+        EWTRACE("init timer");
+        rule.second = 1;
+        var job = schedule.scheduleJob(rule, function () {
+            var currentTime = new Date();
+            //require('dotenv').config({ path: './config/.env' });
+            var _curTime = currentTime.toTimeString().substr(0, 2);
+            
+
+
+            if (_curTime == '02' || _curTime == '03') {   
+                var _curMinute = currentTime.toTimeString().substr(3, 2);
+
+                if ( _curMinute == '30'){
+                    var now = new Date().format('yyyy-MM-dd');
+                    var getDay = GetDateAdd(now , -1 , 'day').format('yyyy-MM-dd');                    
+                    getEveryDayData(getDay);
+                }
+            }
+
+            if (_curTime == '04') {   
+                var _curMinute = currentTime.toTimeString().substr(3, 2);
+
+                if ( _curMinute == '30'){
+                    
+                    var bsSQL = "insert into hh_usersportdata_history select * from hh_usersportdata where addtime > DATE_ADD(now(),interval -7 day);delete from hh_usersportdata where addtime > DATE_ADD(now(),interval -7 day)";
+                    DoSQL(bsSQL).then(function(){
+
+                        bsSQL = "insert into hh_userwatchdata_history select * from hh_userwatchdata where addtime > DATE_ADD(now(),interval -7 day);delete from hh_userwatchdata where addtime > DATE_ADD(now(),interval -7 day)";
+                        DoSQL(bsSQL).then(function(){
+    
+                            
+                        },function(err){
+                            EWTRACE("err:" + err.message);
+                        })
+                    },function(err){
+                        EWTRACE("err:" + err.message);
+                    })
+                }
+            }            
+        });
+        //return job;
+    };  
+    initTimer();  
 };
 
 

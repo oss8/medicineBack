@@ -21,6 +21,7 @@
     "loopback-connector-mysql": "^4.0.0",
     "loopback-connector-rest": "^2.1.0",
     "needle": "^1.6.0",
+    "node-schedule": "^1.2.4",
     "node-uuid": "^1.4.8",
     "serve-favicon": "^2.0.1",
     "sha1": "^1.1.1",
