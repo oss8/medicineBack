@@ -338,7 +338,7 @@ module.exports = function (Patient) {
             DoSQL(bsSQL).then(function (UserInfo) {
 
                 if (UserInfo.length == 0) {
-                    cb(null, { status: 1, "result": "" });
+                    cb(null, { code: 1, "message": "iccid未找到" });
                     return;
                 }
 
@@ -412,7 +412,6 @@ module.exports = function (Patient) {
                 }
 
                 var urlInfo = { "method": "getEveryDayData.open" };
-                //CreateURL(urlInfo, false)
                 CreateURL(urlInfo)
 
                 needle.post(encodeURI(urlInfo.url), result, urlInfo.options, function (err, resp) {
