@@ -462,9 +462,12 @@ module.exports = function (common) {
     CreateMD5 = function(now){
         require('dotenv').config({ path: './config/.env' });
         var tmpCode = process.env.APP_ID + process.env.APP_SECRET + now;
+        EWTRACE("MD5 Express: "+tmpCode);
 
         var crypto = require('crypto');
-        var sign = crypto.createHash('md5').update(tmpCode, 'utf8').digest('hex');      return sign;
+        var sign = crypto.createHash('md5').update(tmpCode, 'utf8').digest('hex');   
+        EWTRACE("MD5 Cry: "+sign);
+        return sign;
     }
 
     CreateURL = function (URLInfo, noAuth) {
@@ -479,8 +482,9 @@ module.exports = function (common) {
                 headers: {
                     'appId': process.env.APP_ID,
                     'appSecret': process.env.APP_SECRET,
-                    'sign': sign.toUpperCase()
-                }
+                    'sign': sign
+                },
+                json:true
             }            
         }
         else{

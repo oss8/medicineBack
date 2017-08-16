@@ -13,36 +13,20 @@ module.exports = function (Patient) {
 
         var _openid = null;
         var OpenID = {};
-        // try {
-        //     OpenID = GetOpenIDFromToken(token);
-        //     _openid = OpenID.openId;
-        // } catch (err) {
-        //     cb(null, { status: 403, "result": "" });
-        //     return;
-        // }
-
-        OpenID = {
-            openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
-            nickname: '葛岭',
-            sex: 1,
-            language: 'zh_CN',
-            city: 'hangzhou',
-            province: 'Zhejiang',
-            country: 'China',
-            headimgurl: 'http://wx.qlogo.cn/mmopen/gjm1lrtibYr8Md4ZrTiaib9iaLWsDQyXe8R3bd5WtFvX7v6ibFL4Ky8MJCuOQ7LeObTxL42HPpL1L5ia3wLib9EmMrYBwxbCGibiat7Qn/0',
-            privilege: [],
-            iat: 1502711740,
-            exp: 1502712040
-        };
-        _openid = OpenID.openid;
-
+        try {
+            OpenID = GetOpenIDFromToken(token);
+            _openid = OpenID.openId;
+        } catch (err) {
+            cb(null, { status: 403, "result": "" });
+            return;
+        }
 
         var bsSQL = "select watchuserid from hh_publicuser where openid = '" + _openid + "'";
         DoSQL(bsSQL).then(function (result) {
             if (result.length == 0) {
                 cb(new Error('未找到用户'), { status: 1, "result": "" });
             }
-            q.userId = result[0].watchuserid;
+            q.userId = parseInt(result[0].watchuserid);
             q.nickName = OpenID.nickname;
 
             bsSQL = "update hh_publicuser set ";
@@ -56,35 +40,37 @@ module.exports = function (Patient) {
                 bsSQL += "height = " + q.height + ",";
             }
             if (!_.isUndefined(q.weight)) {
-                bsSQL += "height = " + q.weight + ",";
+                bsSQL += "weight = " + q.weight + ",";
             }
 
-            if (bsSQL.length > 28) {
-                bsSQL = bsSQL.substr(0, bsSQL.length - 1);
-                bsSQL += " where openid = '" + _openid + "'";
-            } else {
-                cb(null, { status: 1, "result": "" });
-                return;
-            }
+            bsSQL += " name = '" + OpenID.nickname + "' ";
+            bsSQL += " where openid = '" + _openid + "'";
+
 
             DoSQL(bsSQL).then(function () {
 
-                var urlInfo = {"method":"updateUser.open"};
-                CreateURL(urlInfo);
+                if (_.isNull(result[0].watchuserid)) {
+                    cb(null, { status: 1, "result": "" });
+                }
+                else {
+                    var urlInfo = { "method": "updateUser.open" };
+                    CreateURL(urlInfo);
+                    EWTRACEIFY(q);
 
-                needle.post(encodeURI(urlInfo.url),q, urlInfo.options, function (err, resp) {
-                    if (err || resp.body.code != 0) {
-                        cb(err, { status: 1, "result": "" });
-                    }
-                    else {
-                        if (resp.body.code != 0) {
-                            cb(new Error(resp.body.message), { status: 1, "result": "" });
-                            return;
+                    needle.post(encodeURI(urlInfo.url), q, urlInfo.options, function (err, resp) {
+                        if (err) {
+                            cb(err, { status: 1, "result": "" });
                         }
-                        cb(null, { status: 1, "result": "" });
-                    }
-                });
-
+                        else {
+                            EWTRACEIFY(resp.body);
+                            if (resp.body.code != 0) {
+                                cb(new Error(resp.body.message), { status: 1, "result": "" });
+                                return;
+                            }
+                            cb(null, { status: 1, "result": "" });
+                        }
+                    });
+                }
             }, function (err) {
                 cb(err, { status: 1, "result": "" });
             })
@@ -100,15 +86,15 @@ module.exports = function (Patient) {
         {
             http: { verb: 'post' },
             description: '微信事件通知',
-            accepts: [{ arg: 'q', type: 'object', http: { source: 'body' }, description: '{"sex":"1","age":"12","height":"120","weight":"25","mobile":"12345678"}' }
-                // , {
-                //     arg: 'token', type: 'string',
-                //     http: function (ctx) {
-                //         var req = ctx.req;
-                //         return req.headers.token;
-                //     },
-                //     description: '{"token":""}'
-                // }
+            accepts: [{ arg: 'q', type: 'object', http: { source: 'body' }, description: '{"sex":1,"age":12,"height":120,"weight":25,"mobile":"12345678"}' }
+                , {
+                    arg: 'token', type: 'string',
+                    http: function (ctx) {
+                        var req = ctx.req;
+                        return req.headers.token;
+                    },
+                    description: '{"token":""}'
+                }
             ],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
@@ -282,13 +268,13 @@ module.exports = function (Patient) {
                         AddWatch.height = 1;
                         AddWatch.weight = 1;
 
-                        var urlInfo = {"method":"registerUser.open"};
+                        var urlInfo = { "method": "registerUser.open" };
                         //CreateURL(urlInfo, false)
                         CreateURL(urlInfo)
 
                         needle.post(encodeURI(urlInfo.url), AddWatch, urlInfo.options, function (err, resp) {
                             // you can pass params as a string or as an object.
-                            
+
                             if (err || resp.body.code != 0) {
                                 //cb(err, { status: 0, "result": "" });
                                 EWTRACEIFY(resp.body);
@@ -305,10 +291,10 @@ module.exports = function (Patient) {
                                 var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
                                 DoSQL(bsSQL).then(function (userResult) {
                                     if (userResult.length == 0) {
-                                        bsSQL = "update hh_pubcliUser set watchuserid = '' where iccid = '" + watch_iccid + "';"
+                                        bsSQL = "update hh_pubcliUser set watchuserid = null where iccid = '" + watch_iccid + "';"
                                         bsSQL += "INSERT INTO hh_publicUser (id, openid, iccid, watchuserid) VALUES (uuid(),'" + openid + "','" + watch_iccid + "','" + resp.body.data.userId + "');";
                                     } else {
-                                        bsSQL = "update hh_pubcliUser set watchuserid = '' where iccid = '" + watch_iccid + "';"
+                                        bsSQL = "update hh_pubcliUser set watchuserid = null where iccid = '" + watch_iccid + "';"
                                         bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = '" + resp.body.data.userId + "' where openid ='" + openid + "'";
                                     }
 
@@ -329,7 +315,6 @@ module.exports = function (Patient) {
         });
     }
 
-
     Patient.uploadPressureData = function (req, cb) {
         EWTRACE("uploadPressureData Begin");
 
@@ -339,48 +324,48 @@ module.exports = function (Patient) {
         var rnd = req.query.rnd;
         var body = req.body;
 
-        EWTRACE("appId:"+appId);
-        EWTRACE("appSecret:"+appSecret);
-        EWTRACE("sign:"+sign);
-        EWTRACE("rnd:"+rnd);
+        EWTRACE("appId:" + appId);
+        EWTRACE("appSecret:" + appSecret);
+        EWTRACE("sign:" + sign);
+        EWTRACE("rnd:" + rnd);
         EWTRACEIFY(body);
 
         var localSign = CreateMD5(rnd);
-        
-        if ( localSign.toUpperCase() == sign.toUpperCase() ){
 
-            var bsSQL = "select openid from hh_publicuser where iccid = '" +body.iccid+ "'";
-            DoSQL(bsSQL).then(function(UserInfo){
+        if (localSign.toUpperCase() == sign.toUpperCase()) {
 
-                if ( UserInfo.length == 0 ){
-                    cb(null, { status: 1, "result": "" }); 
+            var bsSQL = "select openid from hh_publicuser where iccid = '" + body.iccid + "'";
+            DoSQL(bsSQL).then(function (UserInfo) {
+
+                if (UserInfo.length == 0) {
+                    cb(null, { status: 1, "result": "" });
                     return;
                 }
 
-                bsSQL = "insert into hh_userwatchdata(iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,addtime) values('"+body.iccid+"','"+UserInfo[0].openid+"','"+body.sn+"',"+body.highPress+","+body.lowPress+","+body.hrCount+","+body.anb+","+body.pwv+","+body.absoluteRisk+","+body.relativeRisk+",'"+body.testTime+"',unix_timestamp(now()));";
+                bsSQL = "insert into hh_userwatchdata(iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,addtime,trackid) values('" + body.iccid + "','" + UserInfo[0].openid + "','" + body.sn + "'," + body.highPress + "," + body.lowPress + "," + body.hrCount + "," + body.anb + "," + body.pwv + "," + body.absoluteRisk + "," + body.relativeRisk + ",'" + body.testTime + "',unix_timestamp(now())," + body.trackId + ");";
 
-                DoSQL(bsSQL).then(function(){
+                DoSQL(bsSQL).then(function () {
                     cb(null, { code: 0, "message": "operate success" });
-                },function(err){
-                    cb(null, { code: -1, "message": err.message }); 
+                }, function (err) {
+                    cb(null, { code: -1, "message": err.message });
                 })
 
-                
-            },function(err){
-                cb(err, { code: -1, "message": err.message }); 
+
+            }, function (err) {
+                cb(err, { code: -1, "message": err.message });
             })
         }
-        else{
-            cb(null, { code: 1001, "message": "数字签名错误，appId未授权" }); 
+        else {
+            cb(null, { code: 1001, "message": "数字签名错误，appId未授权" });
         }
     }
-        
+
 
     Patient.remoteMethod(
         'uploadPressureData',
         {
             http: { verb: 'post' },
-            description: '微信事件通知',
+            description: '单次测量血压结果上传',
             accepts: {
                 arg: 'req', type: 'object',
                 http: function (ctx) {
@@ -390,7 +375,83 @@ module.exports = function (Patient) {
             },
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
-    );    
+    );
+
+    Patient.getEveryDayData = function ( cb) {
+        EWTRACE("getEveryDayData Begin");
+
+        var bsSQL = "select count(*) as counts from hh_publicuser where watchuserid is not null";
+        DoSQL(bsSQL).then(function (result) {
+            var count = Math.ceil(result[0].counts / 10);
+
+            for (var _dolimit = 0; _dolimit < count; _dolimit++) {
+                _getLimitUserData(_dolimit).then(function(result){
+
+                },function(err){
+                    EWTRACE('数据获取失败')
+                    err.forEach(function(item){
+                        EWTRACE(item.watchuserid)
+                    })
+                })
+            }
+            cb(null, { code: 0, "message": "" });
+        }, function (err) {
+            cb(null, { code: -1, "message": err.message });
+        });
+
+    }
+
+    function _getLimitUserData(pageIndex) {
+        return new Promise(function (resolve, reject) {
+
+            var bsSQL = "select watchuserid,openid,DATE_FORMAT(now(),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null limit " + (pageIndex * 10 + 1) + ",10";
+            DoSQL(bsSQL).then(function (result) {
+                if ( result.length == 0 ){
+                    resolve(0);
+                    return ;
+                }
+
+                var urlInfo = { "method": "getEveryDayData.open" };
+                //CreateURL(urlInfo, false)
+                CreateURL(urlInfo)
+
+                needle.post(encodeURI(urlInfo.url), result, urlInfo.options, function (err, resp) {
+                    if ( err || resp.body.code != 0){
+                        reject(err);
+                        return;
+                    }
+
+                    bsSQL = "";
+                    resp.body.data.forEach(function(item){
+
+                        var openId = _.find(result, function(fitem){
+                            return fitem.watchuserid == item.userId;
+                        });
+
+                        bsSQL += "insert into hh_usersportdata(userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadom,sober,addtime) values("+item.userId+",'"+openId.openid+"','"+item.belongDate+"',"+item.sport.walkNum+","+item.sport.runNum+","+item.sport.mileage+","+item.sport.caloric+","+item.sleep.deepSleep+","+item.sleep.lightSleep+","+item.sleep.noAdorn+","+item.sleep.sober+");";
+                    })
+                    DoSQL(bsSQL).then(function(){
+                        resolve(0);
+                    },function(err){
+                        reject(result);
+                    })                    
+                });                
+
+            },function(err){
+                reject(err);
+            });
+        });
+    }
+
+    Patient.remoteMethod(
+        'getEveryDayData',
+        {
+            http: { verb: 'post' },
+            description: '微信事件通知',
+
+            returns: { arg: 'UserInfo', type: 'object', root: true }
+        }
+    );
 };
 
 
