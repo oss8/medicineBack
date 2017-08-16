@@ -475,6 +475,7 @@ module.exports = function (common) {
         var sign = CreateMD5(now);
 
         URLInfo.url = process.env.REQUEST_WATCH_URL + URLInfo.method;
+        URLInfo.options = { json: true };
         if ( _.isUndefined(noAuth)){
 
             URLInfo.url += "?rnd=" + now.toString();
@@ -484,11 +485,11 @@ module.exports = function (common) {
                     'appSecret': process.env.APP_SECRET,
                     'sign': sign
                 },
-                json:true
+                json : true
             }            
         }
         else{
-            URLInfo.options = { json: true };
+            
         }
     }
 };    
