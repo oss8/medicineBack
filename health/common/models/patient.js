@@ -407,7 +407,7 @@ module.exports = function (Patient) {
 
     function _getLimitUserData(pageIndex, getDay) {
         return new Promise(function (resolve, reject) {
-
+ 
             var bsSQL = "select watchuserid,openid,DATE_FORMAT(now(),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null and watchuserid not in (select userid from hh_usersportdata where addtime = '"+getDay+"') limit " + (pageIndex * pageSize) + ","+ pageSize;
             DoSQL(bsSQL).then(function (result) {
                 if ( result.length == 0 ){
