@@ -8,7 +8,7 @@ module.exports = function (Patient) {
     var needle = require('needle');
 
 
-    Patient.modifyUserInfo = function (q, cb) {
+    Patient.modifyUserInfo = function (q, token, cb) {
         EWTRACE("modifyUserInfo Begin");
 
         var _openid = null;
@@ -76,7 +76,7 @@ module.exports = function (Patient) {
             })
 
         }, function (err) {
-
+            cb(err, { status: 1, "result": "" });
         });
 
     }
@@ -85,7 +85,7 @@ module.exports = function (Patient) {
         'modifyUserInfo',
         {
             http: { verb: 'post' },
-            description: '微信事件通知',
+            description: '编辑用户信息',
             accepts: [{ arg: 'q', type: 'object', http: { source: 'body' }, description: '{"sex":1,"age":12,"height":120,"weight":25,"mobile":"12345678"}' }
                 , {
                     arg: 'token', type: 'string',
@@ -338,7 +338,7 @@ module.exports = function (Patient) {
             DoSQL(bsSQL).then(function (UserInfo) {
 
                 if (UserInfo.length == 0) {
-                    cb(null, { status: 1, "result": "" });
+                    cb(null, { code: 1, "message": "iccid未找到" });
                     return;
                 }
 
@@ -404,7 +404,7 @@ module.exports = function (Patient) {
     function _getLimitUserData(pageIndex) {
         return new Promise(function (resolve, reject) {
 
-            var bsSQL = "select watchuserid,openid,DATE_FORMAT(now(),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null limit " + (pageIndex * 10 + 1) + ",10";
+            var bsSQL = "select watchuserid,openid,DATE_FORMAT(now(),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null limit " + (pageIndex * 10) + ",10";
             DoSQL(bsSQL).then(function (result) {
                 if ( result.length == 0 ){
                     resolve(0);
@@ -412,7 +412,6 @@ module.exports = function (Patient) {
                 }
 
                 var urlInfo = { "method": "getEveryDayData.open" };
-                //CreateURL(urlInfo, false)
                 CreateURL(urlInfo)
 
                 needle.post(encodeURI(urlInfo.url), result, urlInfo.options, function (err, resp) {

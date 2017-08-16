@@ -24,7 +24,8 @@ module.exports = function (common) {
     };
 
     DoSQL = function (SQL, Connect) {
-        __DoSQL = function (SQL, resolve, reject, Connect) {
+
+        return new Promise(function (resolve, reject) {
             EWTRACE(SQL);
 
             var dataSource = Connect;
@@ -46,31 +47,21 @@ module.exports = function (common) {
 
                 }
             });
-        }
-
-        return new Promise(function (resolve, reject) {
-            __DoSQL(SQL, resolve, reject, Connect);
         });
-    }
-
-
-
-    _ExecuteSQL = function (SQL, tx, Connect, resultFun) {
-        try {
-            EWTRACE(SQL);
-            var dataSource = Connect;
-            if (dataSource == undefined)
-                dataSource = common.app.datasources.main_DBConnect;
-
-            dataSource.connector.executeSQL(SQL, {}, { transaction: tx }, resultFun);
-        } catch (ex) {
-            throw ex;
-        }
     }
 
     ExecuteSyncSQLResult = function (bsSQL, ResultObj, tx, Connect) {
         return new Promise(function (resolve, reject) {
-            ExecuteSQLResult(bsSQL, ResultObj, tx, resolve, reject, Connect)
+            try {
+                EWTRACE(SQL);
+                var dataSource = Connect;
+                if (dataSource == undefined)
+                    dataSource = common.app.datasources.main_DBConnect;
+    
+                dataSource.connector.executeSQL(SQL, {}, { transaction: tx }, resultFun);
+            } catch (ex) {
+                reject(ex);
+            }
         });
     }
 
@@ -221,23 +212,6 @@ module.exports = function (common) {
         return new Promise(_SendSMS);
     }
 
-    DelOKPacket = function (result) {
-        if (result && _.isArray(result)) {
-            var mr = _.find(result, function (item) {
-                return item.fieldCount != undefined;
-            });
-            if (mr) {
-                var r = _.find(result, function (item) {
-                    return item.fieldCount == undefined;
-                });
-                if (r) {
-                    result = r;
-                }
-            }
-        }
-        return result;
-    };
-
     function getYearWeek(date) {
         var date2 = new Date(date.getFullYear(), 0, 1);
         var day1 = date.getDay();
@@ -269,8 +243,6 @@ module.exports = function (common) {
         }
         return DayList;
     }
-
-
 
 
     getJWT = function (userId) {
@@ -459,14 +431,14 @@ module.exports = function (common) {
         }
     }
 
-    CreateMD5 = function(now){
+    CreateMD5 = function (now) {
         require('dotenv').config({ path: './config/.env' });
         var tmpCode = process.env.APP_ID + process.env.APP_SECRET + now;
-        EWTRACE("MD5 Express: "+tmpCode);
+        EWTRACE("MD5 Express: " + tmpCode);
 
         var crypto = require('crypto');
-        var sign = crypto.createHash('md5').update(tmpCode, 'utf8').digest('hex');   
-        EWTRACE("MD5 Cry: "+sign);
+        var sign = crypto.createHash('md5').update(tmpCode, 'utf8').digest('hex');
+        EWTRACE("MD5 Cry: " + sign);
         return sign;
     }
 
@@ -475,7 +447,8 @@ module.exports = function (common) {
         var sign = CreateMD5(now);
 
         URLInfo.url = process.env.REQUEST_WATCH_URL + URLInfo.method;
-        if ( _.isUndefined(noAuth)){
+        URLInfo.options = { json: true };
+        if (_.isUndefined(noAuth)) {
 
             URLInfo.url += "?rnd=" + now.toString();
             URLInfo.options = {
@@ -484,11 +457,11 @@ module.exports = function (common) {
                     'appSecret': process.env.APP_SECRET,
                     'sign': sign
                 },
-                json:true
-            }            
+                json: true
+            }
         }
-        else{
-            URLInfo.options = { json: true };
+        else {
+
         }
     }
 };    
