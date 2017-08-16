@@ -53,12 +53,20 @@ module.exports = function (common) {
     ExecuteSyncSQLResult = function (bsSQL, ResultObj, tx, Connect) {
         return new Promise(function (resolve, reject) {
             try {
-                EWTRACE(SQL);
+                EWTRACE(bsSQL);
                 var dataSource = Connect;
                 if (dataSource == undefined)
                     dataSource = common.app.datasources.main_DBConnect;
     
-                dataSource.connector.executeSQL(SQL, {}, { transaction: tx }, resultFun);
+                dataSource.connector.executeSQL(bsSQL, {}, { transaction: tx }, function (err, result) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        if (ResultObj)
+                            ResultObj.Result = result;
+                        resolve(result);
+                    }
+                });
             } catch (ex) {
                 reject(ex);
             }

@@ -90,13 +90,13 @@ module.exports = function (Patient) {
             description: '编辑用户信息',
             accepts: [{ arg: 'q', type: 'object', http: { source: 'body' }, description: '{"sex":1,"age":12,"height":120,"weight":25,"mobile":"12345678"}' }
                 , {
-                    arg: 'token', type: 'string',
-                    http: function (ctx) {
-                        var req = ctx.req;
-                        return req.headers.token;
-                    },
-                    description: '{"token":""}'
-                }
+                arg: 'token', type: 'string',
+                http: function (ctx) {
+                    var req = ctx.req;
+                    return req.headers.token;
+                },
+                description: '{"token":""}'
+            }
             ],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
@@ -344,7 +344,7 @@ module.exports = function (Patient) {
                     return;
                 }
 
-                bsSQL = "insert into hh_userwatchdata(iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,addtime,trackid) values('" + body.iccid + "','" + UserInfo[0].openid + "','" + body.sn + "'," + body.highPress + "," + body.lowPress + "," + body.hrCount + "," + body.anb + "," + body.pwv + "," + body.absoluteRisk + "," + body.relativeRisk + ",'" + body.testTime + "',unix_timestamp(now())," + body.trackId + ");";
+                bsSQL = "insert into hh_userwatchdata(iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,addtime,trackid,addtime2) values('" + body.iccid + "','" + UserInfo[0].openid + "','" + body.sn + "'," + body.highPress + "," + body.lowPress + "," + body.hrCount + "," + body.anb + "," + body.pwv + "," + body.absoluteRisk + "," + body.relativeRisk + ",'" + body.testTime + "',date_format(now(), '%Y-%m-%d')," + body.trackId + ",unix_timestamp());";
 
                 DoSQL(bsSQL).then(function () {
                     cb(null, { code: 0, "message": "operate success" });
@@ -384,16 +384,16 @@ module.exports = function (Patient) {
     function getEveryDayData(getDay) {
         EWTRACE("getEveryDayData Begin");
 
-        var bsSQL = "select count(*) as counts from hh_publicuser where watchuserid is not null and watchuserid not in (select userid from hh_usersportdata where addtime = '"+getDay+"')";
+        var bsSQL = "select count(*) as counts from hh_publicuser where watchuserid is not null and watchuserid not in (select userid from hh_usersportdata where addtime = '" + getDay + "')";
         DoSQL(bsSQL).then(function (result) {
             var count = Math.ceil(result[0].counts / pageSize);
 
             for (var _dolimit = 0; _dolimit < count; _dolimit++) {
-                _getLimitUserData(_dolimit, getDay).then(function(result){
+                _getLimitUserData(_dolimit, getDay).then(function (result) {
 
-                },function(err){
+                }, function (err) {
                     EWTRACE('数据获取失败')
-                    err.forEach(function(item){
+                    err.forEach(function (item) {
                         EWTRACE(item.watchuserid)
                     })
                 })
@@ -407,45 +407,45 @@ module.exports = function (Patient) {
 
     function _getLimitUserData(pageIndex, getDay) {
         return new Promise(function (resolve, reject) {
- 
-            var bsSQL = "select watchuserid,openid,DATE_FORMAT(now(),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null and watchuserid not in (select userid from hh_usersportdata where addtime = '"+getDay+"') limit " + (pageIndex * pageSize) + ","+ pageSize;
+
+            var bsSQL = "select watchuserid,openid,DATE_FORMAT(now(),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null and watchuserid not in (select userid from hh_usersportdata where addtime = '" + getDay + "') limit " + (pageIndex * pageSize) + "," + pageSize;
             DoSQL(bsSQL).then(function (result) {
-                if ( result.length == 0 ){
+                if (result.length == 0) {
                     resolve(0);
-                    return ;
+                    return;
                 }
 
                 var urlInfo = { "method": "getEveryDayData.open" };
                 CreateURL(urlInfo)
 
                 needle.post(encodeURI(urlInfo.url), result, urlInfo.options, function (err, resp) {
-                    if ( err || resp.body.code != 0){
+                    if (err || resp.body.code != 0) {
                         reject(err);
                         return;
                     }
 
                     bsSQL = "";
-                    resp.body.data.forEach(function(item){
+                    resp.body.data.forEach(function (item) {
 
-                        var openId = _.find(result, function(fitem){
+                        var openId = _.find(result, function (fitem) {
                             return fitem.watchuserid == item.userId;
                         });
 
                         var _openid = '';
-                        if ( !_.isUndefined(openId)){
+                        if (!_.isUndefined(openId)) {
                             _openid = openId.openid;
                         }
 
-                        bsSQL += "insert into hh_usersportdata(userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadom,sober,addtime) values("+item.userId+",'"+_openid+"','"+item.belongDate+"',"+item.sport.walkNum+","+item.sport.runNum+","+item.sport.mileage+","+item.sport.caloric+","+item.sleep.deepSleep+","+item.sleep.lightSleep+","+item.sleep.noAdorn+","+item.sleep.sober+",'"+getDay+"');";
+                        bsSQL += "insert into hh_usersportdata(userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,addtime) values(" + item.userId + ",'" + _openid + "','" + item.belongDate + "'," + item.sport.walkNum + "," + item.sport.runNum + "," + item.sport.mileage + "," + item.sport.caloric + "," + item.sleep.deepSleep + "," + item.sleep.lightSleep + "," + item.sleep.noAdorn + "," + item.sleep.sober + ",'" + getDay + "');";
                     })
-                    DoSQL(bsSQL).then(function(){
+                    DoSQL(bsSQL).then(function () {
                         resolve(0);
-                    },function(err){
+                    }, function (err) {
                         reject(result);
-                    })                    
-                });                
+                    })
+                });
 
-            },function(err){
+            }, function (err) {
                 reject(err);
             });
         });
@@ -459,43 +459,151 @@ module.exports = function (Patient) {
             var currentTime = new Date();
             //require('dotenv').config({ path: './config/.env' });
             var _curTime = currentTime.toTimeString().substr(0, 2);
-            
 
 
-            if (_curTime == '02' || _curTime == '03') {   
+
+            if (_curTime == '02' || _curTime == '03') {
                 var _curMinute = currentTime.toTimeString().substr(3, 2);
 
-                if ( _curMinute == '30'){
+                if (_curMinute == '30') {
                     var now = new Date().format('yyyy-MM-dd');
-                    var getDay = GetDateAdd(now , -1 , 'day').format('yyyy-MM-dd');                    
+                    var getDay = GetDateAdd(now, -1, 'day').format('yyyy-MM-dd');
                     getEveryDayData(getDay);
                 }
             }
 
-            if (_curTime == '04') {   
+            if (_curTime == '04') {
                 var _curMinute = currentTime.toTimeString().substr(3, 2);
 
-                if ( _curMinute == '30'){
-                    
+                if (_curMinute == '30') {
+
                     var bsSQL = "insert into hh_usersportdata_history select * from hh_usersportdata where addtime > DATE_ADD(now(),interval -7 day);delete from hh_usersportdata where addtime > DATE_ADD(now(),interval -7 day)";
-                    DoSQL(bsSQL).then(function(){
+                    DoSQL(bsSQL).then(function () {
 
                         bsSQL = "insert into hh_userwatchdata_history select * from hh_userwatchdata where addtime > DATE_ADD(now(),interval -7 day);delete from hh_userwatchdata where addtime > DATE_ADD(now(),interval -7 day)";
-                        DoSQL(bsSQL).then(function(){
-    
-                            
-                        },function(err){
+                        DoSQL(bsSQL).then(function () {
+
+
+                        }, function (err) {
                             EWTRACE("err:" + err.message);
                         })
-                    },function(err){
+                    }, function (err) {
                         EWTRACE("err:" + err.message);
                     })
                 }
-            }            
+            }
         });
         //return job;
-    };  
-    initTimer();  
+    };
+    initTimer();
+
+
+    Patient.RequestUserMonitor = function ( cb) {
+        EWTRACE("RequestUserMonitor Begin");
+
+        var _openid = null;
+        //var OpenID = {};
+        // try {
+        //     OpenID = GetOpenIDFromToken(token);
+        //     _openid = OpenID.openId;
+        // } catch (err) {
+        //     cb(null, { status: 403, "result": "" });
+        //     return;
+        // }
+
+        var OpenID = { openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
+        nickname: '葛岭ð¨ð³',
+        sex: 1,
+        language: 'zh_CN',
+        city: 'Hangzhou',
+        province: 'Zhejiang',
+        country: 'China',
+        headimgurl: 'http://wx.qlogo.cn/mmopen/OM4v0FU2h0tkhqo0vNibzbUIYwEBaW9PBGNliarnaPtRRib8hB9JFzicbGibl7XPDicWII1ibUKmjLrV23zvZ8ia0vRVTlJSVL48qCoF/0',
+        privilege: [],
+        iat: 1502890900,
+        exp: 1502891200 }
+        _openid = OpenID.openid;
+
+        var ps = [];
+        var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,date_format(addtime, '%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where openid = '" + _openid + "' order by addtime desc";
+        var _watchdata = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _watchdata));
+
+        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,date_format(addtime, '%Y-%m-%d') as addtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
+        var _sportdata = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _sportdata));
+
+        Promise.all(ps).then(function () {
+
+            var _result = {};
+            _result.watchDetail = _.sortBy(_watchdata.Result, function (fitem) {
+                return -1 * fitem.addtime;
+            });;
+            _result.sportDetail = _.sortBy(_sportdata.Result, function (fitem) {
+                return -1 * fitem.addtime;
+            });
+            _result.dayList = [];
+
+            for (var i = 0; i < 7; i++) {
+
+                var curDate = GetDateAdd((new Date()).format('yyyy-MM-dd'), -1 * i, 'day').format('yyyy-MM-dd');
+
+                var dayData = {};
+                dayData.index = i;
+                dayData.date = curDate;
+
+                var _filter = _.filter(_watchdata.Result, function (fitem) {
+                    return fitem.addtime == curDate;
+                });
+
+                var _watch = _.sortBy(_filter, function (fitem) {
+                    return -1 * fitem.addtime2;
+                })
+                dayData.watch = {};
+
+                if (_.isEmpty(_filter)) {
+                    dayData.watch.dispData = {};
+                } else {
+                    dayData.watch.dispData = _watch[0];
+                }
+
+                dayData.sport = {};
+                var _find = _.find(_sportdata.Result, function (fitem) {
+                    return fitem.addtime == curDate;
+                });
+
+                if (!_.isUndefined(_find)) {
+                    dayData.sport.dispData = _find;
+                }
+                else {
+                    dayData.sport.dispData = {};
+                }
+                _result.dayList.push(dayData);
+            }
+            cb(null, { status: 0, "result": _result });
+
+        }, function (err) {
+            cb(err, { status: 1, "result": "" });
+        });
+    }
+
+
+    Patient.remoteMethod(
+        'RequestUserMonitor',
+        {
+            http: { verb: 'post' },
+            description: '查询用户检测数据',
+            // accepts: {
+            //     arg: 'token', type: 'string',
+            //     http: function (ctx) {
+            //         var req = ctx.req;
+            //         return req.headers.token;
+            //     },
+            //     description: '{"token":""}'
+            // },
+            returns: { arg: 'UserInfo', type: 'object', root: true }
+        }
+    );
 };
 
 
