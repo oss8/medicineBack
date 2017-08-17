@@ -497,6 +497,9 @@ module.exports = function (common) {
             case "day":
                 divNum = 1000 * 3600 * 24;
                 break;
+            case "year":
+                divNum = 1000 * 3600 * 24 * 365;
+                break;                
             default:
                 break;
         }
