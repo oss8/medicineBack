@@ -53,12 +53,20 @@ module.exports = function (common) {
     ExecuteSyncSQLResult = function (bsSQL, ResultObj, tx, Connect) {
         return new Promise(function (resolve, reject) {
             try {
-                EWTRACE(SQL);
+                EWTRACE(bsSQL);
                 var dataSource = Connect;
                 if (dataSource == undefined)
                     dataSource = common.app.datasources.main_DBConnect;
-    
-                dataSource.connector.executeSQL(SQL, {}, { transaction: tx }, resultFun);
+
+                dataSource.connector.executeSQL(bsSQL, {}, { transaction: tx }, function (err, result) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        if (ResultObj)
+                            ResultObj.Result = result;
+                        resolve(result);
+                    }
+                });
             } catch (ex) {
                 reject(ex);
             }
@@ -522,5 +530,40 @@ module.exports = function (common) {
                 break;
         }
         return new Date(sTime.getTime() + addTimes * divNum);
-    }    
+    }
+
+
+    GetWXNickName = function (fromOpenid) {
+        return new Promise(function (resolve, reject) {
+            try {
+                var tokenUrl = 'http://106.14.159.108:2567/token';
+                var needle = require('needle');
+                needle.get(encodeURI(tokenUrl), null, function (err, resp) {
+                    // you can pass params as a string or as an object.
+                    if (err) {
+                        //cb(err, { status: 0, "result": "" });
+                        EWTRACE(err.message);
+                        reject(err);
+                    }
+                    else {
+                        var url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + resp.body.access_token + "&openid=" + fromOpenid + "&lang=zh_CN";
+                        needle.get(encodeURI(url), null, function (err, resp) {
+                            // you can pass params as a string or as an object.
+                            if (err) {
+                                //cb(err, { status: 0, "result": "" });
+                                EWTRACE(err.message);
+                                reject(err);
+                            }
+                            else {
+                                EWTRACEIFY(resp.body);
+                                resolve(resp.body);
+                            }
+                        });
+                    }
+                });
+            } catch (ex) {
+                reject(ex);
+            }
+        });
+    }
 };    
