@@ -99,7 +99,7 @@ module.exports = function (Patient) {
 
             }
         }
-        res.writeHeader(200, { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' })
+
         res.write(new Buffer("").toString("UTF-8"));
         res.end();
     };
