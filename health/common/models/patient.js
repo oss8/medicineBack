@@ -171,7 +171,11 @@ module.exports = function (Patient) {
         if (!_.isEmpty(req.body.xml.event)) {
 
             if (req.body.xml.event[0] == 'subscribe' || req.body.xml.event[0] == 'SCAN') {
-                regUser(req, res, cb);
+                if (req.body.xml.eventkey[0].substr(0, 7) == 'family_') {
+                    AddFamilyUser(req, res, cb);
+                } else {
+                    regUser(req, res, cb);
+                }
                 return;
             }
 
@@ -231,90 +235,98 @@ module.exports = function (Patient) {
         if (watch_iccid.indexOf('_') > 0) {
             watch_iccid = watch_iccid.substr(watch_iccid.indexOf('_') + 1);
         }
-        var tokenUrl = 'http://106.14.159.108:2567/token';
-        var needle = require('needle');
-        needle.get(encodeURI(tokenUrl), null, function (err, resp) {
-            // you can pass params as a string or as an object.
-            if (err) {
-                //cb(err, { status: 0, "result": "" });
-                EWTRACE(err.message);
-                cb(err, { status: 1, "result": "" });
-            }
-            else {
-                var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;
 
-                var SendData = {
-                    "touser": openid,
-                    "msgtype": "text",
-                    "text":
-                    {
-                        "content": "欢迎加入曼康健康计划"
-                    }
-                };
+        GetWXNickName(openid).then(function (userInfo) {
+            var tokenUrl = 'http://106.14.159.108:2567/token';
+            var needle = require('needle');
+            needle.get(encodeURI(tokenUrl), null, function (err, resp) {
+                // you can pass params as a string or as an object.
+                if (err) {
+                    //cb(err, { status: 0, "result": "" });
+                    EWTRACE(err.message);
+                    cb(err, { status: 1, "result": "" });
+                }
+                else {
+                    var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;
 
-                needle.post(encodeURI(url), SendData, { json: true }, function (err, resp) {
-                    // you can pass params as a string or as an object.
-                    if (err) {
-                        //cb(err, { status: 0, "result": "" });
-                        EWTRACE("Send WX Notify Error:" + err.message);
-                    }
-                    else {
-                        EWTRACE("Send WX Notify OK!");
-                        EWTRACE(JSON.stringify(resp.body));
+                    var SendData = {
+                        "touser": openid,
+                        "msgtype": "text",
+                        "text":
+                        {
+                            "content": "欢迎加入曼康健康计划"
+                        }
+                    };
 
-                        var AddWatch = {};
-                        AddWatch.iccid = watch_iccid;
-                        AddWatch.nickName = 'new User';
-                        AddWatch.sex = 1;
-                        AddWatch.age = 1;
-                        AddWatch.height = 1;
-                        AddWatch.weight = 1;
+                    needle.post(encodeURI(url), SendData, { json: true }, function (err, resp) {
+                        // you can pass params as a string or as an object.
+                        if (err) {
+                            //cb(err, { status: 0, "result": "" });
+                            EWTRACE("Send WX Notify Error:" + err.message);
+                        }
+                        else {
+                            EWTRACE("Send WX Notify OK!");
+                            EWTRACE(JSON.stringify(resp.body));
 
-                        var urlInfo = { "method": "registerUser.open" };
-                        //CreateURL(urlInfo, false)
-                        CreateURL(urlInfo)
+                            var AddWatch = {};
+                            AddWatch.iccid = watch_iccid;
+                            AddWatch.nickName = 'new User';
+                            AddWatch.sex = 1;
+                            AddWatch.age = 1;
+                            AddWatch.height = 1;
+                            AddWatch.weight = 1;
 
-                        needle.post(encodeURI(urlInfo.url), AddWatch, urlInfo.options, function (err, resp) {
-                            // you can pass params as a string or as an object.
+                            var urlInfo = { "method": "registerUser.open" };
+                            //CreateURL(urlInfo, false)
+                            CreateURL(urlInfo)
 
-                            if (err || resp.body.code != 0) {
-                                //cb(err, { status: 0, "result": "" });
-                                EWTRACEIFY(resp.body);
-                                var bsSQL = "update hh_publicUser set openid ='" + openid + "' where iccid = '" + watch_iccid + "'";
-                                DoSQL(bsSQL).then(function () {
-                                    cb(null, { status: 0, "result": "" });
-                                }, function (err) {
-                                    cb(err, { status: 1, "result": "" });
-                                });
+                            needle.post(encodeURI(urlInfo.url), AddWatch, urlInfo.options, function (err, resp) {
+                                // you can pass params as a string or as an object.
 
-
-                            }
-                            else {
-                                var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
-                                DoSQL(bsSQL).then(function (userResult) {
-                                    if (userResult.length == 0) {
-                                        bsSQL = "update hh_pubcliUser set watchuserid = null where iccid = '" + watch_iccid + "';"
-                                        bsSQL += "INSERT INTO hh_publicUser (id, openid, iccid, watchuserid) VALUES (uuid(),'" + openid + "','" + watch_iccid + "','" + resp.body.data.userId + "');";
-                                    } else {
-                                        bsSQL = "update hh_pubcliUser set watchuserid = null where iccid = '" + watch_iccid + "';"
-                                        bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = '" + resp.body.data.userId + "' where openid ='" + openid + "'";
-                                    }
-
+                                if (err || resp.body.code != 0) {
+                                    //cb(err, { status: 0, "result": "" });
+                                    EWTRACEIFY(resp.body);
+                                    var bsSQL = "update hh_publicUser set openid ='" + openid + "' where iccid = '" + watch_iccid + "'";
                                     DoSQL(bsSQL).then(function () {
                                         cb(null, { status: 0, "result": "" });
                                     }, function (err) {
                                         cb(err, { status: 1, "result": "" });
                                     });
-                                }, function (err) {
-                                    cb(err, { status: 1, "result": "" });
-                                });
 
-                            }
-                        });
-                    }
-                });
-            }
-        });
+
+                                }
+                                else {
+                                    var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
+                                    DoSQL(bsSQL).then(function (userResult) {
+                                        if (userResult.length == 0) {
+                                            bsSQL = "update hh_publicuser set watchuserid = null where iccid = '" + watch_iccid + "';"
+                                            bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "','" + resp.body.data.userId + "','"+userInfo.province+"','"+userInfo.city+"','"+userInfo.sex+"',0,0);";
+                                        } else {
+                                            bsSQL = "update hh_publicuser set watchuserid = null where iccid = '" + watch_iccid + "';"
+                                            bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = '" + resp.body.data.userId + "',name='" + userInfo.nickname + "' where openid ='" + openid + "'";
+                                        }
+
+                                        DoSQL(bsSQL).then(function () {
+                                            cb(null, { status: 0, "result": "" });
+                                        }, function (err) {
+                                            cb(err, { status: 1, "result": "" });
+                                        });
+                                    }, function (err) {
+                                        cb(err, { status: 1, "result": "" });
+                                    });
+
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }, function (err) {
+
+        })
+
+
+
     }
 
     Patient.uploadPressureData = function (req, cb) {
@@ -392,7 +404,7 @@ module.exports = function (Patient) {
                 _getLimitUserData(_dolimit, getDay).then(function (result) {
 
                 }, function (err) {
-                    EWTRACE('数据获取失败')
+                    EWTRACE('数据获取失败:'+err.message)
                     err.forEach(function (item) {
                         EWTRACE(item.watchuserid)
                     })
@@ -498,7 +510,7 @@ module.exports = function (Patient) {
     initTimer();
 
 
-    Patient.RequestUserMonitor = function ( cb) {
+    Patient.RequestUserMonitor = function (cb) {
         EWTRACE("RequestUserMonitor Begin");
 
         var _openid = null;
@@ -511,17 +523,19 @@ module.exports = function (Patient) {
         //     return;
         // }
 
-        var OpenID = { openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
-        nickname: '葛岭ð¨ð³',
-        sex: 1,
-        language: 'zh_CN',
-        city: 'Hangzhou',
-        province: 'Zhejiang',
-        country: 'China',
-        headimgurl: 'http://wx.qlogo.cn/mmopen/OM4v0FU2h0tkhqo0vNibzbUIYwEBaW9PBGNliarnaPtRRib8hB9JFzicbGibl7XPDicWII1ibUKmjLrV23zvZ8ia0vRVTlJSVL48qCoF/0',
-        privilege: [],
-        iat: 1502890900,
-        exp: 1502891200 }
+        var OpenID = {
+            openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
+            nickname: '葛岭ð¨ð³',
+            sex: 1,
+            language: 'zh_CN',
+            city: 'Hangzhou',
+            province: 'Zhejiang',
+            country: 'China',
+            headimgurl: 'http://wx.qlogo.cn/mmopen/OM4v0FU2h0tkhqo0vNibzbUIYwEBaW9PBGNliarnaPtRRib8hB9JFzicbGibl7XPDicWII1ibUKmjLrV23zvZ8ia0vRVTlJSVL48qCoF/0',
+            privilege: [],
+            iat: 1502890900,
+            exp: 1502891200
+        }
         _openid = OpenID.openid;
 
         var ps = [];
@@ -604,62 +618,133 @@ module.exports = function (Patient) {
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
+
+
+    function AddFamilyUser(req, res, cb) {
+        EWTRACE("AddFamilyUser Begin");
+
+        var localOpenid = req.body.xml.eventkey[0].substr(7);
+        var fromOpenid = req.body.xml.fromusername[0];
+
+        var ps = [];
+        var bsSQL = "select * from hh_publicuser where openid = '" + localOpenid + "'";
+        var _localUser = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _localUser));
+
+        bsSQL = "select * from hh_publicuser where openid = '" + fromOpenid + "'";
+        var _familyUser = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _familyUser));
+
+        bsSQL = "select * from hh_familyuser where openid = '" + localOpenid + "' and followopenid = '" + fromOpenid + "'";
+        var _myfollow = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _myfollow));
+
+        bsSQL = "select * from hh_familyuser where openid = '" + fromOpenid + "' and followopenid = '" + localOpenid + "'";
+        var herfollow = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, herfollow));
+
+        Promise.all(ps).then(function () {
+
+            GetWXNickName(fromOpenid).then(function (userInfo) {
+
+                if (_familyUser.Result.length == 0) {
+                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name) VALUES (uuid(),'" + fromOpenid + "','" + userInfo.nickname + "');";
+                    DoSQL(bsSQL).then(function () {
+
+                    }, function (err) {
+
+                    })
+                }
+
+                bsSQL = "";
+                if (_myfollow.length == 0) {
+                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc) values('" + localOpenid + "','" + fromOpenid + "','" + userInfo.nickname + "','',0);";
+                }
+                if (herfollow.length == 0) {
+
+                    var nickname = "";
+                    if (!_.isNull(_localUser.Result[0].name)) {
+                        nickname = _localUser.Result[0].name;
+                    }
+
+                    var tel = "";
+                    if (!_.isNull(_localUser.Result[0].mobile)) {
+                        tel = _localUser.Result[0].mobile;
+                    }
+
+                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc) values('" + fromOpenid + "','" + localOpenid + "','" + nickname + "','" + tel + "',0);";
+                }
+                DoSQL(bsSQL).then(function () {
+
+                }, function (err) {
+
+                })
+
+            }, function (err) {
+
+            })
+        }, function (err) {
+
+        })
+    }
+
+
+    Patient.RequestUserMonitor = function (cb) {
+        EWTRACE("RequestUserMonitor Begin");
+
+        var _openid = null;
+        //var OpenID = {};
+        // try {
+        //     OpenID = GetOpenIDFromToken(token);
+        //     _openid = OpenID.openId;
+        // } catch (err) {
+        //     cb(null, { status: 403, "result": "" });
+        //     return;
+        // }
+
+        var OpenID = {
+            openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
+            nickname: '葛岭ð¨ð³',
+            sex: 1,
+            language: 'zh_CN',
+            city: 'Hangzhou',
+            province: 'Zhejiang',
+            country: 'China',
+            headimgurl: 'http://wx.qlogo.cn/mmopen/OM4v0FU2h0tkhqo0vNibzbUIYwEBaW9PBGNliarnaPtRRib8hB9JFzicbGibl7XPDicWII1ibUKmjLrV23zvZ8ia0vRVTlJSVL48qCoF/0',
+            privilege: [],
+            iat: 1502890900,
+            exp: 1502891200
+        }
+        _openid = OpenID.openid;
+
+        var bsSQL = "update hh_publicuser set disease_list = '"+JSON.stringify(p.disease)+"' where openid = '"+_openid+"'";
+        DoSQL(bsSQL).then(function(){
+            cb(null, { status: 0, "result": "" });
+        }, function (err) {
+            cb(err, { status: 1, "result": "" });
+        });
+    }
+
+
+    Patient.remoteMethod(
+        'UpdateUserDisease',
+        {
+            http: { verb: 'post' },
+            description: '设置用户病种',
+            accepts: [{ arg: 'p', type: 'object', description: '{"disease":""}' },
+            //{
+            //     arg: 'token', type: 'string',
+            //     http: function (ctx) {
+            //         var req = ctx.req;
+            //         return req.headers.token;
+            //     },
+            //     description: '{"token":""}'
+            // }
+            ],
+            returns: { arg: 'UserInfo', type: 'object', root: true }
+        }
+    );    
+
 };
 
 
-
-
-// Patient.ValidateWechatToken = function (req, res, cb) {
-
-//             var token = 'zqlzql';
-//             var q = req.query;  
-//             var signature = q.signature; //微信加密签名  
-//             var nonce = q.nonce; //随机数  
-//             var timestamp = q.timestamp; //时间戳  
-//             var echostr = q.echostr; //随机字符串  
-
-//             EWTRACE('signature: ' + signature);
-//             EWTRACE('echostr: ' + echostr);
-//             EWTRACE('timestamp: ' + timestamp);
-//             EWTRACE('nonce: ' + nonce);
-//             var sha1 = require('sha1');
-
-//             var str = [timestamp + '', nonce + '', token].sort().join('');
-//             EWTRACE('加密前Str: ' + str);
-//             EWTRACE('加密后Str: ' + sha1(str));
-
-//             if (sha1(str) == signature) {
-
-//                 res.writeHeader(200, { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' })
-//                 res.write(new Buffer(echostr).toString("UTF-8"));
-//                 res.end();
-//                 EWTRACE('Send OK');
-//             } else {
-//                 res.end("false");
-//                 //cb(null, echostr, 'text/xml; charset=utf-8');
-//             }
-//         };
-
-//         Patient.remoteMethod(
-//             'ValidateWechatToken',
-//             {
-//                 http: { verb: 'get' },
-//                 description: '微信服务器验证',
-//                 accepts: [{
-//                     arg: 'req', type: 'object',
-//                     http: function (ctx) {
-//                         return ctx.req;
-//                     },
-//                     description: '{"token":""}'
-//                 },
-//                 {
-//                     arg: 'res', type: 'object',
-//                     http: function (ctx) {
-//                         return ctx.res;
-//                     },
-//                     description: '{"token":""}'
-//                 }
-//                 ],
-//                 returns: { arg: 'echostr', type: 'number', root: true }
-//             }
-//         );
