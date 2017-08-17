@@ -84,21 +84,24 @@ module.exports = function (Patient) {
                 } else {
                     regUser(req, res, cb);
                 }
-                return;
+
             }
 
             if (req.body.xml.event[0] == 'unsubscribe') {
                 unregUser(req, res, cb);
-                return;
+
             }
 
             if (req.body.xml.event[0] == 'CLICK') {
                 if ( req.body.xml.eventkey[0] == "SOS_Notify"){
                     WXClick_SOS(req, res, cb);
                 }
-                return;
+
             }
         }
+        res.writeHeader(200, { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' })
+        res.write(new Buffer("").toString("UTF-8"));
+        res.end();
     };
 
     Patient.remoteMethod(
