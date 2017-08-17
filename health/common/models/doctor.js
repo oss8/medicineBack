@@ -17,7 +17,7 @@ module.exports = function (Doctor) {
             if (result.length == 0) {
                 cb(null, { status: 0, "result": "验证码错误" });
             } else {
-                bsSQL = "delete from hh_sendsms where mobile = '" + AddDoctor.mobile + "' and randcode = " + AddDoctor.randcode + ";INSERT INTO hh_publicUser (id, mobile,  randCode, status, type,name) VALUES (uuid(),'" + AddDoctor.mobile + "', '" + AddDoctor.password + "', 0,1,'" + AddDoctor.name + "');";
+                bsSQL = "delete from hh_sendsms where mobile = '" + AddDoctor.mobile + "' and randcode = " + AddDoctor.randcode + ";INSERT INTO hh_publicUser (userid, mobile,  randCode, status, type,name) VALUES (uuid(),'" + AddDoctor.mobile + "', '" + AddDoctor.password + "', 0,1,'" + AddDoctor.name + "');";
                 DoSQL(bsSQL).then(function (result) {
                     cb(null, { status: 1, "result": "" });
                     EWTRACE("AddDoctor End");
@@ -153,10 +153,10 @@ module.exports = function (Doctor) {
             var _uuid = "";
             if (_patientInfo.Result.length == 0) {
                 _uuid = uuid.v4();
-                bsSQL = "INSERT INTO hh_publicUser (id, mobile, cardNo, medicalNo, status, name, type, sex, casetype, province, city, region, address, birthday) VALUES ('" + _uuid + "', '" + AddPatient.pmobile + "', '" + AddPatient.pcardno + "','"+AddPatient.pmedicalNo+"',  0,  '" + AddPatient.pname + "', 0, " + AddPatient.psex + ", '" + AddPatient.casetype + "', '" + AddPatient.province + "', '" + AddPatient.city + "', '" + AddPatient.region + "', '" + AddPatient.address + "','"+ AddPatient.birthday+"');";
+                bsSQL = "INSERT INTO hh_publicUser (userid, mobile, cardNo, medicalNo, status, name, type, sex, casetype, province, city, region, address, birthday) VALUES ('" + _uuid + "', '" + AddPatient.pmobile + "', '" + AddPatient.pcardno + "','"+AddPatient.pmedicalNo+"',  0,  '" + AddPatient.pname + "', 0, " + AddPatient.psex + ", '" + AddPatient.casetype + "', '" + AddPatient.province + "', '" + AddPatient.city + "', '" + AddPatient.region + "', '" + AddPatient.address + "','"+ AddPatient.birthday+"');";
             } else {
                 _uuid = _patientInfo.Result[0].id;
-                bsSQL = "update hh_publicuser set name = '" + AddPatient.pname + "', cardNo = '" + AddPatient.pcardno + "',sex ='" + AddPatient.psex + "',casetype = '" + AddPatient.casetype + "',province='" + AddPatient.province + "',city='" + AddPatient.city + "',region='" + AddPatient.region + "',address='" + AddPatient.address + "',mobile = '" + AddPatient.pmobile + "',birthday = '"+ AddPatient.birthday +"' where id = '"+ _uuid +"';";
+                bsSQL = "update hh_publicuser set name = '" + AddPatient.pname + "', cardNo = '" + AddPatient.pcardno + "',sex ='" + AddPatient.psex + "',casetype = '" + AddPatient.casetype + "',province='" + AddPatient.province + "',city='" + AddPatient.city + "',region='" + AddPatient.region + "',address='" + AddPatient.address + "',mobile = '" + AddPatient.pmobile + "',birthday = '"+ AddPatient.birthday +"' where userid = '"+ _uuid +"';";
             }
 
             var find = _.find(_DoctorpatientInfo.Result, function (detail) {
