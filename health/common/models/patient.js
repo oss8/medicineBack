@@ -91,6 +91,13 @@ module.exports = function (Patient) {
                 unregUser(req, res, cb);
                 return;
             }
+
+            if (req.body.xml.event[0] == 'CLICK') {
+                if ( req.body.xml.eventkey[0] == "SOS_Notify"){
+                    WXClick_SOS(req, res, cb);
+                }
+                return;
+            }
         }
     };
 
@@ -119,6 +126,26 @@ module.exports = function (Patient) {
         }
     );
 
+    function WXClick_SOS(req, res, cb){
+
+        var openId = req.body.xml.fromusername[0];
+
+
+        var ps = [];
+        var bsSQL = "select followopenid as openid,nickname as name from hh_familyuser where openid = '" + openId + "'";
+        var _notifyList = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _notifyList));
+
+        bsSQL = "select name from hh_publicuser where openid = '" + openId + "'";
+        var _localUser = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _localUser));
+
+        Promise.all(ps).then(function () {
+            _SendWX(_notifyList.Result, _localUser.Result[0]);
+        },function(err){
+
+        })
+    }
 
 
     function unregUser(req, res, cb) {
