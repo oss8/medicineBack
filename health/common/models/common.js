@@ -324,7 +324,7 @@ module.exports = function (common) {
 
 
 
-    var _SendWX = function (UserList, ErrorInfo) {
+    _SendWX = function(UserList, localUser) {
 
         // 随机字符串产生函数  
         createNonceStr = function () {
@@ -335,8 +335,8 @@ module.exports = function (common) {
 
         var exports = {
             grant_type: 'client_credential',
-            appid: process.env.Pay_WX_AppID,
-            secret: process.env.WeChatSECRET,
+            appid: process.env.WX_APP_ID,
+            secret: process.env.WX_APP_SECRET,
             noncestr: createNonceStr(),
             accessTokenUrl: 'https://api.weixin.qq.com/cgi-bin/token',
             ticketUrl: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
@@ -358,39 +358,32 @@ module.exports = function (common) {
 
                 UserList.forEach(function (item) {
 
-                    var _color = "#000000";
-                    if (ErrorInfo.priority == '紧急') {
-                        _color = "#FF004F";
-                    } else if (ErrorInfo.priority == '高') {
-                        _color = "#FF5441";
-                    } else if (ErrorInfo.priority == '中') {
-                        _color = "#FFBF24";
-                    }
+                    var _color = "#FF004F";
+
                     var WXData = {
                         "touser": item.openid,
                         "template_id": process.env.WeChat_TakeErrorID,
-                        "url": process.env.OSS_ESHINE_URL + "/pages/wxTicket.html?id=" + ErrorInfo.id,
                         "data": {
                             "first": {
-                                "value": "优先级：" + ErrorInfo.priority,
+                                "value":  "紧急通知",
                             },
                             "keyword1": {
-                                "value": ErrorInfo.group,
+                                "value": localUser.name,
                             },
                             "keyword2": {
-                                "value": "\r\n问题ID：" + ErrorInfo.id + "\r\n" + "问题类型：" + ErrorInfo.type + "\r\n" + "问题描述：" + ErrorInfo.title,
+                                "value": item.name,
                                 "color": _color
                             },
+                            "keyword3": {
+                                "value": (new Date()).format('yyyy-MM-dd'),
+                                "color": _color
+                            },                            
                             "remark": {
-                                "value": "提出人：" + ErrorInfo.userName
+                                "value": "曼康信息提示，你关注的亲友紧急呼叫，社区医生已经紧急赶往"
                             }
                         }
                     }
                     EWTRACEIFY(WXData);
-
-                    if (ErrorInfo.id == 0) {
-                        delete WXData.url;
-                    }
 
                     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
                     needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {

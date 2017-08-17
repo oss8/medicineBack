@@ -84,14 +84,24 @@ module.exports = function (Patient) {
                 } else {
                     regUser(req, res, cb);
                 }
-                return;
+
             }
 
             if (req.body.xml.event[0] == 'unsubscribe') {
                 unregUser(req, res, cb);
-                return;
+
+            }
+
+            if (req.body.xml.event[0] == 'CLICK') {
+                if ( req.body.xml.eventkey[0] == "SOS_Notify"){
+                    WXClick_SOS(req, res, cb);
+                }
+
             }
         }
+        res.writeHeader(200, { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' })
+        res.write(new Buffer("").toString("UTF-8"));
+        res.end();
     };
 
     Patient.remoteMethod(
@@ -119,6 +129,26 @@ module.exports = function (Patient) {
         }
     );
 
+    function WXClick_SOS(req, res, cb){
+
+        var openId = req.body.xml.fromusername[0];
+
+
+        var ps = [];
+        var bsSQL = "select followopenid as openid,nickname as name from hh_familyuser where openid = '" + openId + "'";
+        var _notifyList = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _notifyList));
+
+        bsSQL = "select name from hh_publicuser where openid = '" + openId + "'";
+        var _localUser = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _localUser));
+
+        Promise.all(ps).then(function () {
+            _SendWX(_notifyList.Result, _localUser.Result[0]);
+        },function(err){
+
+        })
+    }
 
 
     function unregUser(req, res, cb) {

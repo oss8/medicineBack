@@ -1,62 +1,114 @@
 'use strict';
 
-module.exports = function(Watch) {
-    var app = require('../../server/server');    
+module.exports = function (Watch) {
+    var app = require('../../server/server');
     app.DisableSystemMethod(Watch);
     var _ = require('underscore');
     var uuid = require('node-uuid');
     var needle = require('needle');
 
-    Watch.RegWatchUser = function (AddWatch,token, cb) {
-        EWTRACE("RegWatchUser Begin");
+    Watch.CreateWXMenu = function ( cb) {
+        EWTRACE("CreateWXMenu Begin");
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(token);
-            _openid = OpenID.openId;
-        } catch (err) {
-            cb(null, { status: 403, "result": "" });
-            return;
-        }
 
-        AddWatch.nickName = OpenID.nickname;
-        AddWatch.sex = OpenID.sex;
-        AddWatch.age = 1;
-        AddWatch.height = 1;
-        AddWatch.weight = 1;
 
-        require('dotenv').config({ path: './config/.env' });
-        url = process.env.REQUEST_WATCH_URL + "registerUser.open";
+        var tokenUrl = 'http://106.14.159.108:2567/token';
+        var needle = require('needle');
 
-        needle.post(encodeURI(url), AddWatch, { json: true }, function (err, resp) {
-            // you can pass params as a string or as an object.
+
+
+        needle.get(encodeURI(tokenUrl), null, function (err, resp) {
+
             if (err) {
-                //cb(err, { status: 0, "result": "" });
-                EWTRACE(err.message);
+                cb(err, { status: 0, "result": "" });
             }
             else {
-                EWTRACEIFY(resp.body);
+
+
+                var data = {
+                    "button": [
+                        {
+                            "name": "我的",
+                            "sub_button": [
+                                {
+                                    "type": "view",
+                                    "name": "个人信息",
+                                    "url": "http://www.soso.com/"
+                                },
+                                {
+                                    "type": "view",
+                                    "name": "设备绑定",
+                                    "url": "http://v.qq.com/"
+                                },
+                                {
+                                    "type": "view",
+                                    "name": "初学者教学",
+                                    "url": "http://v.qq.com/"
+                                },
+                                {
+                                    "type": "view",
+                                    "name": "联系客服",
+                                    "url": "http://v.qq.com/"
+                                },
+                                {
+                                    "type": "view",
+                                    "name": "认识PWV",
+                                    "url": "http://v.qq.com/"
+                                },                                                            
+                            ]
+                        },
+                        {
+                            "name": "健康档案",
+                            "sub_button": [
+                                {
+                                    "type": "view",
+                                    "name": "历史数据",
+                                    "url": "http://www.soso.com/"
+                                },
+                                {
+                                    "type": "view",
+                                    "name": "健康报告",
+                                    "url": "http://v.qq.com/"
+                                },
+                                {
+                                    "type": "view",
+                                    "name": "健康之道",
+                                    "url": "http://v.qq.com/"
+                                }                                                          
+                            ]
+                        },
+                        {
+                            "type":"click",
+                            "name":"SOS",
+                            "key":"SOS_Notify"
+                       }
+                    ]
+                }
+
+                var url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + resp.body.access_token;
+
+                needle.post(encodeURI(url), data, {json:true}, function (err, resp) {
+                    // you can pass params as a string or as an object.
+                    if (err) {
+                        //cb(err, { status: 0, "result": "" });
+                        EWTRACE(err.message);
+                        cb(err, { status: 1, "result": "" });
+                    }
+                    else {
+                        cb(null, { status: 0, "result": resp.body });
+                    }
+                });
             }
         });
     }
 
     Watch.remoteMethod(
-        'RegWatchUser',
+        'CreateWXMenu',
         {
             http: { verb: 'post' },
-            description: '添加患者手表',
-            accepts: [{ arg: 'AddWatch', type: 'object', description: '{"iccid":""}' },
-            {
-                arg: 'token', type: 'string',
-                http: function (ctx) {
-                    var req = ctx.req;
-                    return req.headers.token;
-                },
-                description: '{"token":""}'
-            }],            
+            description: '创建微信菜单',
             returns: { arg: 'AddDoctor', type: 'object', root: true }
         }
-    );    
+    );
 
 };
