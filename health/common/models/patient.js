@@ -10,98 +10,6 @@ module.exports = function (Patient) {
     var schedule = require("node-schedule");   //定时任务  
     var rule = new schedule.RecurrenceRule();
 
-    Patient.modifyUserInfo = function (q, token, cb) {
-        EWTRACE("modifyUserInfo Begin");
-
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(token);
-            _openid = OpenID.openId;
-        } catch (err) {
-            cb(null, { status: 403, "result": "" });
-            return;
-        }
-
-        var bsSQL = "select watchuserid from hh_publicuser where openid = '" + _openid + "'";
-        DoSQL(bsSQL).then(function (result) {
-            if (result.length == 0) {
-                cb(new Error('未找到用户'), { status: 1, "result": "" });
-            }
-            q.userId = parseInt(result[0].watchuserid);
-            q.nickName = OpenID.nickname;
-
-            bsSQL = "update hh_publicuser set ";
-            if (!_.isUndefined(q.sex)) {
-                bsSQL += "sex = " + q.sex + ",";
-            }
-            if (!_.isUndefined(q.age)) {
-                bsSQL += "age = " + q.age + ",";
-            }
-            if (!_.isUndefined(q.height)) {
-                bsSQL += "height = " + q.height + ",";
-            }
-            if (!_.isUndefined(q.weight)) {
-                bsSQL += "weight = " + q.weight + ",";
-            }
-
-            bsSQL += " name = '" + OpenID.nickname + "' ";
-            bsSQL += " where openid = '" + _openid + "'";
-
-
-            DoSQL(bsSQL).then(function () {
-
-                if (_.isNull(result[0].watchuserid)) {
-                    cb(null, { status: 1, "result": "" });
-                }
-                else {
-                    var urlInfo = { "method": "updateUser.open" };
-                    CreateURL(urlInfo);
-                    EWTRACEIFY(q);
-
-                    needle.post(encodeURI(urlInfo.url), q, urlInfo.options, function (err, resp) {
-                        if (err) {
-                            cb(err, { status: 1, "result": "" });
-                        }
-                        else {
-                            EWTRACEIFY(resp.body);
-                            if (resp.body.code != 0) {
-                                cb(new Error(resp.body.message), { status: 1, "result": "" });
-                                return;
-                            }
-                            cb(null, { status: 1, "result": "" });
-                        }
-                    });
-                }
-            }, function (err) {
-                cb(err, { status: 1, "result": "" });
-            })
-
-        }, function (err) {
-            cb(err, { status: 1, "result": "" });
-        });
-
-    }
-
-    Patient.remoteMethod(
-        'modifyUserInfo',
-        {
-            http: { verb: 'post' },
-            description: '编辑用户信息',
-            accepts: [{ arg: 'q', type: 'object', http: { source: 'body' }, description: '{"sex":1,"age":12,"height":120,"weight":25,"mobile":"12345678"}' }
-                , {
-                arg: 'token', type: 'string',
-                http: function (ctx) {
-                    var req = ctx.req;
-                    return req.headers.token;
-                },
-                description: '{"token":""}'
-            }
-            ],
-            returns: { arg: 'UserInfo', type: 'object', root: true }
-        }
-    );
-
 
     Patient.ValidateWechatToken = function (req, res, cb) {
 
@@ -300,7 +208,7 @@ module.exports = function (Patient) {
                                     DoSQL(bsSQL).then(function (userResult) {
                                         if (userResult.length == 0) {
                                             bsSQL = "update hh_publicuser set watchuserid = null where iccid = '" + watch_iccid + "';"
-                                            bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "','" + resp.body.data.userId + "','"+userInfo.province+"','"+userInfo.city+"','"+userInfo.sex+"',0,0);";
+                                            bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "','" + resp.body.data.userId + "','" + userInfo.province + "','" + userInfo.city + "','" + userInfo.sex + "',0,0);";
                                         } else {
                                             bsSQL = "update hh_publicuser set watchuserid = null where iccid = '" + watch_iccid + "';"
                                             bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = '" + resp.body.data.userId + "',name='" + userInfo.nickname + "' where openid ='" + openid + "'";
@@ -404,7 +312,7 @@ module.exports = function (Patient) {
                 _getLimitUserData(_dolimit, getDay).then(function (result) {
 
                 }, function (err) {
-                    EWTRACE('数据获取失败:'+err.message)
+                    EWTRACE('数据获取失败:' + err.message)
                     err.forEach(function (item) {
                         EWTRACE(item.watchuserid)
                     })
@@ -510,32 +418,19 @@ module.exports = function (Patient) {
     initTimer();
 
 
-    Patient.RequestUserMonitor = function (cb) {
+    Patient.RequestUserMonitor = function (token, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
         var _openid = null;
-        //var OpenID = {};
-        // try {
-        //     OpenID = GetOpenIDFromToken(token);
-        //     _openid = OpenID.openId;
-        // } catch (err) {
-        //     cb(null, { status: 403, "result": "" });
-        //     return;
-        // }
-
-        var OpenID = {
-            openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
-            nickname: '葛岭ð¨ð³',
-            sex: 1,
-            language: 'zh_CN',
-            city: 'Hangzhou',
-            province: 'Zhejiang',
-            country: 'China',
-            headimgurl: 'http://wx.qlogo.cn/mmopen/OM4v0FU2h0tkhqo0vNibzbUIYwEBaW9PBGNliarnaPtRRib8hB9JFzicbGibl7XPDicWII1ibUKmjLrV23zvZ8ia0vRVTlJSVL48qCoF/0',
-            privilege: [],
-            iat: 1502890900,
-            exp: 1502891200
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(token);
+            _openid = OpenID.openId;
+        } catch (err) {
+            cb(null, { status: 403, "result": "" });
+            return;
         }
+
         _openid = OpenID.openid;
 
         var ps = [];
@@ -607,14 +502,14 @@ module.exports = function (Patient) {
         {
             http: { verb: 'post' },
             description: '查询用户检测数据',
-            // accepts: {
-            //     arg: 'token', type: 'string',
-            //     http: function (ctx) {
-            //         var req = ctx.req;
-            //         return req.headers.token;
-            //     },
-            //     description: '{"token":""}'
-            // },
+            accepts: {
+                arg: 'token', type: 'string',
+                http: function (ctx) {
+                    var req = ctx.req;
+                    return req.headers.token;
+                },
+                description: '{"token":""}'
+            },
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
@@ -689,36 +584,22 @@ module.exports = function (Patient) {
     }
 
 
-    Patient.RequestUserMonitor = function (cb) {
-        EWTRACE("RequestUserMonitor Begin");
+    Patient.UpdateUserDisease = function (p, token, cb) {
+        EWTRACE("UpdateUserDisease Begin");
 
         var _openid = null;
-        //var OpenID = {};
-        // try {
-        //     OpenID = GetOpenIDFromToken(token);
-        //     _openid = OpenID.openId;
-        // } catch (err) {
-        //     cb(null, { status: 403, "result": "" });
-        //     return;
-        // }
-
-        var OpenID = {
-            openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
-            nickname: '葛岭ð¨ð³',
-            sex: 1,
-            language: 'zh_CN',
-            city: 'Hangzhou',
-            province: 'Zhejiang',
-            country: 'China',
-            headimgurl: 'http://wx.qlogo.cn/mmopen/OM4v0FU2h0tkhqo0vNibzbUIYwEBaW9PBGNliarnaPtRRib8hB9JFzicbGibl7XPDicWII1ibUKmjLrV23zvZ8ia0vRVTlJSVL48qCoF/0',
-            privilege: [],
-            iat: 1502890900,
-            exp: 1502891200
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(token);
+            _openid = OpenID.openId;
+        } catch (err) {
+            cb(null, { status: 403, "result": "" });
+            return;
         }
         _openid = OpenID.openid;
 
-        var bsSQL = "update hh_publicuser set disease_list = '"+JSON.stringify(p.disease)+"' where openid = '"+_openid+"'";
-        DoSQL(bsSQL).then(function(){
+        var bsSQL = "update hh_publicuser set disease_list = '" + JSON.stringify(p.disease) + "' where openid = '" + _openid + "'";
+        DoSQL(bsSQL).then(function () {
             cb(null, { status: 0, "result": "" });
         }, function (err) {
             cb(err, { status: 1, "result": "" });
@@ -732,19 +613,147 @@ module.exports = function (Patient) {
             http: { verb: 'post' },
             description: '设置用户病种',
             accepts: [{ arg: 'p', type: 'object', description: '{"disease":""}' },
-            //{
-            //     arg: 'token', type: 'string',
-            //     http: function (ctx) {
-            //         var req = ctx.req;
-            //         return req.headers.token;
-            //     },
-            //     description: '{"token":""}'
-            // }
+                {
+                    arg: 'token', type: 'string',
+                    http: function (ctx) {
+                        var req = ctx.req;
+                        return req.headers.token;
+                    },
+                    description: '{"token":""}'
+                }
             ],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
-    );    
+    );
 
+
+    Patient.UserLogin = function (token, cb) {
+        EWTRACE("UserLogin Begin");
+
+        var _openid = null;
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(token);
+            _openid = OpenID.openId;
+        } catch (err) {
+            cb(null, { status: 403, "result": "" });
+            return;
+        }
+        _openid = OpenID.openid;
+
+        var ps = [];
+        var bsSQL = "select name,sex,birthday,height,weight,mobile,cardNo,disease_list from hh_publicuser where openid = '" + _openid + "'";
+        var userInfo = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, userInfo));
+
+        bsSQL = "select openid,followopenid,name,tel,ecc from hh_familyuser where openid = '" + _openid + "'";
+        var myfollow = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, myfollow));
+
+        Promise.all(ps).then(function () {
+
+            userInfo.Result[0].followList = myfollow.Result;
+
+            cb(null, { status: 0, "result": userInfo.Result[0] });
+        }, function (err) {
+            cb(err, { status: 1, "result": "" });
+        });
+    }
+
+
+    Patient.remoteMethod(
+        'UserLogin',
+        {
+            http: { verb: 'post' },
+            description: '用户登录',
+            accepts: 
+            {
+                arg: 'token', type: 'string',
+                http: function (ctx) {
+                    var req = ctx.req;
+                    return req.headers.token;
+                },
+                description: '{"token":""}'
+            }
+            ,
+            returns: { arg: 'UserInfo', type: 'object', root: true }
+        }
+    );
+
+
+    Patient.ModifyUserInfo = function (p, cb) {
+        EWTRACE("ModifyUserInfo Begin");
+
+        var _openid = null;
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(token);
+            _openid = OpenID.openId;
+        } catch (err) {
+            cb(null, { status: 1, "result": "" });
+            return;
+        }
+        _openid = OpenID.openid;
+
+        var bsSQL = "update hh_publicuser set ";
+        var fieldContext = "";
+        if (!_.isUndefined(p.name)) {
+            fieldContext += " name = '" + p.name + "',";
+        }
+        if (!_.isUndefined(p.sex)) {
+            fieldContext += " sex = '" + p.sex + "',";
+        }
+        if (!_.isUndefined(p.birthday)) {
+            fieldContext += " birthday = '" + p.birthday + "',";
+        }
+        if (!_.isUndefined(p.height)) {
+            fieldContext += " height = '" + p.height + "',";
+        }
+        if (!_.isUndefined(p.weight)) {
+            fieldContext += " weight = '" + p.weight + "',";
+        }
+        if (!_.isUndefined(p.mobile)) {
+            fieldContext += " mobile = '" + p.mobile + "',";
+        }
+        if (!_.isUndefined(p.cardNo)) {
+            fieldContext += " cardNo = '" + p.cardNo + "',";
+        }
+        if (!_.isUndefined(p.disease_list)) {
+            fieldContext += " disease_list = '" + JSON.stringify(p.disease_list) + "' ,";
+        }
+
+        var age = GetDateDiff(p.birthday, (new Date()).format('yyyy-MM-dd'), 'year');
+        fieldContext += " age = " + age;
+
+        bsSQL += fieldContext + " where openid = '" + _openid + "'";
+
+        DoSQL(bsSQL).then(function () {
+
+            cb(null, { status: 0, "result": "" });
+        }, function (err) {
+            cb(err, { status: 1, "result": "" });
+        });
+    }
+
+
+    Patient.remoteMethod(
+        'ModifyUserInfo',
+        {
+            http: { verb: 'post' },
+            description: '用户编辑信息',
+            accepts: [{ arg: 'p', type: 'object', description: '{"name":"葛岭","sex":1,"birthday":"1974-02-11","height":"178","weight":"62","mobile":"18958064659","cardNo":"330102197420111536","disease_list":{}}' },
+            {
+                arg: 'token', type: 'string',
+                http: function (ctx) {
+                    var req = ctx.req;
+                    return req.headers.token;
+                },
+                description: '{"token":""}'
+            }
+            ],
+            returns: { arg: 'UserInfo', type: 'object', root: true }
+        }
+    );
 };
 
 
