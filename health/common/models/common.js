@@ -608,7 +608,7 @@ module.exports = function (common) {
                             "value": userInfo.name
                         },                        
                         "keyword2": {
-                            "value": "心率："+CheckData.hrCount + "\r\n血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n",
+                            "value": "\r\n心率："+CheckData.hrCount + "\r\n血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n",
                         },
                         "keyword3": {
                             "value": "曼康云"
