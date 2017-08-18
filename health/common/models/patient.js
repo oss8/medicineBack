@@ -348,9 +348,9 @@ module.exports = function (Patient) {
                     })
                 })
             }
-            cb(null, { code: 0, "message": "" });
+
         }, function (err) {
-            cb(null, { code: -1, "message": err.message });
+            EWTRACE("Error:"+err.message );
         });
 
     }
@@ -368,7 +368,19 @@ module.exports = function (Patient) {
                 var urlInfo = { "method": "getEveryDayData.open" };
                 CreateURL(urlInfo)
 
-                needle.post(encodeURI(urlInfo.url), result, urlInfo.options, function (err, resp) {
+                var _time = "&deviceType=0&belongDate=" + result[0].belongDate;
+                var idList = "&userIds=";
+                result.forEach(function(item){
+
+                    idList += item.watchuserid + ",";
+                });
+
+                _time = "&deviceType=0&belongDate=2017-08-10";
+
+                idList = idList.substr(0,idList.length-1);
+                urlInfo.url += idList + _time;
+                EWTRACE(urlInfo.url);
+                needle.get(encodeURI(urlInfo.url), urlInfo.options, function (err, resp) {
                     if (err || resp.body.code != 0) {
                         reject(err);
                         return;
@@ -378,7 +390,7 @@ module.exports = function (Patient) {
                     resp.body.data.forEach(function (item) {
 
                         var openId = _.find(result, function (fitem) {
-                            return fitem.watchuserid == item.userId;
+                            return fitem.watchuserid == item.userId.toString();
                         });
 
                         var _openid = '';
@@ -388,11 +400,18 @@ module.exports = function (Patient) {
 
                         bsSQL += "insert into hh_usersportdata(userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,addtime) values(" + item.userId + ",'" + _openid + "','" + item.belongDate + "'," + item.sport.walkNum + "," + item.sport.runNum + "," + item.sport.mileage + "," + item.sport.caloric + "," + item.sleep.deepSleep + "," + item.sleep.lightSleep + "," + item.sleep.noAdorn + "," + item.sleep.sober + ",'" + getDay + "');";
                     })
-                    DoSQL(bsSQL).then(function () {
+
+                    if ( bsSQL.length > 0 ){
+                        DoSQL(bsSQL).then(function () {
+                            resolve(0);
+                        }, function (err) {
+                            reject(result);
+                        })
+                    }
+                    else{
                         resolve(0);
-                    }, function (err) {
-                        reject(result);
-                    })
+                    }
+
                 });
 
             }, function (err) {
