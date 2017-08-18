@@ -129,6 +129,80 @@ module.exports = function (Patient) {
         }
     );
 
+    Patient.WatchCallSOS = function (req, cb) {
+        EWTRACE("WatchCallSOS Begin");
+
+        var appId = req.headers.appId;
+        var appSecret = req.headers.appSecret;
+        var sign = req.headers.sign;
+        var rnd = req.query.rnd;
+        var body = req.body;
+
+        EWTRACE("appId:" + appId);
+        EWTRACE("appSecret:" + appSecret);
+        EWTRACE("sign:" + sign);
+        EWTRACE("rnd:" + rnd);
+        EWTRACEIFY(body);
+
+        var localSign = CreateMD5(rnd);
+
+        if (localSign.toUpperCase() == sign.toUpperCase()) {
+
+            var bsSQL = "select openid,name from hh_publicuser where iccid = '" + body.iccid + "'";
+
+
+            DoSQL(bsSQL).then(function (UserInfo) {
+
+                if (UserInfo.length == 0) {
+                    cb(null, { code: 1, "message": "iccid未找到" });
+                    return;
+                }
+                var openId = UserInfo[0].openid;
+
+                var ps = [];
+                var bsSQL = "select followopenid as openid,nickname as name from hh_familyuser where openid = '" + openId + "'";
+                var _notifyList = {};
+                ps.push(ExecuteSyncSQLResult(bsSQL, _notifyList));
+        
+                bsSQL = "select name from hh_publicuser where openid = '" + openId + "'";
+                var _localUser = {};
+                ps.push(ExecuteSyncSQLResult(bsSQL, _localUser));
+        
+                Promise.all(ps).then(function () {
+
+                    _SendWX(_notifyList.Result, _localUser.Result[0]);
+                    cb(null, { code: 0, "message": "operate success" });
+                });
+            }, function (err) {
+                cb(err, { code: -1, "message": err.message });
+                EWTRACE("message"+err.message);
+            })
+        }
+        else {
+            cb(null, { code: 1001, "message": "数字签名错误，appId未授权" });
+            EWTRACE("message：数字签名错误，appId未授权");
+        }
+    }
+
+
+    Patient.remoteMethod(
+        'WatchCallSOS',
+        {
+            http: { verb: 'post' },
+            description: '手表紧急SOS',
+            accepts: {
+                arg: 'req', type: 'object',
+                http: function (ctx) {
+                    return ctx.req;
+                },
+                description: '{"req":""}'
+            },
+            returns: { arg: 'UserInfo', type: 'object', root: true }
+        }
+    );
+
+
+
     function WXClick_SOS(req, res, cb){
 
         var openId = req.body.xml.fromusername[0];
