@@ -75,7 +75,7 @@ module.exports = function (Patient) {
 
         EWTRACE("ValidateWechatEvent Begin")
         EWTRACE("Event:" + req.body.xml.event[0]);
-        EWTRACE("EventKey:" + req.body.xml.eventkey[0]);
+
 
         var q = req.query;
         var openid = q.openid; //微信加密签名  
@@ -83,6 +83,7 @@ module.exports = function (Patient) {
         if (!_.isEmpty(req.body.xml.event)) {
 
             if (req.body.xml.event[0] == 'subscribe' || req.body.xml.event[0] == 'SCAN') {
+                EWTRACE("EventKey:" + req.body.xml.eventkey[0]);
                 if (req.body.xml.eventkey[0].substr(0, 7) == 'family_') {
                     AddFamilyUser(req, res, cb);
                 } else {
@@ -93,14 +94,12 @@ module.exports = function (Patient) {
 
             if (req.body.xml.event[0] == 'unsubscribe') {
                 unregUser(req, res, cb);
-
             }
 
             if (req.body.xml.event[0] == 'CLICK') {
                 if ( req.body.xml.eventkey[0] == "SOS_Notify"){
                     WXClick_SOS(req, res, cb);
                 }
-
             }
         }
 
