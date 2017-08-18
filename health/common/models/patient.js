@@ -650,6 +650,7 @@ module.exports = function (Patient) {
     function AddFamilyUser(req, res, cb) {
         EWTRACE("AddFamilyUser Begin");
 
+        
         var localOpenid = req.body.xml.eventkey[0].substr(7);
         var fromOpenid = req.body.xml.fromusername[0];
 
@@ -757,6 +758,49 @@ module.exports = function (Patient) {
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
+
+
+    Patient.setFollow2ECC = function (p, token, cb) {
+        EWTRACE("setFollow2ECC Begin");
+
+        var _openid = null;
+        var OpenID = {};
+        try {
+            OpenID = GetOpenIDFromToken(token);
+            _openid = OpenID.openId;
+        } catch (err) {
+            cb(null, { status: 1, "result": "" });
+            return;
+        }
+        _openid = OpenID.openid;
+
+        var bsSQL = "update hh_familyuser set ecc = 1 where openid = '" + _openid + "' and followopenid = '" +p.followopenid+ "'";
+        DoSQL(bsSQL).then(function () {
+            cb(null, { status: 0, "result": "" });
+        }, function (err) {
+            cb(err, { status: 1, "result": "" });
+        });
+    }
+
+
+    Patient.remoteMethod(
+        'setFollow2ECC',
+        {
+            http: { verb: 'post' },
+            description: '设置亲友为紧急联系人',
+            accepts: [{ arg: 'p', type: 'object', description: '{"followopenid":""}' },
+                {
+                    arg: 'token', type: 'string',
+                    http: function (ctx) {
+                        var req = ctx.req;
+                        return req.headers.token;
+                    },
+                    description: '{"token":""}'
+                }
+            ],
+            returns: { arg: 'UserInfo', type: 'object', root: true }
+        }
+    );    
 
 
     Patient.UserLogin = function (token, cb) {
