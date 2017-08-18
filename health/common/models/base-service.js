@@ -356,8 +356,8 @@ module.exports = function (Baseservice) {
         }
     );
 
-    Baseservice.CreatWechatQRCode = function (p, cb) {
-        EWTRACE("CreatWechatQRCode:"+p);
+    Baseservice.CreateWechatQRCode = function (p, cb) {
+        EWTRACE("CreateWechatQRCode:"+p);
         var tokenUrl = 'http://106.14.159.108:2567/token';
         var needle = require('needle');
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
@@ -384,13 +384,13 @@ module.exports = function (Baseservice) {
                 });
             }
         });
-        EWTRACE("CreatWechatQRCode");
+        EWTRACE("CreateWechatQRCode");
 
 
     }
 
     Baseservice.remoteMethod(
-        'CreatWechatQRCode',
+        'CreateWechatQRCode',
         {
             http: { verb: 'get' },
             description: '生成公众号二维码',
@@ -399,7 +399,7 @@ module.exports = function (Baseservice) {
         }
     );
 
-    Baseservice.CreatFamilyQRCode = function ( token, cb) {
+    Baseservice.CreateFamilyQRCode = function ( token, cb) {
 
         var _openid = null;
         var OpenID = {};
@@ -412,7 +412,7 @@ module.exports = function (Baseservice) {
         }
 
 
-        EWTRACE("CreatFamilyQRCode:"+_openid);
+        EWTRACE("CreateFamilyQRCode:"+_openid);
         var tokenUrl = 'http://106.14.159.108:2567/token';
         var needle = require('needle');
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
@@ -440,13 +440,13 @@ module.exports = function (Baseservice) {
                 });
             }
         });
-        EWTRACE("CreatFamilyQRCode");
+        EWTRACE("CreateFamilyQRCode End");
 
 
     }
 
     Baseservice.remoteMethod(
-        'CreatFamilyQRCode',
+        'CreateFamilyQRCode',
         {
             http: { verb: 'get' },
             description: '生成亲友二维码',
