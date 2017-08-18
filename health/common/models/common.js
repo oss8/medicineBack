@@ -624,7 +624,7 @@ module.exports = function (common) {
                             "value": CheckData.testTime
                         },
                         "remark": {
-                            "value": "曼康信息祝你健康每一天"
+                            "value": "曼康云-祝你健康每一天"
                         }
                     }
                 }
