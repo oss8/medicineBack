@@ -599,7 +599,7 @@ module.exports = function (common) {
 
                 var WXData = {
                     "touser": userInfo.openid,
-                    "template_id": process.env.WeChat_TakeErrorID,
+                    "template_id": process.env.WeChat_TakeCheckID,
                     "data": {
                         "first": {
                             "value": "手环测量结果推送",
