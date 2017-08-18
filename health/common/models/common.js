@@ -618,7 +618,7 @@ module.exports = function (common) {
                         },                        
                         "keyword2": {
                             "value": "\r\n  心率："+CheckData.hrCount + "\r\n  血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n   PWV："+CheckData.pwv+"\r\n   硬化风险："+relativeRisk,
-                            color: _color;
+                            color: _color
                         },
                         "keyword3": {
                             "value": "曼康云"
