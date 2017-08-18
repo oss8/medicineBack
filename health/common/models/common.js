@@ -595,13 +595,15 @@ module.exports = function (common) {
                 var _accesstoken = resp.body.access_token;
                 var myDate = new Date();
 
-                var _color = "#FF004F";
+                var _color = "#3300FF";
                 var relativeRisk = "不变";
                 if ( CheckData.relativeRisk == 0){
                     relativeRisk = "变低";
+                    _color = '#00cc00';
                 }
                 if ( CheckData.relativeRisk == 2){
                     relativeRisk = "变高";
+                    _color = '#cc3300';
                 }
 
                 var WXData = {
@@ -616,6 +618,7 @@ module.exports = function (common) {
                         },                        
                         "keyword2": {
                             "value": "\r\n  心率："+CheckData.hrCount + "\r\n  血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n   PWV："+CheckData.pwv+"\r\n   硬化风险："+relativeRisk,
+                            color: _color;
                         },
                         "keyword3": {
                             "value": "曼康云"
