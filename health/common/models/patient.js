@@ -71,67 +71,67 @@ module.exports = function (Patient) {
     );
 
 
-    Patient.ValidateWechatEvent = function (req, res, cb) {
+    // Patient.ValidateWechatEvent = function (req, res, cb) {
 
-        EWTRACE("ValidateWechatEvent Begin")
-        EWTRACE("Event:" + req.body.xml.event[0]);
-        EWTRACE("EventKey:" + req.body.xml.eventkey[0]);
+    //     EWTRACE("ValidateWechatEvent Begin")
+    //     EWTRACE("Event:" + req.body.xml.event[0]);
+    //     EWTRACE("EventKey:" + req.body.xml.eventkey[0]);
 
-        var q = req.query;
-        var openid = q.openid; //微信加密签名  
+    //     var q = req.query;
+    //     var openid = q.openid; //微信加密签名  
 
-        if (!_.isEmpty(req.body.xml.event)) {
+    //     if (!_.isEmpty(req.body.xml.event)) {
 
-            if (req.body.xml.event[0] == 'subscribe' || req.body.xml.event[0] == 'SCAN') {
-                if (req.body.xml.eventkey[0].substr(0, 7) == 'family_') {
-                    AddFamilyUser(req, res, cb);
-                } else {
-                    regUser(req, res, cb);
-                }
+    //         if (req.body.xml.event[0] == 'subscribe' || req.body.xml.event[0] == 'SCAN') {
+    //             if (req.body.xml.eventkey[0].substr(0, 7) == 'family_') {
+    //                 AddFamilyUser(req, res, cb);
+    //             } else {
+    //                 regUser(req, res, cb);
+    //             }
 
-            }
+    //         }
 
-            if (req.body.xml.event[0] == 'unsubscribe') {
-                unregUser(req, res, cb);
+    //         if (req.body.xml.event[0] == 'unsubscribe') {
+    //             unregUser(req, res, cb);
 
-            }
+    //         }
 
-            if (req.body.xml.event[0] == 'CLICK') {
-                if ( req.body.xml.eventkey[0] == "SOS_Notify"){
-                    WXClick_SOS(req, res, cb);
-                }
+    //         if (req.body.xml.event[0] == 'CLICK') {
+    //             if ( req.body.xml.eventkey[0] == "SOS_Notify"){
+    //                 WXClick_SOS(req, res, cb);
+    //             }
 
-            }
-        }
+    //         }
+    //     }
 
-        res.write(new Buffer("").toString("UTF-8"));
-        res.end();
-    };
+    //     res.write(new Buffer("").toString("UTF-8"));
+    //     res.end();
+    // };
 
-    Patient.remoteMethod(
-        'ValidateWechatEvent',
-        {
-            http: { verb: 'post' },
-            description: '微信服务器验证',
-            accepts: [{
-                arg: 'req', type: 'object',
-                http: function (ctx) {
-                    return ctx.req;
-                },
-                description: '{"token":""}'
-            },
-            {
-                arg: 'res', type: 'object',
-                http: function (ctx) {
-                    return ctx.res;
-                },
-                description: '{"token":""}'
-            }
-            ],
-            returns: { arg: 'echostr', type: 'number', root: true }
+    // Patient.remoteMethod(
+    //     'ValidateWechatEvent',
+    //     {
+    //         http: { verb: 'post' },
+    //         description: '微信服务器验证',
+    //         accepts: [{
+    //             arg: 'req', type: 'object',
+    //             http: function (ctx) {
+    //                 return ctx.req;
+    //             },
+    //             description: '{"token":""}'
+    //         },
+    //         {
+    //             arg: 'res', type: 'object',
+    //             http: function (ctx) {
+    //                 return ctx.res;
+    //             },
+    //             description: '{"token":""}'
+    //         }
+    //         ],
+    //         returns: { arg: 'echostr', type: 'number', root: true }
 
-        }
-    );
+    //     }
+    // );
 
     Patient.WatchCallSOS = function (req, cb) {
         EWTRACE("WatchCallSOS Begin");
