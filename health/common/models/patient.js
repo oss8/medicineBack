@@ -239,6 +239,7 @@ module.exports = function (Patient) {
             //cb(null, { status: 0, "result": "" });
         }, function (err) {
             //cb(err, { status: 1, "result": "" });
+            EWTRACE("Error"+err.message);
         });
     };
 
@@ -258,7 +259,7 @@ module.exports = function (Patient) {
                 // you can pass params as a string or as an object.
                 if (err) {
                     //cb(err, { status: 0, "result": "" });
-                    EWTRACE(err.message);
+                    EWTRACE("Error"+err.message);
                     //cb(err, { status: 1, "result": "" });
                 }
                 else {
@@ -306,6 +307,7 @@ module.exports = function (Patient) {
                                         //cb(null, { status: 0, "result": "" });
                                     }, function (err) {
                                         //cb(err, { status: 1, "result": "" });
+                                        EWTRACE("Error"+err.message);
                                     });
 
 
@@ -325,9 +327,11 @@ module.exports = function (Patient) {
                                             //cb(null, { status: 0, "result": "" });
                                         }, function (err) {
                                             //cb(err, { status: 1, "result": "" });
+                                            EWTRACE("Error"+err.message);
                                         });
                                     }, function (err) {
                                         //cb(err, { status: 1, "result": "" });
+                                        EWTRACE("Error"+err.message);
                                     });
 
                                 }
@@ -337,11 +341,8 @@ module.exports = function (Patient) {
                 }
             });
         }, function (err) {
-
+            EWTRACE("Error"+err.message);
         })
-
-
-
     }
 
     Patient.uploadPressureData = function (req, cb) {
