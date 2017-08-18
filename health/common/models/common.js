@@ -614,7 +614,7 @@ module.exports = function (common) {
                             "value": "曼康云"
                         },
                         "keyword4": {
-                            "value": (new Date()).format('yyyy-MM-dd')
+                            "value": CheckData.testTime
                         },
                         "remark": {
                             "value": "曼康信息祝你健康每一天"
