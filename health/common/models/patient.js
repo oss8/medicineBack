@@ -159,9 +159,9 @@ module.exports = function (Patient) {
         var bsSQL = "update hh_publicUser set openid = '' where openid = '" + openid + "'";
         DoSQL(bsSQL).then(function (userResult) {
 
-            cb(null, { status: 0, "result": "" });
+            //cb(null, { status: 0, "result": "" });
         }, function (err) {
-            cb(err, { status: 1, "result": "" });
+            //cb(err, { status: 1, "result": "" });
         });
     };
 
@@ -182,7 +182,7 @@ module.exports = function (Patient) {
                 if (err) {
                     //cb(err, { status: 0, "result": "" });
                     EWTRACE(err.message);
-                    cb(err, { status: 1, "result": "" });
+                    //cb(err, { status: 1, "result": "" });
                 }
                 else {
                     var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;
@@ -226,9 +226,9 @@ module.exports = function (Patient) {
                                     EWTRACEIFY(resp.body);
                                     var bsSQL = "update hh_publicUser set openid ='" + openid + "' where iccid = '" + watch_iccid + "'";
                                     DoSQL(bsSQL).then(function () {
-                                        cb(null, { status: 0, "result": "" });
+                                        //cb(null, { status: 0, "result": "" });
                                     }, function (err) {
-                                        cb(err, { status: 1, "result": "" });
+                                        //cb(err, { status: 1, "result": "" });
                                     });
 
 
@@ -245,12 +245,12 @@ module.exports = function (Patient) {
                                         }
 
                                         DoSQL(bsSQL).then(function () {
-                                            cb(null, { status: 0, "result": "" });
+                                            //cb(null, { status: 0, "result": "" });
                                         }, function (err) {
-                                            cb(err, { status: 1, "result": "" });
+                                            //cb(err, { status: 1, "result": "" });
                                         });
                                     }, function (err) {
-                                        cb(err, { status: 1, "result": "" });
+                                        //cb(err, { status: 1, "result": "" });
                                     });
 
                                 }
@@ -299,7 +299,7 @@ module.exports = function (Patient) {
                 DoSQL(bsSQL).then(function () {
                     cb(null, { code: 0, "message": "operate success" });
                     EWTRACE("正常接收");
-                    _SendCheckWX(UserInfo, body);
+                    _SendCheckWX(UserInfo[0], body);
                 }, function (err) {
                     cb(null, { code: -1, "message": err.message });
                     EWTRACE("message"+err.message);
