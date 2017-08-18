@@ -298,19 +298,23 @@ module.exports = function (Patient) {
 
                 DoSQL(bsSQL).then(function () {
                     cb(null, { code: 0, "message": "operate success" });
-
+                    EWTRACE("正常接收");
                     _SendCheckWX(UserInfo, body);
                 }, function (err) {
                     cb(null, { code: -1, "message": err.message });
+                    EWTRACE("message"+err.message);
                 })
 
 
             }, function (err) {
                 cb(err, { code: -1, "message": err.message });
+                EWTRACE("message"+err.message);
             })
         }
         else {
             cb(null, { code: 1001, "message": "数字签名错误，appId未授权" });
+
+            EWTRACE("message：数字签名错误，appId未授权");
         }
     }
 
