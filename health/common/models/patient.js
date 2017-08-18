@@ -11,7 +11,7 @@ module.exports = function (Patient) {
     var rule = new schedule.RecurrenceRule();
 
 
-    Patient.ValidateWechatToken = function (req, res, cb) {
+    Patient.ValidateWechatEvent = function (req, res, cb) {
 
         var token = 'zqlzql';
         var q = req.query;
@@ -46,7 +46,7 @@ module.exports = function (Patient) {
     };
 
     Patient.remoteMethod(
-        'ValidateWechatToken',
+        'ValidateWechatEvent',
         {
             http: { verb: 'get' },
             description: '微信服务器验证',
@@ -71,7 +71,11 @@ module.exports = function (Patient) {
     );
 
 
-    Patient.ValidateWechatToken = function (req, res, cb) {
+    Patient.ValidateWechatEvent = function (req, res, cb) {
+
+        EWTRACE("ValidateWechatEvent Begin")
+        EWTRACE("Event:" + req.body.xml.event[0]);
+        EWTRACE("EventKey:" + req.body.xml.eventkey[0]);
 
         var q = req.query;
         var openid = q.openid; //微信加密签名  
@@ -105,7 +109,7 @@ module.exports = function (Patient) {
     };
 
     Patient.remoteMethod(
-        'ValidateWechatToken',
+        'ValidateWechatEvent',
         {
             http: { verb: 'post' },
             description: '微信服务器验证',
