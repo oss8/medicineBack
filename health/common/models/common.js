@@ -596,6 +596,13 @@ module.exports = function (common) {
                 var myDate = new Date();
 
                 var _color = "#FF004F";
+                var relativeRisk = "不变";
+                if ( CheckData.relativeRisk == 0){
+                    relativeRisk = "变低";
+                }
+                if ( CheckData.relativeRisk == 2){
+                    relativeRisk = "变高";
+                }
 
                 var WXData = {
                     "touser": userInfo.openid,
@@ -608,7 +615,7 @@ module.exports = function (common) {
                             "value": userInfo.name
                         },                        
                         "keyword2": {
-                            "value": "\r\n心率："+CheckData.hrCount + "\r\n血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n",
+                            "value": "\r\n心率："+CheckData.hrCount + "\r\n血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\nPWV："+CheckData.pwv+"\r\n硬化风险："+relativeRisk,
                         },
                         "keyword3": {
                             "value": "曼康云"
