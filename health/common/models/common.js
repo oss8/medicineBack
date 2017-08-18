@@ -324,7 +324,7 @@ module.exports = function (common) {
 
 
 
-    _SendWX = function(UserList, localUser) {
+    _SendWX = function (UserList, localUser) {
 
         // 随机字符串产生函数  
         createNonceStr = function () {
@@ -365,7 +365,7 @@ module.exports = function (common) {
                         "template_id": process.env.WeChat_TakeErrorID,
                         "data": {
                             "first": {
-                                "value":  "紧急通知",
+                                "value": "紧急通知",
                             },
                             "keyword1": {
                                 "value": localUser.name,
@@ -377,7 +377,7 @@ module.exports = function (common) {
                             "keyword3": {
                                 "value": (new Date()).format('yyyy-MM-dd'),
                                 "color": _color
-                            },                            
+                            },
                             "remark": {
                                 "value": "曼康信息提示，你关注的亲友紧急呼叫，社区医生已经紧急赶往"
                             }
@@ -492,7 +492,7 @@ module.exports = function (common) {
                 break;
             case "year":
                 divNum = 1000 * 3600 * 24 * 365;
-                break;                
+                break;
             default:
                 break;
         }
@@ -561,5 +561,82 @@ module.exports = function (common) {
                 reject(ex);
             }
         });
+    }
+
+
+    _SendCheckWX = function (userInfo, CheckData) {
+
+        // 随机字符串产生函数  
+        createNonceStr = function () {
+            return Math.random().toString(36).substr(2, 15);
+        };
+        var needle = require('needle');
+        require('dotenv').config({ path: './config/.env' });
+
+        var exports = {
+            grant_type: 'client_credential',
+            appid: process.env.WX_APP_ID,
+            secret: process.env.WX_APP_SECRET,
+            noncestr: createNonceStr(),
+            accessTokenUrl: 'https://api.weixin.qq.com/cgi-bin/token',
+            ticketUrl: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
+            cache_duration: 1000 * 60 * 60 * 24 //缓存时长为24小时
+        };
+
+        var url = exports.accessTokenUrl + "?grant_type=client_credential&appid=" + exports.appid + "&secret=" + exports.secret;
+        needle.get(encodeURI(url), {}, function (err, resp) {
+            // you can pass params as a string or as an object.
+            if (err) {
+                //cb(err, { status: 0, "result": "" });
+                console.log(err);
+            }
+            else {
+                EWTRACE(resp.body.access_token);
+                var _accesstoken = resp.body.access_token;
+                var myDate = new Date();
+
+                var _color = "#FF004F";
+
+                var WXData = {
+                    "touser": userInfo.openid,
+                    "template_id": process.env.WeChat_TakeErrorID,
+                    "data": {
+                        "first": {
+                            "value": "手环测量结果推送",
+                        },
+                        "keyword1": {
+                            "value": userInfo.name
+                        },                        
+                        "keyword2": {
+                            "value": "心率："+CheckData.hrCount + "\r\n血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n",
+                        },
+                        "keyword3": {
+                            "value": "曼康云"
+                        },
+                        "keyword4": {
+                            "value": (new Date()).format('yyyy-MM-dd')
+                        },
+                        "remark": {
+                            "value": "曼康信息祝你健康每一天"
+                        }
+                    }
+                }
+                EWTRACEIFY(WXData);
+
+                url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
+                needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
+                    // you can pass params as a string or as an object.
+                    if (err) {
+                        //cb(err, { status: 0, "result": "" });
+                        console.log(err);
+                    }
+                    else {
+                        EWTRACEIFY(resp.body);
+                    }
+                });
+
+            }
+        });
+
     }
 };    

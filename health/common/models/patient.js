@@ -286,7 +286,7 @@ module.exports = function (Patient) {
 
         if (localSign.toUpperCase() == sign.toUpperCase()) {
 
-            var bsSQL = "select openid from hh_publicuser where iccid = '" + body.iccid + "'";
+            var bsSQL = "select openid,name from hh_publicuser where iccid = '" + body.iccid + "'";
             DoSQL(bsSQL).then(function (UserInfo) {
 
                 if (UserInfo.length == 0) {
@@ -298,6 +298,8 @@ module.exports = function (Patient) {
 
                 DoSQL(bsSQL).then(function () {
                     cb(null, { code: 0, "message": "operate success" });
+
+                    _SendCheckWX(UserInfo, body);
                 }, function (err) {
                     cb(null, { code: -1, "message": err.message });
                 })
