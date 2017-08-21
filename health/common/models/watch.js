@@ -107,12 +107,12 @@ module.exports = function (Watch) {
         }
     );
 
-    Watch.CreateWXMenu = function ( cb) {
-        EWTRACE("CreateWXMenu Begin");
+    Watch.RequestUserInfo = function ( cb) {
+        EWTRACE("RequestUserInfo Begin");
     }    
 
     Watch.remoteMethod(
-        'CreateWXMenu',
+        'RequestUserInfo',
         {
             http: { verb: 'post' },
             description: '创建微信菜单',
