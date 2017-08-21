@@ -459,16 +459,23 @@ module.exports = function (Patient) {
                     idList += item.watchuserid + ",";
                 });
 
-                _time = "&deviceType=0&belongDate=2017-08-10";
+                _time = "&deviceType=0&belongDate=2017-08-20";
 
                 idList = idList.substr(0,idList.length-1);
                 urlInfo.url += idList + _time;
                 EWTRACE(urlInfo.url);
                 needle.get(encodeURI(urlInfo.url), urlInfo.options, function (err, resp) {
-                    if (err || resp.body.code != 0) {
+                    if (err ) {
                         reject(err);
                         return;
                     }
+
+                    if ( _.isEmpty(resp.body.data) || resp.body.code != 0){
+                        reject(new Error('数据返回错误！'));
+                        return;
+                    }
+
+                    EWTRACE("code:"+resp.body.code+", message:"+resp.body.message);
 
                     bsSQL = "";
                     resp.body.data.forEach(function (item) {
