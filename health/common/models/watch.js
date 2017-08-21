@@ -10,12 +10,8 @@ module.exports = function (Watch) {
     Watch.CreateWXMenu = function ( cb) {
         EWTRACE("CreateWXMenu Begin");
 
-
-
         var tokenUrl = 'http://106.14.159.108:2567/token';
         var needle = require('needle');
-
-
 
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
 
@@ -101,6 +97,19 @@ module.exports = function (Watch) {
             }
         });
     }
+
+    Watch.remoteMethod(
+        'CreateWXMenu',
+        {
+            http: { verb: 'post' },
+            description: '创建微信菜单',
+            returns: { arg: 'AddDoctor', type: 'object', root: true }
+        }
+    );
+
+    Watch.CreateWXMenu = function ( cb) {
+        EWTRACE("CreateWXMenu Begin");
+    }    
 
     Watch.remoteMethod(
         'CreateWXMenu',
