@@ -109,6 +109,17 @@ module.exports = function (Watch) {
 
     Watch.RequestUserInfo = function ( cb) {
         EWTRACE("RequestUserInfo Begin");
+
+        var exec = require('child_process').exec; 
+        exec(cmdStr, function(err,stdout, stderr){
+
+            if ( err ){
+                EWTRACE(err.message)
+            }
+            else{
+                EWTRACE(stdout);
+            }
+        });
     }    
 
     Watch.remoteMethod(
