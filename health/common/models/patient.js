@@ -535,6 +535,20 @@ module.exports = function (Patient) {
             if (_curTime == '04') {
                 var _curMinute = currentTime.toTimeString().substr(3, 2);
 
+                if (_curMinute == '10'){
+                    var exec = require('child_process').exec; 
+                    var cmdStr = "pm2 restart wx-token";
+                    exec(cmdStr, function(err,stdout, stderr){
+            
+                        if ( err ){
+                            EWTRACE(err.message)
+                        }
+                        else{
+                            EWTRACE(stdout);
+                        }
+                    });
+                    return;
+                }
                 if (_curMinute == '30') {
 
                     var bsSQL = "insert into hh_usersportdata_history select * from hh_usersportdata where addtime > DATE_ADD(now(),interval -7 day);delete from hh_usersportdata where addtime > DATE_ADD(now(),interval -7 day)";
