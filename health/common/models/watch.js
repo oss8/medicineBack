@@ -111,6 +111,7 @@ module.exports = function (Watch) {
         EWTRACE("RequestUserInfo Begin");
 
         var exec = require('child_process').exec; 
+        var cmdStr = "pm2 restart wx-token";
         exec(cmdStr, function(err,stdout, stderr){
 
             if ( err ){
