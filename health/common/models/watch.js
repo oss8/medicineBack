@@ -486,14 +486,15 @@ module.exports = function (Watch) {
         {
             http: { verb: 'post' },
             description: '查询用户检测数据',
-            accepts: [{ arg: 'p', type: 'object', description: '{"followopenid":""}' },{
+            accepts: [{ arg: 'p', type: 'object', description: '{"followopenid":""}' },
+            {
                 arg: 'token', type: 'string',
                 http: function (ctx) {
                     var req = ctx.req;
                     return req.headers.token;
-                }],
+                },
                 description: '{"token":""}'
-            },
+            }],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );    
