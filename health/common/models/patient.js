@@ -459,7 +459,7 @@ module.exports = function (Patient) {
                     idList += item.watchuserid + ",";
                 });
 
-                _time = "&deviceType=0&belongDate=2017-08-20";
+                //_time = "&deviceType=0&belongDate=2017-08-20";
 
                 idList = idList.substr(0,idList.length-1);
                 urlInfo.url += idList + _time;
