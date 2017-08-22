@@ -333,10 +333,10 @@ module.exports = function (Patient) {
                                     var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
                                     DoSQL(bsSQL).then(function (userResult) {
                                         if (userResult.length == 0) {
-                                            bsSQL = "update hh_publicuser set watchuserid = null where iccid = '" + watch_iccid + "';"
+                                            bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
                                             bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "','" + resp.body.data.userId + "','" + userInfo.province + "','" + userInfo.city + "','" + userInfo.sex + "',0,0);";
                                         } else {
-                                            bsSQL = "update hh_publicuser set watchuserid = null where iccid = '" + watch_iccid + "';"
+                                            bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
                                             bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = '" + resp.body.data.userId + "',name='" + userInfo.nickname + "' where openid ='" + openid + "'";
                                         }
 
