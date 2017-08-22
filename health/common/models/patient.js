@@ -204,6 +204,23 @@ module.exports = function (Patient) {
         }
     );
 
+    Patient.testCallSportData = function (cb) {
+        EWTRACE("testCallSportData Begin");
+        var now = new Date().format('yyyy-MM-dd');
+        var getDay = GetDateAdd(now, -1, 'day').format('yyyy-MM-dd');
+        getEveryDayData(getDay);
+        cb(null, { code: 0, "message": "operate success" });
+    }
+
+
+    Patient.remoteMethod(
+        'testCallSportData',
+        {
+            http: { verb: 'post' },
+            description: '测试获取全天数据',
+            returns: { arg: 'UserInfo', type: 'object', root: true }
+        }
+    );
 
 
     function WXClick_SOS(req, res, cb){
@@ -427,9 +444,7 @@ module.exports = function (Patient) {
 
                 }, function (err) {
                     EWTRACE('数据获取失败:' + err.message)
-                    err.forEach(function (item) {
-                        EWTRACE(item.watchuserid)
-                    })
+
                 })
             }
 
@@ -470,12 +485,12 @@ module.exports = function (Patient) {
                         return;
                     }
 
-                    if ( _.isEmpty(resp.body.data) || resp.body.code != 0){
+                    if ( _.isUndefined(resp.body.data) || resp.body.code != 0){
                         reject(new Error('数据返回错误！'));
                         return;
                     }
 
-                    EWTRACE("code:"+resp.body.code+", message:"+resp.body.message);
+                    EWTRACE("code:"+resp.body.code+", message:"+resp.body.message + ", return user length : " + resp.body.data.length);
 
                     bsSQL = "";
                     resp.body.data.forEach(function (item) {
