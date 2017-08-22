@@ -8,7 +8,7 @@ module.exports = function (Baseservice) {
 
     Baseservice.CreateWechatQRCode = function (p, cb) {
         EWTRACE("CreateWechatQRCode:"+p);
-        var tokenUrl = 'http://106.14.159.108:2567/token';
+        var tokenUrl = 'http://106.14.159.108:3000/token';
         var needle = require('needle');
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
             // you can pass params as a string or as an object.
