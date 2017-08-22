@@ -11,6 +11,10 @@ module.exports = function (Watch) {
         EWTRACE("CreateWXMenu Begin");
 
         var tokenUrl = 'http://106.14.159.108:3000/token';
+        var IP = getIPAdress();
+        if ( IP.indexOf('172.19') >= 0 ){
+            tokenUrl = 'http://0.0.0.0:3000/token';
+        }
         var needle = require('needle');
 
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
@@ -254,6 +258,10 @@ module.exports = function (Watch) {
 
         EWTRACE("RequestMyQRCode:" + _openid);
         var tokenUrl = 'http://106.14.159.108:3000/token';
+        var IP = getIPAdress();
+        if ( IP.indexOf('172.19') >= 0 ){
+            tokenUrl = 'http://0.0.0.0:3000/token';
+        }
         var needle = require('needle');
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
             // you can pass params as a string or as an object.
