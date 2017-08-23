@@ -83,10 +83,13 @@ module.exports = function (Patient) {
         if (!_.isEmpty(req.body.xml.event)) {
 
             var _event = req.body.xml.event[0];
-            var _eventKey = req.body.xml.eventkey[0];
+            var _eventKey = "";
+            if ( !_.isEmpty(req.body.xml.eventkey[0])){
+                _eventKey = req.body.xml.eventkey[0];
+            }
             res.write(new Buffer("").toString("UTF-8"));
             res.end();
-            
+
             if (_event == 'subscribe' || _event == 'SCAN') {
                 EWTRACE("EventKey:" + _eventKey);
                 if (_eventKey.substr(0, 7) == 'family_') {
