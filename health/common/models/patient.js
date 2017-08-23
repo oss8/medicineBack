@@ -270,10 +270,11 @@ module.exports = function (Patient) {
         }
 
         GetWXNickName(openid).then(function (userInfo) {
-            var tokenUrl = 'http://106.14.159.108:3000/token';
+            require('dotenv').config({ path: './config/.env' });
+            var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
             var IP = getIPAdress();
             if ( IP.indexOf('172.19') >= 0 ){
-                tokenUrl = 'http://0.0.0.0:3000/token';
+                tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
             }
             var needle = require('needle');
             needle.get(encodeURI(tokenUrl), null, function (err, resp) {

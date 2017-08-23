@@ -332,19 +332,12 @@ module.exports = function (common) {
         };
         var needle = require('needle');
         require('dotenv').config({ path: './config/.env' });
-
-        var exports = {
-            grant_type: 'client_credential',
-            appid: process.env.WX_APP_ID,
-            secret: process.env.WX_APP_SECRET,
-            noncestr: createNonceStr(),
-            accessTokenUrl: 'https://api.weixin.qq.com/cgi-bin/token',
-            ticketUrl: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
-            cache_duration: 1000 * 60 * 60 * 24 //缓存时长为24小时
-        };
-
-        var url = exports.accessTokenUrl + "?grant_type=client_credential&appid=" + exports.appid + "&secret=" + exports.secret;
-        needle.get(encodeURI(url), {}, function (err, resp) {
+        var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
+        var IP = getIPAdress();
+        if ( IP.indexOf('172.19') >= 0 ){
+            tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
+        }
+        needle.get(encodeURI(tokenUrl), {}, function (err, resp) {
             // you can pass params as a string or as an object.
             if (err) {
                 //cb(err, { status: 0, "result": "" });
@@ -532,11 +525,13 @@ module.exports = function (common) {
     GetWXNickName = function (fromOpenid) {
         return new Promise(function (resolve, reject) {
             try {
-                var tokenUrl = 'http://106.14.159.108:3000/token';
+                require('dotenv').config({ path: './config/.env' });
+                var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
                 var IP = getIPAdress();
                 if ( IP.indexOf('172.19') >= 0 ){
-                    tokenUrl = 'http://0.0.0.0:3000/token';
+                    tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
                 }
+                
                 var needle = require('needle');
                 needle.get(encodeURI(tokenUrl), null, function (err, resp) {
                     // you can pass params as a string or as an object.
@@ -576,19 +571,12 @@ module.exports = function (common) {
         };
         var needle = require('needle');
         require('dotenv').config({ path: './config/.env' });
-
-        var exports = {
-            grant_type: 'client_credential',
-            appid: process.env.WX_APP_ID,
-            secret: process.env.WX_APP_SECRET,
-            noncestr: createNonceStr(),
-            accessTokenUrl: 'https://api.weixin.qq.com/cgi-bin/token',
-            ticketUrl: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
-            cache_duration: 1000 * 60 * 60 * 24 //缓存时长为24小时
-        };
-
-        var url = exports.accessTokenUrl + "?grant_type=client_credential&appid=" + exports.appid + "&secret=" + exports.secret;
-        needle.get(encodeURI(url), {}, function (err, resp) {
+        var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
+        var IP = getIPAdress();
+        if ( IP.indexOf('172.19') >= 0 ){
+            tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
+        }
+        needle.get(encodeURI(tokenUrl), {}, function (err, resp) {
             // you can pass params as a string or as an object.
             if (err) {
                 //cb(err, { status: 0, "result": "" });
