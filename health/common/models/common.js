@@ -368,7 +368,7 @@ module.exports = function (common) {
                                 "color": _color
                             },
                             "keyword3": {
-                                "value": (new Date()).format('yyyy-MM-dd'),
+                                "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
                                 "color": _color
                             },
                             "remark": {
