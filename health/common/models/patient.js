@@ -84,7 +84,7 @@ module.exports = function (Patient) {
 
             var _event = req.body.xml.event[0];
             var _eventKey = "";
-            if ( !_.isEmpty(req.body.xml.eventkey[0])){
+            if ( !_.isEmpty(req.body.xml.eventkey)){
                 _eventKey = req.body.xml.eventkey[0];
             }
             res.write(new Buffer("").toString("UTF-8"));
