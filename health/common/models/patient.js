@@ -82,9 +82,14 @@ module.exports = function (Patient) {
 
         if (!_.isEmpty(req.body.xml.event)) {
 
-            if (req.body.xml.event[0] == 'subscribe' || req.body.xml.event[0] == 'SCAN') {
-                EWTRACE("EventKey:" + req.body.xml.eventkey[0]);
-                if (req.body.xml.eventkey[0].substr(0, 7) == 'family_') {
+            var _event = req.body.xml.event[0];
+            var _eventKey = req.body.xml.eventkey[0];
+            res.write(new Buffer("").toString("UTF-8"));
+            res.end();
+            
+            if (_event == 'subscribe' || _event == 'SCAN') {
+                EWTRACE("EventKey:" + _eventKey);
+                if (_eventKey.substr(0, 7) == 'family_') {
                     AddFamilyUser(req, res, cb);
                 } else {
                     regUser(req, res, cb);
@@ -92,19 +97,21 @@ module.exports = function (Patient) {
 
             }
 
-            if (req.body.xml.event[0] == 'unsubscribe') {
+            if (_event == 'unsubscribe') {
                 unregUser(req, res, cb);
             }
 
-            if (req.body.xml.event[0] == 'CLICK') {
-                if ( req.body.xml.eventkey[0] == "SOS_Notify"){
+            if (_event == 'CLICK') {
+                if ( _eventKey == "SOS_Notify"){
                     WXClick_SOS(req, res, cb);
                 }
             }
         }
+        else{
+            res.write(new Buffer("").toString("UTF-8"));
+            res.end();
+        }
 
-        res.write(new Buffer("").toString("UTF-8"));
-        res.end();
     };
 
     Patient.remoteMethod(
