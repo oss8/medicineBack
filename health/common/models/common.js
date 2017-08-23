@@ -339,9 +339,17 @@ module.exports = function (common) {
         }
         needle.get(encodeURI(tokenUrl), {}, function (err, resp) {
             // you can pass params as a string or as an object.
-            if (err) {
+            if (err || !_.isUndefined(resp.headers.errcode)) {
                 //cb(err, { status: 0, "result": "" });
-                console.log(err);
+                var _msg = "";
+                if ( !_.isNull(err)){
+                    _msg = err.message;
+                }
+                else{
+                    _msg = resp.headers.errmsg;
+                }
+                EWTRACE(_msg);
+                cb(err, { status: 0, "result": _msg });
             }
             else {
                 EWTRACE(resp.body.access_token);
@@ -535,10 +543,17 @@ module.exports = function (common) {
                 var needle = require('needle');
                 needle.get(encodeURI(tokenUrl), null, function (err, resp) {
                     // you can pass params as a string or as an object.
-                    if (err) {
+                    if (err || !_.isUndefined(resp.headers.errcode)) {
                         //cb(err, { status: 0, "result": "" });
-                        EWTRACE(err.message);
-                        reject(err);
+                        var _msg = "";
+                        if ( !_.isNull(err)){
+                            _msg = err.message;
+                        }
+                        else{
+                            _msg = resp.headers.errmsg;
+                        }
+                        EWTRACE(_msg);
+                        cb(err, { status: 0, "result": _msg });
                     }
                     else {
                         var url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + resp.body.access_token + "&openid=" + fromOpenid + "&lang=zh_CN";
@@ -578,9 +593,17 @@ module.exports = function (common) {
         }
         needle.get(encodeURI(tokenUrl), {}, function (err, resp) {
             // you can pass params as a string or as an object.
-            if (err) {
+            if (err || !_.isUndefined(resp.headers.errcode)) {
                 //cb(err, { status: 0, "result": "" });
-                console.log(err);
+                var _msg = "";
+                if ( !_.isNull(err)){
+                    _msg = err.message;
+                }
+                else{
+                    _msg = resp.headers.errmsg;
+                }
+                EWTRACE(_msg);
+                cb(err, { status: 0, "result": _msg });
             }
             else {
                 EWTRACE(resp.body.access_token);

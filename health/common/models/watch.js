@@ -20,8 +20,17 @@ module.exports = function (Watch) {
 
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
 
-            if (err) {
-                cb(err, { status: 0, "result": "" });
+            if (err || !_.isUndefined(resp.headers.errcode)) {
+                //cb(err, { status: 0, "result": "" });
+                var _msg = "";
+                if ( !_.isNull(err)){
+                    _msg = err.message;
+                }
+                else{
+                    _msg = resp.headers.errmsg;
+                }
+                EWTRACE(_msg);
+                cb(err, { status: 0, "result": _msg });
             }
             else {
 
@@ -267,10 +276,17 @@ module.exports = function (Watch) {
         var needle = require('needle');
         needle.get(encodeURI(tokenUrl), null, function (err, resp) {
             // you can pass params as a string or as an object.
-            if (err) {
+            if (err || !_.isUndefined(resp.headers.errcode)) {
                 //cb(err, { status: 0, "result": "" });
-                EWTRACE(err.message);
-                cb(err, { status: 1, "result": "" });
+                var _msg = "";
+                if ( !_.isNull(err)){
+                    _msg = err.message;
+                }
+                else{
+                    _msg = resp.headers.errmsg;
+                }
+                EWTRACE(_msg);
+                cb(err, { status: 0, "result": _msg });
             }
             else {
                 var family = 'family_' + _openid;

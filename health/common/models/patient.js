@@ -289,10 +289,17 @@ module.exports = function (Patient) {
             var needle = require('needle');
             needle.get(encodeURI(tokenUrl), null, function (err, resp) {
                 // you can pass params as a string or as an object.
-                if (err) {
+                if (err || !_.isUndefined(resp.headers.errcode)) {
                     //cb(err, { status: 0, "result": "" });
-                    EWTRACE("Error"+err.message);
-                    //cb(err, { status: 1, "result": "" });
+                    var _msg = "";
+                    if ( !_.isNull(err)){
+                        _msg = err.message;
+                    }
+                    else{
+                        _msg = resp.headers.errmsg;
+                    }
+                    EWTRACE(_msg);
+                    cb(err, { status: 0, "result": _msg });
                 }
                 else {
                     var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;
