@@ -5,7 +5,8 @@ module.exports = function (Baseservice) {
     var app = require('../../server/server');
     app.DisableSystemMethod(Baseservice);
     var _ = require('underscore');
-
+    var needle = require('needle');
+    
     Baseservice.CreateWechatQRCode = function (p, cb) {
         EWTRACE("CreateWechatQRCode:" + p);
         Request_WxToken().then(function (resp) {
