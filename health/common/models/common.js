@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 19:34:11
+ * @Last Modified time: 2017-08-24 20:12:25
  */
 
 var log4js = require('log4js');
@@ -519,7 +519,6 @@ module.exports = function (common) {
                     else {
                         var result = {};
                         result.body = userInfo.body.user_info_list[0];
-
                         result.body.access_token = resp.body.access_token;
                         
                         resolve(result.body);

@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:44:24 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 19:27:56
+ * @Last Modified time: 2017-08-24 20:14:07
  */
 'use strict';
 
@@ -15,10 +15,6 @@ module.exports = function (Baseservice) {
 
     Baseservice.CreateWechatQRCode = function (p, cb) {
         EWTRACE("CreateWechatQRCode:" + p);
-
-        GetWXNickName2('oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU').then(function (userInfo) {
-            EWTRACEIFY(userInfo);
-        });
 
         Request_WxToken().then(function (resp) {
             var pp = { "expire_seconds": 604800, "action_name": "QR_STR_SCENE", "action_info": { "scene": { "scene_str": p } } };
