@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 22:00:19
+ * @Last Modified time: 2017-08-24 22:03:47
  */
 
 var log4js = require('log4js');
@@ -374,11 +374,12 @@ module.exports = function (common) {
         
         var location_x = "";
         var location_y = "";
-
+        var label = "";
         if ( !_.isUndefined(localtion)){
             console.log(localtion);
             location_x = localtion.location_x[0];
             location_y = localtion.location_y[0];
+            label = localtion.label[0];
         }
         else{
             location_x = localUser.location_x;
@@ -406,7 +407,7 @@ module.exports = function (common) {
                             "color": _color
                         },
                         "keyword2": {
-                            "value": localtion.label[0],
+                            "value": label,
                             "color": _color
                         },
                         "keyword3": {
