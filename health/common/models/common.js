@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 16:54:11
+ * @Last Modified time: 2017-08-24 19:34:11
  */
 
 var log4js = require('log4js');
@@ -492,6 +492,37 @@ module.exports = function (common) {
                         userInfo.body.access_token = resp.body.access_token;
                         EWTRACEIFY(userInfo.body);
                         resolve(userInfo.body);
+                    }
+                });
+            }, function (err) {
+                reject(err);
+            })
+        })
+    }
+
+    GetWXNickName2 = function (fromOpenid) {
+        return new Promise(function (resolve, reject) {
+            Request_WxToken().then(function (resp) {
+                var url = "https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=" + resp.body.access_token ;
+
+                var List = {user_list:[{
+                    "openid": fromOpenid,
+                    "lang": 'zh_CN'
+                }]};
+                needle.post(encodeURI(url), List, {json:true}, function (err, userInfo) {
+                    // you can pass params as a string or as an object.
+                    if (err) {
+                        //cb(err, { status: 0, "result": "" });
+                        EWTRACE(err.message);
+                        reject(err);
+                    }
+                    else {
+                        var result = {};
+                        result.body = userInfo.body.user_info_list[0];
+
+                        result.body.access_token = resp.body.access_token;
+                        
+                        resolve(result.body);
                     }
                 });
             }, function (err) {

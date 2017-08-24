@@ -31,6 +31,7 @@ module.exports = function (Watch) {
         }, function (err) {
             cb(err, { status: 1, "result": "" });
         });
+        EWTRACE("CreateWXMenu End");
     }
 
     Watch.remoteMethod(
