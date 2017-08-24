@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 13:36:36
+ * @Last Modified time: 2017-08-24 14:27:46
  */
 'use strict';
 
@@ -334,18 +334,18 @@ module.exports = function (Patient) {
                     needle.post(encodeURI(urlInfo.url), AddWatch, urlInfo.options, function (err, resp) {
                         // you can pass params as a string or as an object.
 
-                        if (err || resp.body.code != 0) {
+                        if (err || (resp.body.code != 0 && watch_iccid != '')) {
                             //cb(err, { status: 0, "result": "" });
                             EWTRACEIFY(resp.body);
-                            var bsSQL = "update hh_publicUser set openid ='" + openid + "' where iccid = '" + watch_iccid + "'";
-                            DoSQL(bsSQL).then(function () {
-                                //cb(null, { status: 0, "result": "" });
-                            }, function (err) {
-                                //cb(err, { status: 1, "result": "" });
-                                EWTRACE("Error" + err.message);
-                            });
-
-
+                            if ( watch_iccid != ''){
+                                var bsSQL = "update hh_publicUser set openid ='" + openid + "' where iccid = '" + watch_iccid + "'";
+                                DoSQL(bsSQL).then(function () {
+                                    //cb(null, { status: 0, "result": "" });
+                                }, function (err) {
+                                    //cb(err, { status: 1, "result": "" });
+                                    EWTRACE("Error" + err.message);
+                                });
+                            }
                         }
                         else {
                             var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
