@@ -10,105 +10,83 @@ module.exports = function (Watch) {
     Watch.CreateWXMenu = function (cb) {
         EWTRACE("CreateWXMenu Begin");
 
-        require('dotenv').config({ path: './config/.env' });
-        var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
-        var IP = getIPAdress();
-        if ( IP.indexOf('172.19') >= 0 ){
-            tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
-        }
-        var needle = require('needle');
+        Request_WxToken().then(function (resp) {
 
-        needle.get(encodeURI(tokenUrl), null, function (err, resp) {
-
-            if (err || !_.isUndefined(resp.headers.errcode)) {
-                //cb(err, { status: 0, "result": "" });
-                var _msg = "";
-                if ( !_.isNull(err)){
-                    _msg = err.message;
-                }
-                else{
-                    _msg = resp.headers.errmsg;
-                }
-                EWTRACE(_msg);
-                cb(err, { status: 0, "result": _msg });
-            }
-            else {
-
-
-                var data = {
-                    "button": [
-                        {
-                            "name": "我的",
-                            "sub_button": [
-                                {
-                                    "type": "view",
-                                    "name": "个人信息",
-                                    "url": "http://www.soso.com/"
-                                },
-                                {
-                                    "type": "view",
-                                    "name": "设备绑定",
-                                    "url": "http://v.qq.com/"
-                                },
-                                {
-                                    "type": "view",
-                                    "name": "初学者教学",
-                                    "url": "http://v.qq.com/"
-                                },
-                                {
-                                    "type": "view",
-                                    "name": "联系客服",
-                                    "url": "http://v.qq.com/"
-                                },
-                                {
-                                    "type": "view",
-                                    "name": "认识PWV",
-                                    "url": "http://v.qq.com/"
-                                },
-                            ]
-                        },
-                        {
-                            "name": "健康档案",
-                            "sub_button": [
-                                {
-                                    "type": "view",
-                                    "name": "历史数据",
-                                    "url": "http://www.soso.com/"
-                                },
-                                {
-                                    "type": "view",
-                                    "name": "健康报告",
-                                    "url": "http://v.qq.com/"
-                                },
-                                {
-                                    "type": "view",
-                                    "name": "健康之道",
-                                    "url": "http://v.qq.com/"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "click",
-                            "name": "SOS",
-                            "key": "SOS_Notify"
-                        }
-                    ]
-                }
-
-                var url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + resp.body.access_token;
-
-                needle.post(encodeURI(url), data, { json: true }, function (err, resp) {
-                    // you can pass params as a string or as an object.
-                    if (err) {
-                        //cb(err, { status: 0, "result": "" });
-                        EWTRACE(err.message);
-                        cb(err, { status: 1, "result": "" });
+            var data = {
+                "button": [
+                    {
+                        "name": "我的",
+                        "sub_button": [
+                            {
+                                "type": "view",
+                                "name": "个人信息",
+                                "url": "http://www.soso.com/"
+                            },
+                            {
+                                "type": "view",
+                                "name": "设备绑定",
+                                "url": "http://v.qq.com/"
+                            },
+                            {
+                                "type": "view",
+                                "name": "初学者教学",
+                                "url": "http://v.qq.com/"
+                            },
+                            {
+                                "type": "view",
+                                "name": "联系客服",
+                                "url": "http://v.qq.com/"
+                            },
+                            {
+                                "type": "view",
+                                "name": "认识PWV",
+                                "url": "http://v.qq.com/"
+                            },
+                        ]
+                    },
+                    {
+                        "name": "健康档案",
+                        "sub_button": [
+                            {
+                                "type": "view",
+                                "name": "历史数据",
+                                "url": "http://www.soso.com/"
+                            },
+                            {
+                                "type": "view",
+                                "name": "健康报告",
+                                "url": "http://v.qq.com/"
+                            },
+                            {
+                                "type": "view",
+                                "name": "健康之道",
+                                "url": "http://v.qq.com/"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "click",
+                        "name": "SOS",
+                        "key": "SOS_Notify"
                     }
-                    else {
-                        cb(null, { status: 0, "result": resp.body });
-                    }
-                });
+                ]
             }
+
+            var url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + resp.body.access_token;
+
+            needle.post(encodeURI(url), data, { json: true }, function (err, resp) {
+                // you can pass params as a string or as an object.
+                if (err) {
+                    //cb(err, { status: 0, "result": "" });
+                    EWTRACE(err.message);
+                    cb(err, { status: 1, "result": "" });
+                }
+                else {
+                    cb(null, { status: 0, "result": resp.body });
+                }
+            });
+        }, function (err) {
+            cb(err, { status: 1, "result": "" });
         });
     }
 
@@ -185,12 +163,12 @@ module.exports = function (Watch) {
         var OpenID = {};
         try {
             OpenID = GetOpenIDFromToken(token);
-            _openid = OpenID.openId;
+            _openid = OpenID.openid;            
         } catch (err) {
             cb(null, { status: 1, "result": "" });
             return;
         }
-        _openid = OpenID.openid;
+
 
         var bsSQL = "update hh_publicuser set ";
         var fieldContext = "";
@@ -265,47 +243,27 @@ module.exports = function (Watch) {
             return;
         }
 
-
         EWTRACE("RequestMyQRCode:" + _openid);
-        require('dotenv').config({ path: './config/.env' });
-        var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
-        var IP = getIPAdress();
-        if ( IP.indexOf('172.19') >= 0 ){
-            tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
-        }
-        var needle = require('needle');
-        needle.get(encodeURI(tokenUrl), null, function (err, resp) {
-            // you can pass params as a string or as an object.
-            if (err || !_.isUndefined(resp.headers.errcode)) {
-                //cb(err, { status: 0, "result": "" });
-                var _msg = "";
-                if ( !_.isNull(err)){
-                    _msg = err.message;
+        Request_WxToken().then(function (resp) {
+            var family = 'family_' + _openid;
+            var pp = { "expire_seconds": 604800, "action_name": "QR_STR_SCENE", "action_info": { "scene": { "scene_str": family } } };
+            var url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + resp.body.access_token;
+            needle.post(encodeURI(url), pp, { json: true }, function (err, resp) {
+                // you can pass params as a string or as an object.
+                if (err) {
+                    //cb(err, { status: 0, "result": "" });
+                    EWTRACE(err.message);
+                    cb(err, { status: 0, "result": "" });
                 }
-                else{
-                    _msg = resp.headers.errmsg;
+                else {
+                    EWTRACE(resp.body.url);
+                    cb(null, { status: 1, "result": resp.body.url });
                 }
-                EWTRACE(_msg);
-                cb(err, { status: 0, "result": _msg });
-            }
-            else {
-                var family = 'family_' + _openid;
-                var pp = { "expire_seconds": 604800, "action_name": "QR_STR_SCENE", "action_info": { "scene": { "scene_str": family } } };
-                var url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + resp.body.access_token;
-                needle.post(encodeURI(url), pp, { json: true }, function (err, resp) {
-                    // you can pass params as a string or as an object.
-                    if (err) {
-                        //cb(err, { status: 0, "result": "" });
-                        EWTRACE(err.message);
-                        cb(err, { status: 0, "result": "" });
-                    }
-                    else {
-                        EWTRACE(resp.body.url);
-                        cb(null, { status: 1, "result": resp.body.url });
-                    }
-                });
-            }
+            });
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
         });
+
         EWTRACE("RequestMyQRCode End");
     }
 
@@ -435,13 +393,13 @@ module.exports = function (Watch) {
             cb(null, { status: 403, "result": "" });
             return;
         }
-        if ( _.isUndefined(p.followOpenid)){
+        if (_.isUndefined(p.followOpenid)) {
             _openid = OpenID.openid;
         }
-        else{
+        else {
             _openid = p.followOpenid;
         }
-        
+
 
         var ps = [];
         var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,date_format(addtime, '%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where openid = '" + _openid + "' order by addtime desc";
@@ -523,5 +481,5 @@ module.exports = function (Watch) {
             }],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
-    );    
+    );
 };

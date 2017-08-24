@@ -307,6 +307,7 @@ module.exports = function (common) {
             });
         });
     }
+    
     GetOpenIDFromToken = function (token) {
         var jwt = require('jwt-simple');
         var rf = require("fs");
