@@ -54,7 +54,7 @@
         ]
       },
       {
-        "type": "click",
+        "type": "location_select",
         "name": "SOS",
         "key": "SOS_Notify"
       }

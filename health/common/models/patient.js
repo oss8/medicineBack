@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 15:49:54
+ * @Last Modified time: 2017-08-24 16:26:54
  */
 'use strict';
 
@@ -111,9 +111,6 @@ module.exports = function (Patient) {
             }
 
             if (_event == 'CLICK') {
-                if (_eventKey == "SOS_Notify") {
-                    WXClick_SOS(req, res, cb);
-                }
                 if ( _eventKey == "Create_Token"){
                     GetWXNickName(req.body.xml.fromusername[0]).then(function(result){
                         var userInfo = {};
@@ -126,7 +123,7 @@ module.exports = function (Patient) {
                 }
             }
             if ( _event == 'location_select'){
-                if ( _eventKey == 'sos'){
+                if ( _eventKey == 'SOS_Notify'){
                     EWTRACE("call WXClick_SOS");
                     WXClick_SOS(req, res, cb);
                 }
