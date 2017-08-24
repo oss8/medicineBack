@@ -1,3 +1,9 @@
+/*
+ * @Author: summer.ge 
+ * @Date: 2017-08-24 13:44:24 
+ * @Last Modified by: summer.ge
+ * @Last Modified time: 2017-08-24 13:47:33
+ */
 'use strict';
 
 module.exports = function (Baseservice) {
@@ -6,7 +12,7 @@ module.exports = function (Baseservice) {
     app.DisableSystemMethod(Baseservice);
     var _ = require('underscore');
     var needle = require('needle');
-    
+
     Baseservice.CreateWechatQRCode = function (p, cb) {
         EWTRACE("CreateWechatQRCode:" + p);
         Request_WxToken().then(function (resp) {

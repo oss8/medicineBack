@@ -1,3 +1,9 @@
+/*
+ * @Author: summer.ge 
+ * @Date: 2017-08-24 13:27:54 
+ * @Last Modified by: summer.ge
+ * @Last Modified time: 2017-08-24 13:36:36
+ */
 'use strict';
 
 module.exports = function (Patient) {
@@ -10,7 +16,7 @@ module.exports = function (Patient) {
     var schedule = require("node-schedule");   //定时任务  
     var rule = new schedule.RecurrenceRule();
 
-
+    
     Patient.ValidateWechatEvent = function (req, res, cb) {
 
         var token = 'zqlzql';
