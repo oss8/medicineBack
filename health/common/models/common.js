@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 16:35:37
+ * @Last Modified time: 2017-08-24 16:54:11
  */
 
 var log4js = require('log4js');
@@ -390,9 +390,11 @@ module.exports = function (common) {
                         },
                         "keyword1": {
                             "value": localUser.name + '发送紧急呼救请关注',
+                            "color": _color
                         },
                         "keyword2": {
                             "value": localtion.label[0],
+                            "color": _color
                         },
                         "keyword3": {
                             "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
