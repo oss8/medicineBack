@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 14:40:38
+ * @Last Modified time: 2017-08-24 14:45:40
  */
 'use strict';
 
@@ -351,12 +351,15 @@ module.exports = function (Patient) {
                             var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
                             DoSQL(bsSQL).then(function (userResult) {
                                 var _userId = 'null';
-                                if ( !_.isUndefined(resp.body.data.userId)){
+                                if ( !_.isUndefined(resp.body.data)){
                                     _userId = resp.body.data.userId;
                                 }
-
+                                bsSQL = "";
                                 if (userResult.length == 0) {
-                                    bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
+                                    if ( watch_iccid != ''){
+                                        bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
+                                    }
+
                                     bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "'," + _userId + ",'" + userInfo.province + "','" + userInfo.city + "','" + userInfo.sex + "',0,0);";
                                 } else {
                                     bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
