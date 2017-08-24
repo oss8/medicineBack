@@ -11,6 +11,7 @@ module.exports = function (Watch) {
     Watch.CreateWXMenu = function (cb) {
         EWTRACE("CreateWXMenu Begin");
 
+
         Request_WxToken().then(function (resp) {
 
             var data = config.menu;
