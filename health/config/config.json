@@ -44,7 +44,7 @@
           {
             "type": "location_select",
             "name": "健康报告",
-            "key": "sos"
+            "key": "SOS_Notify"
           },
           {
             "type": "click",
@@ -54,7 +54,7 @@
         ]
       },
       {
-        "type": "location_select",
+        "type": "click",
         "name": "SOS",
         "key": "SOS_Notify"
       }
