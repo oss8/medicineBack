@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 20:12:25
+ * @Last Modified time: 2017-08-24 22:00:19
  */
 
 var log4js = require('log4js');
@@ -370,7 +370,20 @@ module.exports = function (common) {
     }
 
     _SendSOSWX = function (UserList, localUser, localtion) {
-        console.log(localtion);
+
+        
+        var location_x = "";
+        var location_y = "";
+
+        if ( !_.isUndefined(localtion)){
+            console.log(localtion);
+            location_x = localtion.location_x[0];
+            location_y = localtion.location_y[0];
+        }
+        else{
+            location_x = localUser.location_x;
+            location_y = localUser.location_y;            
+        }        
 
         require('dotenv').config({ path: './config/.env' });
         Request_WxToken().then(function (resp) {
@@ -381,7 +394,7 @@ module.exports = function (common) {
                 var _color = "#FF004F";
                 var WXData = {
                     "touser": item.openid,
-                    'url': "http://apis.map.qq.com/uri/v1/geocoder?coord="+localtion.location_x[0]+","+localtion.location_y[0]+"&referer=mankangapp",
+                    'url': "http://apis.map.qq.com/uri/v1/geocoder?coord="+location_x+","+location_y+"&referer=mankangapp",
                     "template_id": 
                     'l9RO9mMPockQ2giCHHSPietOcYQXHwHJjfX52B1Y2T0',
                     "data": {

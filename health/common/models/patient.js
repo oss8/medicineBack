@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 21:52:59
+ * @Last Modified time: 2017-08-24 21:57:39
  */
 'use strict';
 
@@ -16,7 +16,7 @@ module.exports = function (Patient) {
     var schedule = require("node-schedule");   //定时任务  
     var rule = new schedule.RecurrenceRule();
 
-    
+
     Patient.ValidateWechatEvent = function (req, res, cb) {
 
         var token = 'zqlzql';
@@ -85,7 +85,7 @@ module.exports = function (Patient) {
         var q = req.query;
         var openid = q.openid; //微信加密签名  
 
-        if (!_.isEmpty(req.body.xml.event) ) {
+        if (!_.isEmpty(req.body.xml.event)) {
             EWTRACE("Event:" + req.body.xml.event[0]);
             var _event = req.body.xml.event[0];
             EWTRACE(_event);
@@ -111,25 +111,32 @@ module.exports = function (Patient) {
             }
 
             if (_event == 'CLICK') {
-                if ( _eventKey == "Create_Token"){
-                    GetWXNickName(req.body.xml.fromusername[0]).then(function(result){
+                if (_eventKey == "Create_Token") {
+                    GetWXNickName(req.body.xml.fromusername[0]).then(function (result) {
                         var userInfo = {};
-                        GetTokenFromOpenID(userInfo, result).then(function(token){
+                        GetTokenFromOpenID(userInfo, result).then(function (token) {
                             EWTRACE(token);
                         })
-                    },function(err){
+                    }, function (err) {
 
                     });
                 }
+
+
+                if (_eventKey == 'SOS_Notify') {
+                    EWTRACE("call WXClick_SOS");
+                    WXClick_SOS_NotifyLBS(req, res, cb);
+                }
+
             }
-            if ( _event == 'location_select'){
-                if ( _eventKey == 'SOS_Notify'){
+            if (_event == 'location_select') {
+                if (_eventKey == 'SOS_Notify') {
                     EWTRACE("call WXClick_SOS");
                     WXClick_SOS(req, res, cb);
                 }
             }
 
-            if ( _event == 'LOCATION'){
+            if (_event == 'LOCATION') {
                 UpdateUserLBS(req.body.xml);
             }
         }
@@ -255,12 +262,12 @@ module.exports = function (Patient) {
         }
     );
 
-    function UpdateUserLBS(location){
+    function UpdateUserLBS(location) {
         console.log(location);
 
-        var bsSQL = "update hh_publicuser set location_x = '" + location.longitude[0] + "', location_y = '" + location.latitude[0] + "' where openid = '"+ location.fromusername[0]+"'";
+        var bsSQL = "update hh_publicuser set location_x = '" + location.longitude[0] + "', location_y = '" + location.latitude[0] + "' where openid = '" + location.fromusername[0] + "'";
 
-        DoSQL(bsSQL).then(function(){
+        DoSQL(bsSQL).then(function () {
             EWTRACE("update ok");
         })
     }
@@ -283,6 +290,28 @@ module.exports = function (Patient) {
 
             console.log(req.body.xml.sendlocationinfo);
             _SendSOSWX(_notifyList.Result, _localUser.Result[0], req.body.xml.sendlocationinfo[0]);
+        }, function (err) {
+
+        })
+    }
+
+    function WXClick_SOS_NotifyLBS(req, res, cb) {
+
+        var openId = req.body.xml.fromusername[0];
+
+
+        var ps = [];
+        var bsSQL = "select followopenid as openid,nickname as name from hh_familyuser where openid = '" + openId + "'";
+        var _notifyList = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _notifyList));
+
+        bsSQL = "select name,location_x,location_y from hh_publicuser where openid = '" + openId + "'";
+        var _localUser = {};
+        ps.push(ExecuteSyncSQLResult(bsSQL, _localUser));
+
+        Promise.all(ps).then(function () {
+
+            _SendSOSWX(_notifyList.Result, _localUser.Result[0]);
         }, function (err) {
 
         })
@@ -355,7 +384,7 @@ module.exports = function (Patient) {
                         if (err || (resp.body.code != 0 && watch_iccid != '')) {
                             //cb(err, { status: 0, "result": "" });
                             EWTRACEIFY(resp.body);
-                            if ( watch_iccid != ''){
+                            if (watch_iccid != '') {
                                 var bsSQL = "update hh_publicUser set openid ='" + openid + "' where iccid = '" + watch_iccid + "'";
                                 DoSQL(bsSQL).then(function () {
                                     //cb(null, { status: 0, "result": "" });
@@ -369,12 +398,12 @@ module.exports = function (Patient) {
                             var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
                             DoSQL(bsSQL).then(function (userResult) {
                                 var _userId = 'null';
-                                if ( !_.isUndefined(resp.body.data)){
+                                if (!_.isUndefined(resp.body.data)) {
                                     _userId = resp.body.data.userId;
                                 }
                                 bsSQL = "";
                                 if (userResult.length == 0) {
-                                    if ( watch_iccid != ''){
+                                    if (watch_iccid != '') {
                                         bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
                                     }
 
