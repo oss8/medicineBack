@@ -536,7 +536,7 @@ module.exports = function (common) {
 
             Request_WxToken().then(function (resp) {
                 var url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + resp.body.access_token + "&openid=" + fromOpenid + "&lang=zh_CN";
-                needle.get(encodeURI(url), null, function (err, resp) {
+                needle.get(encodeURI(url), null, function (err, userInfo) {
                     // you can pass params as a string or as an object.
                     if (err) {
                         //cb(err, { status: 0, "result": "" });
@@ -544,8 +544,9 @@ module.exports = function (common) {
                         reject(err);
                     }
                     else {
-                        EWTRACEIFY(resp.body);
-                        resolve(resp.body);
+                        EWTRACEIFY(userInfo.body);
+                        userInfo.body.access_token = resp.body.access_token;
+                        resolve(userInfo.body);
                     }
                 });
             }, function (err) {
@@ -582,6 +583,7 @@ module.exports = function (common) {
                         cb(err, { status: 0, "result": _msg });
                     }
                     else {
+                        
                         var url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + resp.body.access_token + "&openid=" + fromOpenid + "&lang=zh_CN";
                         needle.get(encodeURI(url), null, function (err, resp) {
                             // you can pass params as a string or as an object.

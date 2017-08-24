@@ -84,7 +84,7 @@ module.exports = function (Patient) {
 
             var _event = req.body.xml.event[0];
             var _eventKey = "";
-            if ( !_.isEmpty(req.body.xml.eventkey)){
+            if (!_.isEmpty(req.body.xml.eventkey)) {
                 _eventKey = req.body.xml.eventkey[0];
             }
             res.write(new Buffer("").toString("UTF-8"));
@@ -105,12 +105,12 @@ module.exports = function (Patient) {
             }
 
             if (_event == 'CLICK') {
-                if ( _eventKey == "SOS_Notify"){
+                if (_eventKey == "SOS_Notify") {
                     WXClick_SOS(req, res, cb);
                 }
             }
         }
-        else{
+        else {
             res.write(new Buffer("").toString("UTF-8"));
             res.end();
         }
@@ -176,11 +176,11 @@ module.exports = function (Patient) {
                 var bsSQL = "select followopenid as openid,nickname as name from hh_familyuser where openid = '" + openId + "'";
                 var _notifyList = {};
                 ps.push(ExecuteSyncSQLResult(bsSQL, _notifyList));
-        
+
                 bsSQL = "select name from hh_publicuser where openid = '" + openId + "'";
                 var _localUser = {};
                 ps.push(ExecuteSyncSQLResult(bsSQL, _localUser));
-        
+
                 Promise.all(ps).then(function () {
 
                     _SendWX(_notifyList.Result, _localUser.Result[0]);
@@ -188,7 +188,7 @@ module.exports = function (Patient) {
                 });
             }, function (err) {
                 cb(err, { code: -1, "message": err.message });
-                EWTRACE("message"+err.message);
+                EWTRACE("message" + err.message);
             })
         }
         else {
@@ -233,7 +233,7 @@ module.exports = function (Patient) {
     );
 
 
-    function WXClick_SOS(req, res, cb){
+    function WXClick_SOS(req, res, cb) {
 
         var openId = req.body.xml.fromusername[0];
 
@@ -249,7 +249,7 @@ module.exports = function (Patient) {
 
         Promise.all(ps).then(function () {
             _SendWX(_notifyList.Result, _localUser.Result[0]);
-        },function(err){
+        }, function (err) {
 
         })
     }
@@ -266,7 +266,7 @@ module.exports = function (Patient) {
             //cb(null, { status: 0, "result": "" });
         }, function (err) {
             //cb(err, { status: 1, "result": "" });
-            EWTRACE("Error"+err.message);
+            EWTRACE("Error" + err.message);
         });
     };
 
@@ -281,106 +281,85 @@ module.exports = function (Patient) {
 
         GetWXNickName(openid).then(function (userInfo) {
             require('dotenv').config({ path: './config/.env' });
-            var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
-            var IP = getIPAdress();
-            if ( IP.indexOf('172.19') >= 0 ){
-                tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
-            }
-            var needle = require('needle');
-            needle.get(encodeURI(tokenUrl), null, function (err, resp) {
+
+            var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + userInfo.body.access_token;
+
+            var SendData = {
+                "touser": openid,
+                "msgtype": "text",
+                "text":
+                {
+                    "content": "欢迎加入曼康健康计划"
+                }
+            };
+
+            needle.post(encodeURI(url), SendData, { json: true }, function (err, resp) {
                 // you can pass params as a string or as an object.
-                if (err || !_.isUndefined(resp.headers.errcode)) {
+                if (err) {
                     //cb(err, { status: 0, "result": "" });
-                    var _msg = "";
-                    if ( !_.isNull(err)){
-                        _msg = err.message;
-                    }
-                    else{
-                        _msg = resp.headers.errmsg;
-                    }
-                    EWTRACE(_msg);
-                    cb(err, { status: 0, "result": _msg });
+                    EWTRACE("Send WX Notify Error:" + err.message);
                 }
                 else {
-                    var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;
+                    EWTRACE("Send WX Notify OK!");
+                    EWTRACE(JSON.stringify(resp.body));
 
-                    var SendData = {
-                        "touser": openid,
-                        "msgtype": "text",
-                        "text":
-                        {
-                            "content": "欢迎加入曼康健康计划"
-                        }
-                    };
+                    var AddWatch = {};
+                    AddWatch.iccid = watch_iccid;
+                    AddWatch.nickName = 'new User';
+                    AddWatch.sex = 1;
+                    AddWatch.age = 1;
+                    AddWatch.height = 1;
+                    AddWatch.weight = 1;
 
-                    needle.post(encodeURI(url), SendData, { json: true }, function (err, resp) {
+                    var urlInfo = { "method": "registerUser.open" };
+                    //CreateURL(urlInfo, false)
+                    CreateURL(urlInfo)
+
+                    needle.post(encodeURI(urlInfo.url), AddWatch, urlInfo.options, function (err, resp) {
                         // you can pass params as a string or as an object.
-                        if (err) {
+
+                        if (err || resp.body.code != 0) {
                             //cb(err, { status: 0, "result": "" });
-                            EWTRACE("Send WX Notify Error:" + err.message);
+                            EWTRACEIFY(resp.body);
+                            var bsSQL = "update hh_publicUser set openid ='" + openid + "' where iccid = '" + watch_iccid + "'";
+                            DoSQL(bsSQL).then(function () {
+                                //cb(null, { status: 0, "result": "" });
+                            }, function (err) {
+                                //cb(err, { status: 1, "result": "" });
+                                EWTRACE("Error" + err.message);
+                            });
+
+
                         }
                         else {
-                            EWTRACE("Send WX Notify OK!");
-                            EWTRACE(JSON.stringify(resp.body));
-
-                            var AddWatch = {};
-                            AddWatch.iccid = watch_iccid;
-                            AddWatch.nickName = 'new User';
-                            AddWatch.sex = 1;
-                            AddWatch.age = 1;
-                            AddWatch.height = 1;
-                            AddWatch.weight = 1;
-
-                            var urlInfo = { "method": "registerUser.open" };
-                            //CreateURL(urlInfo, false)
-                            CreateURL(urlInfo)
-
-                            needle.post(encodeURI(urlInfo.url), AddWatch, urlInfo.options, function (err, resp) {
-                                // you can pass params as a string or as an object.
-
-                                if (err || resp.body.code != 0) {
-                                    //cb(err, { status: 0, "result": "" });
-                                    EWTRACEIFY(resp.body);
-                                    var bsSQL = "update hh_publicUser set openid ='" + openid + "' where iccid = '" + watch_iccid + "'";
-                                    DoSQL(bsSQL).then(function () {
-                                        //cb(null, { status: 0, "result": "" });
-                                    }, function (err) {
-                                        //cb(err, { status: 1, "result": "" });
-                                        EWTRACE("Error"+err.message);
-                                    });
-
-
+                            var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
+                            DoSQL(bsSQL).then(function (userResult) {
+                                if (userResult.length == 0) {
+                                    bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
+                                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "','" + resp.body.data.userId + "','" + userInfo.province + "','" + userInfo.city + "','" + userInfo.sex + "',0,0);";
+                                } else {
+                                    bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
+                                    bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = '" + resp.body.data.userId + "',name='" + userInfo.nickname + "' where openid ='" + openid + "'";
                                 }
-                                else {
-                                    var bsSQL = "select * from hh_publicUser where openid = '" + openid + "'";
-                                    DoSQL(bsSQL).then(function (userResult) {
-                                        if (userResult.length == 0) {
-                                            bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
-                                            bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "','" + resp.body.data.userId + "','" + userInfo.province + "','" + userInfo.city + "','" + userInfo.sex + "',0,0);";
-                                        } else {
-                                            bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
-                                            bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = '" + resp.body.data.userId + "',name='" + userInfo.nickname + "' where openid ='" + openid + "'";
-                                        }
 
-                                        DoSQL(bsSQL).then(function () {
-                                            //cb(null, { status: 0, "result": "" });
-                                        }, function (err) {
-                                            //cb(err, { status: 1, "result": "" });
-                                            EWTRACE("Error"+err.message);
-                                        });
-                                    }, function (err) {
-                                        //cb(err, { status: 1, "result": "" });
-                                        EWTRACE("Error"+err.message);
-                                    });
-
-                                }
+                                DoSQL(bsSQL).then(function () {
+                                    //cb(null, { status: 0, "result": "" });
+                                }, function (err) {
+                                    //cb(err, { status: 1, "result": "" });
+                                    EWTRACE("Error" + err.message);
+                                });
+                            }, function (err) {
+                                //cb(err, { status: 1, "result": "" });
+                                EWTRACE("Error" + err.message);
                             });
+
                         }
                     });
                 }
             });
+
         }, function (err) {
-            EWTRACE("Error"+err.message);
+            EWTRACE("Error" + err.message);
         })
     }
 
@@ -419,13 +398,13 @@ module.exports = function (Patient) {
                     _SendCheckWX(UserInfo[0], body);
                 }, function (err) {
                     cb(null, { code: -1, "message": err.message });
-                    EWTRACE("message"+err.message);
+                    EWTRACE("message" + err.message);
                 })
 
 
             }, function (err) {
                 cb(err, { code: -1, "message": err.message });
-                EWTRACE("message"+err.message);
+                EWTRACE("message" + err.message);
             })
         }
         else {
@@ -471,7 +450,7 @@ module.exports = function (Patient) {
             }
 
         }, function (err) {
-            EWTRACE("Error:"+err.message );
+            EWTRACE("Error:" + err.message);
         });
 
     }
@@ -491,28 +470,28 @@ module.exports = function (Patient) {
 
                 var _time = "&deviceType=0&belongDate=" + result[0].belongDate;
                 var idList = "&userIds=";
-                result.forEach(function(item){
+                result.forEach(function (item) {
 
                     idList += item.watchuserid + ",";
                 });
 
                 //_time = "&deviceType=0&belongDate=2017-08-20";
 
-                idList = idList.substr(0,idList.length-1);
+                idList = idList.substr(0, idList.length - 1);
                 urlInfo.url += idList + _time;
                 EWTRACE(urlInfo.url);
                 needle.get(encodeURI(urlInfo.url), urlInfo.options, function (err, resp) {
-                    if (err ) {
+                    if (err) {
                         reject(err);
                         return;
                     }
 
-                    if ( _.isUndefined(resp.body.data) || resp.body.code != 0){
+                    if (_.isUndefined(resp.body.data) || resp.body.code != 0) {
                         reject(new Error('数据返回错误！'));
                         return;
                     }
 
-                    EWTRACE("code:"+resp.body.code+", message:"+resp.body.message + ", return user length : " + resp.body.data.length);
+                    EWTRACE("code:" + resp.body.code + ", message:" + resp.body.message + ", return user length : " + resp.body.data.length);
 
                     bsSQL = "";
                     resp.body.data.forEach(function (item) {
@@ -529,14 +508,14 @@ module.exports = function (Patient) {
                         bsSQL += "insert into hh_usersportdata(userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,addtime) values(" + item.userId + ",'" + _openid + "','" + item.belongDate + "'," + item.sport.walkNum + "," + item.sport.runNum + "," + item.sport.mileage + "," + item.sport.caloric + "," + item.sleep.deepSleep + "," + item.sleep.lightSleep + "," + item.sleep.noAdorn + "," + item.sleep.sober + ",'" + getDay + "');";
                     })
 
-                    if ( bsSQL.length > 0 ){
+                    if (bsSQL.length > 0) {
                         DoSQL(bsSQL).then(function () {
                             resolve(0);
                         }, function (err) {
                             reject(result);
                         })
                     }
-                    else{
+                    else {
                         resolve(0);
                     }
 
@@ -572,15 +551,15 @@ module.exports = function (Patient) {
             if (_curTime == '04') {
                 var _curMinute = currentTime.toTimeString().substr(3, 2);
 
-                if (_curMinute == '10'){
-                    var exec = require('child_process').exec; 
+                if (_curMinute == '10') {
+                    var exec = require('child_process').exec;
                     var cmdStr = "pm2 restart wx-token";
-                    exec(cmdStr, function(err,stdout, stderr){
-            
-                        if ( err ){
+                    exec(cmdStr, function (err, stdout, stderr) {
+
+                        if (err) {
                             EWTRACE(err.message)
                         }
-                        else{
+                        else {
                             EWTRACE(stdout);
                         }
                     });
@@ -615,7 +594,7 @@ module.exports = function (Patient) {
     function AddFamilyUser(req, res, cb) {
         EWTRACE("AddFamilyUser Begin");
 
-        
+
         var localOpenid = req.body.xml.eventkey[0].substr(7);
         var fromOpenid = req.body.xml.fromusername[0];
 
