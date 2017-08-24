@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 14:05:51
+ * @Last Modified time: 2017-08-24 15:29:50
  */
 
 var log4js = require('log4js');
@@ -369,6 +369,43 @@ module.exports = function (common) {
         });
     }
 
+    _SendSOSWX = function (UserList, localUser, localtion) {
+        require('dotenv').config({ path: './config/.env' });
+        Request_WxToken().then(function (resp) {
+            EWTRACE(resp.body.access_token);
+            var _accesstoken = resp.body.access_token;
+            var myDate = new Date();
+            UserList.forEach(function (item) {
+                var _color = "#FF004F";
+                var WXData = {
+                    "touser": item.openid,
+                    "template_id": 'l9RO9mMPockQ2giCHHSPietOcYQXHwHJjfX52B1Y2T0',
+                    "data": {
+                        "first": {
+                            "value": "紧急通知",
+                        },
+                        "keyword1": {
+                            "value": localUser.name + '发送紧急呼救请关注',
+                        },
+                        "keyword2": {
+                            "value": localtion.label,
+                        },
+                        "keyword3": {
+                            "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
+                            "color": _color
+                        },
+                        "remark": {
+                            "value": "曼康信息提示，你关注的亲友紧急呼叫，社区医生已经紧急赶往"
+                        }
+                    }
+                }
+                self_sendWX(_accesstoken, WXData);
+            });
+        }, function (err) {
+            console.log(err);
+        });
+    }
+    
     SendWX = function (obj, type) {
         var _type = "";
         if (!_.isEmpty(type)) {
