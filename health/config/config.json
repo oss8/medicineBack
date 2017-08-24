@@ -42,9 +42,9 @@
             "url": "http://www.soso.com/"
           },
           {
-            "type": "view",
+            "type": "location_select",
             "name": "健康报告",
-            "url": "http://v.qq.com/"
+            "key": "sos"
           },
           {
             "type": "click",

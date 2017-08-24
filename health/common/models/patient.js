@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 14:53:37
+ * @Last Modified time: 2017-08-24 15:13:20
  */
 'use strict';
 
@@ -80,6 +80,7 @@ module.exports = function (Patient) {
     Patient.ValidateWechatEvent = function (req, res, cb) {
 
         EWTRACE("ValidateWechatEvent Begin")
+        console.log(req.body.xml);
         EWTRACE("Event:" + req.body.xml.event[0]);
 
 
