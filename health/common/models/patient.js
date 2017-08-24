@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 14:27:46
+ * @Last Modified time: 2017-08-24 14:29:41
  */
 'use strict';
 
@@ -276,7 +276,7 @@ module.exports = function (Patient) {
         var q = req.query;
         var openid = q.openid; //微信加密签名 
 
-        var bsSQL = "update hh_publicUser set openid = '' where openid = '" + openid + "'";
+        var bsSQL = "update hh_publicUser set openid = '',iccid='' where openid = '" + openid + "'";
         DoSQL(bsSQL).then(function (userResult) {
 
             //cb(null, { status: 0, "result": "" });
