@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 15:29:50
+ * @Last Modified time: 2017-08-24 15:40:58
  */
 
 var log4js = require('log4js');
@@ -388,7 +388,7 @@ module.exports = function (common) {
                             "value": localUser.name + '发送紧急呼救请关注',
                         },
                         "keyword2": {
-                            "value": localtion.label,
+                            "value": localtion.label[0],
                         },
                         "keyword3": {
                             "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
@@ -399,6 +399,8 @@ module.exports = function (common) {
                         }
                     }
                 }
+                EWTRACE("self_sendWX");
+                EWTRACEIFY(WXData);
                 self_sendWX(_accesstoken, WXData);
             });
         }, function (err) {
