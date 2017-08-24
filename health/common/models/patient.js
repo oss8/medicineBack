@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 15:34:40
+ * @Last Modified time: 2017-08-24 15:38:36
  */
 'use strict';
 
@@ -267,7 +267,9 @@ module.exports = function (Patient) {
         ps.push(ExecuteSyncSQLResult(bsSQL, _localUser));
 
         Promise.all(ps).then(function () {
-            _SendSOSWX(_notifyList.Result, _localUser.Result[0], req.body.xml);
+
+            console.log(req.body.xml.sendlocationinfo);
+            _SendSOSWX(_notifyList.Result, _localUser.Result[0], req.body.xml.sendlocationinfo);
         }, function (err) {
 
         })
