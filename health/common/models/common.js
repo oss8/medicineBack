@@ -1,5 +1,6 @@
 var log4js = require('log4js');
 var _ = require('underscore');
+var needle = require('needle');
 
 module.exports = function (common) {
 
@@ -564,7 +565,7 @@ module.exports = function (common) {
                     tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + process.env.WX_APP_ID;
                 }
 
-                var needle = require('needle');
+
                 needle.get(encodeURI(tokenUrl), null, function (err, resp) {
 
                     // you can pass params as a string or as an object.
