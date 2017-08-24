@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 22:31:40
+ * @Last Modified time: 2017-08-24 22:34:06
  */
 
 var log4js = require('log4js');
@@ -371,7 +371,20 @@ module.exports = function (common) {
 
     _SendSOSWX = function (UserList, localUser, localtion) {
 
-
+        var location_x = "";
+        var location_y = "";
+        var label = "";
+        if (!_.isUndefined(localtion)) {
+            console.log(localtion);
+            location_x = localtion.location_x[0];
+            location_y = localtion.location_y[0];
+            label = localtion.label[0];
+        }
+        else {
+            location_x = localUser.location_x;
+            location_y = localUser.location_y;
+            
+        } 
 
 
         var url = "http://apis.map.qq.com/ws/geocoder/v1/?location="+location_x+","+location_y+"&key=6UWBZ-BRKR3-YWG3Y-337NE-DRCMZ-EGBF7";
@@ -382,21 +395,10 @@ module.exports = function (common) {
                 EWTRACE(err.message);
             }
             console.log(localInfo.body.result.address);
-
-            var location_x = "";
-            var location_y = "";
-            var label = "";
-            if (!_.isUndefined(localtion)) {
-                console.log(localtion);
-                location_x = localtion.location_x[0];
-                location_y = localtion.location_y[0];
-                label = localtion.label[0];
-            }
-            else {
-                location_x = localUser.location_x;
-                location_y = localUser.location_y;
+            if ( label == ''){
                 label = localInfo.body.result.address ;
-            }            
+            }
+           
 
             require('dotenv').config({ path: './config/.env' });
             Request_WxToken().then(function (resp) {
