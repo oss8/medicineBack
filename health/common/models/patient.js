@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 19:25:37
+ * @Last Modified time: 2017-08-24 20:37:51
  */
 'use strict';
 
@@ -128,6 +128,10 @@ module.exports = function (Patient) {
                     WXClick_SOS(req, res, cb);
                 }
             }
+
+            if ( _event == 'LOCATION'){
+                UpdateUserLBS(req.body.xml);
+            }
         }
         else {
             res.write(new Buffer("").toString("UTF-8"));
@@ -251,6 +255,15 @@ module.exports = function (Patient) {
         }
     );
 
+    function UpdateUserLBS(localtion){
+        console.log(localtion);
+
+        var bsSQL = "update hh_publicuser set locaition_x = " + localtion.latitude + ", localtion_y = " + latitude + " where openid = '"+ localtion.fromusername[0]+"'";
+
+        DoSQL(bsSQL).then(function(){
+            EWTRACE("update ok");
+        })
+    }
 
     function WXClick_SOS(req, res, cb) {
 
