@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 14:49:13
+ * @Last Modified time: 2017-08-24 14:53:37
  */
 'use strict';
 
@@ -89,6 +89,7 @@ module.exports = function (Patient) {
         if (!_.isEmpty(req.body.xml.event)) {
 
             var _event = req.body.xml.event[0];
+            EWTRACE(_event);
             var _eventKey = "";
             if (!_.isEmpty(req.body.xml.eventkey)) {
                 _eventKey = req.body.xml.eventkey[0];
