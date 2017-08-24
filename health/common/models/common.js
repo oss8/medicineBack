@@ -1,6 +1,7 @@
 var log4js = require('log4js');
 var _ = require('underscore');
 var needle = require('needle');
+var jwt = require('jsonwebtoken');
 
 module.exports = function (common) {
 
@@ -291,7 +292,7 @@ module.exports = function (common) {
     }
 
     GetTokenFromOpenID = function (demotoken, userinfo) {
-        var jwt = require('jsonwebtoken');
+
         var rf = require("fs");
         var cert = rf.readFileSync("jwt_rsa_private_key.pem", "utf-8");
 
@@ -307,7 +308,7 @@ module.exports = function (common) {
             });
         });
     }
-    
+
     GetOpenIDFromToken = function (token) {
         var jwt = require('jwt-simple');
         var rf = require("fs");
