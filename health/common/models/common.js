@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 22:22:07
+ * @Last Modified time: 2017-08-24 22:24:48
  */
 
 var log4js = require('log4js');
@@ -389,8 +389,8 @@ module.exports = function (common) {
         var url = "http://apis.map.qq.com/ws/geocoder/v1/?location="+location_x+","+location_y+"&key=6UWBZ-BRKR3-YWG3Y-337NE-DRCMZ-EGBF7";
         needle.get(encodeURI(url), null, function (err, localInfo) {
 
-            EWTRACE(localInfo.result.address);
-            
+            console.log(localInfo.result);
+
             require('dotenv').config({ path: './config/.env' });
             Request_WxToken().then(function (resp) {
                 EWTRACE(resp.body.access_token);
