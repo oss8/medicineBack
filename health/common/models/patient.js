@@ -272,7 +272,7 @@ module.exports = function (Patient) {
         Promise.all(ps).then(function () {
 
             console.log(req.body.xml.sendlocationinfo);
-            _SendSOSWX(_notifyList.Result, _localUser.Result[0], req.body.xml.sendlocationinfo);
+            _SendSOSWX(_notifyList.Result, _localUser.Result[0], req.body.xml.sendlocationinfo[0]);
         }, function (err) {
 
         })

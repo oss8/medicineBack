@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 15:51:05
+ * @Last Modified time: 2017-08-24 15:52:33
  */
 
 var log4js = require('log4js');
@@ -370,6 +370,8 @@ module.exports = function (common) {
     }
 
     _SendSOSWX = function (UserList, localUser, localtion) {
+        console.log(localtion);
+
         require('dotenv').config({ path: './config/.env' });
         Request_WxToken().then(function (resp) {
             EWTRACE(resp.body.access_token);
@@ -388,7 +390,7 @@ module.exports = function (common) {
                             "value": localUser.name + '发送紧急呼救请关注',
                         },
                         "keyword2": {
-                            "value": localtion.label,
+                            "value": localtion.label[0],
                         },
                         "keyword3": {
                             "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
