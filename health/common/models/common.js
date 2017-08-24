@@ -327,81 +327,57 @@ module.exports = function (common) {
 
     _SendWX = function (UserList, localUser) {
 
-        // 随机字符串产生函数  
-        createNonceStr = function () {
-            return Math.random().toString(36).substr(2, 15);
-        };
-        var needle = require('needle');
         require('dotenv').config({ path: './config/.env' });
-        var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + process.env.WX_APP_ID;
-        var IP = getIPAdress();
-        if (IP.indexOf('172.19') >= 0) {
-            tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + process.env.WX_APP_ID;
-        }
-        needle.get(encodeURI(tokenUrl), {}, function (err, resp) {
-            // you can pass params as a string or as an object.
-            if (err || !_.isUndefined(resp.headers.errcode)) {
-                //cb(err, { status: 0, "result": "" });
-                var _msg = "";
-                if (!_.isNull(err)) {
-                    _msg = err.message;
-                }
-                else {
-                    _msg = resp.headers.errmsg;
-                }
-                EWTRACE(_msg);
-                cb(err, { status: 0, "result": _msg });
-            }
-            else {
-                EWTRACE(resp.body.access_token);
-                var _accesstoken = resp.body.access_token;
-                var myDate = new Date();
 
+        Request_WxToken().then(function (resp) {
+            EWTRACE(resp.body.access_token);
+            var _accesstoken = resp.body.access_token;
+            var myDate = new Date();
 
-                UserList.forEach(function (item) {
+            UserList.forEach(function (item) {
 
-                    var _color = "#FF004F";
+                var _color = "#FF004F";
 
-                    var WXData = {
-                        "touser": item.openid,
-                        "template_id": process.env.WeChat_TakeErrorID,
-                        "data": {
-                            "first": {
-                                "value": "紧急通知",
-                            },
-                            "keyword1": {
-                                "value": localUser.name,
-                            },
-                            "keyword2": {
-                                "value": item.name,
-                                "color": _color
-                            },
-                            "keyword3": {
-                                "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
-                                "color": _color
-                            },
-                            "remark": {
-                                "value": "曼康信息提示，你关注的亲友紧急呼叫，社区医生已经紧急赶往"
-                            }
+                var WXData = {
+                    "touser": item.openid,
+                    "template_id": process.env.WeChat_TakeErrorID,
+                    "data": {
+                        "first": {
+                            "value": "紧急通知",
+                        },
+                        "keyword1": {
+                            "value": localUser.name,
+                        },
+                        "keyword2": {
+                            "value": item.name,
+                            "color": _color
+                        },
+                        "keyword3": {
+                            "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
+                            "color": _color
+                        },
+                        "remark": {
+                            "value": "曼康信息提示，你关注的亲友紧急呼叫，社区医生已经紧急赶往"
                         }
                     }
-                    EWTRACEIFY(WXData);
+                }
+                EWTRACEIFY(WXData);
 
-                    url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
-                    needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
-                        // you can pass params as a string or as an object.
-                        if (err) {
-                            //cb(err, { status: 0, "result": "" });
-                            console.log(err);
-                        }
-                        else {
-                            EWTRACEIFY(resp.body);
-                        }
-                    });
+                url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
+                needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
+                    // you can pass params as a string or as an object.
+                    if (err) {
+                        //cb(err, { status: 0, "result": "" });
+                        console.log(err);
+                    }
+                    else {
+                        EWTRACEIFY(resp.body);
+                    }
                 });
-            }
+            });
+        }, function (err) {
+            console.log(err);
         });
-
     }
 
     SendWX = function (obj, type) {
@@ -557,141 +533,69 @@ module.exports = function (common) {
         })
     }
 
-    _GetWXNickName = function (fromOpenid) {
-        return new Promise(function (resolve, reject) {
-            try {
-                require('dotenv').config({ path: './config/.env' });
-                var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + process.env.WX_APP_ID;
-                var IP = getIPAdress();
-                if (IP.indexOf('172.19') >= 0) {
-                    tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + process.env.WX_APP_ID;
-                }
-
-
-                needle.get(encodeURI(tokenUrl), null, function (err, resp) {
-
-                    // you can pass params as a string or as an object.
-                    if (err || !_.isUndefined(resp.headers.errcode)) {
-                        //cb(err, { status: 0, "result": "" });
-                        var _msg = "";
-                        if (!_.isNull(err)) {
-                            _msg = err.message;
-                        }
-                        else {
-                            _msg = resp.headers.errmsg;
-                        }
-                        EWTRACE(_msg);
-                        cb(err, { status: 0, "result": _msg });
-                    }
-                    else {
-                        
-                        var url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + resp.body.access_token + "&openid=" + fromOpenid + "&lang=zh_CN";
-                        needle.get(encodeURI(url), null, function (err, resp) {
-                            // you can pass params as a string or as an object.
-                            if (err) {
-                                //cb(err, { status: 0, "result": "" });
-                                EWTRACE(err.message);
-                                reject(err);
-                            }
-                            else {
-                                EWTRACEIFY(resp.body);
-                                resolve(resp.body);
-                            }
-                        });
-                    }
-                });
-            } catch (ex) {
-                reject(ex);
-            }
-        });
-    }
-
-
     _SendCheckWX = function (userInfo, CheckData) {
 
-        // 随机字符串产生函数  
-        createNonceStr = function () {
-            return Math.random().toString(36).substr(2, 15);
-        };
         var needle = require('needle');
         require('dotenv').config({ path: './config/.env' });
-        var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + process.env.WX_APP_ID;
-        var IP = getIPAdress();
-        if (IP.indexOf('172.19') >= 0) {
-            tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + process.env.WX_APP_ID;
-        }
-        needle.get(encodeURI(tokenUrl), {}, function (err, resp) {
-            // you can pass params as a string or as an object.
-            if (err || !_.isUndefined(resp.headers.errcode)) {
-                //cb(err, { status: 0, "result": "" });
-                var _msg = "";
-                if (!_.isNull(err)) {
-                    _msg = err.message;
+
+        Request_WxToken().then(function (resp) {
+            EWTRACE(resp.body.access_token);
+            var _accesstoken = resp.body.access_token;
+            var myDate = new Date();
+
+            var _color = "#3300FF";
+            var relativeRisk = "不变";
+            if (CheckData.relativeRisk == 0) {
+                relativeRisk = "变低";
+                _color = '#00cc00';
+            }
+            if (CheckData.relativeRisk == 2) {
+                relativeRisk = "变高";
+                _color = '#cc3300';
+            }
+
+            var WXData = {
+                "touser": userInfo.openid,
+                "template_id": process.env.WeChat_TakeCheckID,
+                "data": {
+                    "first": {
+                        "value": "手环测量结果推送",
+                    },
+                    "keyword1": {
+                        "value": userInfo.name
+                    },
+                    "keyword2": {
+                        "value": "\r\n  心率：" + CheckData.hrCount + "\r\n  血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n   PWV：" + CheckData.pwv + "\r\n   硬化风险：" + relativeRisk,
+                        color: _color
+                    },
+                    "keyword3": {
+                        "value": "曼康云"
+                    },
+                    "keyword4": {
+                        "value": CheckData.testTime
+                    },
+                    "remark": {
+                        "value": "曼康云-祝你健康每一天"
+                    }
+                }
+            }
+            EWTRACEIFY(WXData);
+
+            url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
+            needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
+                // you can pass params as a string or as an object.
+                if (err) {
+                    //cb(err, { status: 0, "result": "" });
+                    console.log(err);
                 }
                 else {
-                    _msg = resp.headers.errmsg;
+                    EWTRACEIFY(resp.body);
                 }
-                EWTRACE(_msg);
-                cb(err, { status: 0, "result": _msg });
-            }
-            else {
-                EWTRACE(resp.body.access_token);
-                var _accesstoken = resp.body.access_token;
-                var myDate = new Date();
+            });
 
-                var _color = "#3300FF";
-                var relativeRisk = "不变";
-                if (CheckData.relativeRisk == 0) {
-                    relativeRisk = "变低";
-                    _color = '#00cc00';
-                }
-                if (CheckData.relativeRisk == 2) {
-                    relativeRisk = "变高";
-                    _color = '#cc3300';
-                }
-
-                var WXData = {
-                    "touser": userInfo.openid,
-                    "template_id": process.env.WeChat_TakeCheckID,
-                    "data": {
-                        "first": {
-                            "value": "手环测量结果推送",
-                        },
-                        "keyword1": {
-                            "value": userInfo.name
-                        },
-                        "keyword2": {
-                            "value": "\r\n  心率：" + CheckData.hrCount + "\r\n  血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n   PWV：" + CheckData.pwv + "\r\n   硬化风险：" + relativeRisk,
-                            color: _color
-                        },
-                        "keyword3": {
-                            "value": "曼康云"
-                        },
-                        "keyword4": {
-                            "value": CheckData.testTime
-                        },
-                        "remark": {
-                            "value": "曼康云-祝你健康每一天"
-                        }
-                    }
-                }
-                EWTRACEIFY(WXData);
-
-                url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
-                needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
-                    // you can pass params as a string or as an object.
-                    if (err) {
-                        //cb(err, { status: 0, "result": "" });
-                        console.log(err);
-                    }
-                    else {
-                        EWTRACEIFY(resp.body);
-                    }
-                });
-
-            }
+        }, function (err) {
+            console.log(err);
         });
-
     }
 
 
