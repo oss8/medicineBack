@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 22:03:47
+ * @Last Modified time: 2017-08-24 22:22:07
  */
 
 var log4js = require('log4js');
@@ -43,7 +43,7 @@ module.exports = function (common) {
     * @Desc: 查询单条SQL，或一个多条SQL批
     * @Param: SQL           sql语法，可用；同时执行多条
     *         Connect       数据库连接，如果不填则获取当前连接名为main_DBConnect
-    *********************************************************/    
+    *********************************************************/
     DoSQL = function (SQL, Connect) {
         return new Promise(function (resolve, reject) {
             EWTRACE(SQL);
@@ -74,7 +74,7 @@ module.exports = function (common) {
     *         ResultObj     当前执行后返回的数据对象
     *         tx            事物对象
     *         Connect       数据库连接，如果不填则获取当前连接名为main_DBConnect
-    *********************************************************/        
+    *********************************************************/
     ExecuteSyncSQLResult = function (bsSQL, ResultObj, tx, Connect) {
         return new Promise(function (resolve, reject) {
             try {
@@ -175,7 +175,7 @@ module.exports = function (common) {
             date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
         }
         return DayList;
-    }    
+    }
 
     GetDateDiff = function (startTime, endTime, diffType) {
         //将xxxx-xx-xx的时间格式，转换为 xxxx/xx/xx的格式 
@@ -371,63 +371,69 @@ module.exports = function (common) {
 
     _SendSOSWX = function (UserList, localUser, localtion) {
 
-        
+
         var location_x = "";
         var location_y = "";
         var label = "";
-        if ( !_.isUndefined(localtion)){
+        if (!_.isUndefined(localtion)) {
             console.log(localtion);
             location_x = localtion.location_x[0];
             location_y = localtion.location_y[0];
             label = localtion.label[0];
         }
-        else{
+        else {
             location_x = localUser.location_x;
-            location_y = localUser.location_y;            
-        }        
+            location_y = localUser.location_y;
+        }
 
-        require('dotenv').config({ path: './config/.env' });
-        Request_WxToken().then(function (resp) {
-            EWTRACE(resp.body.access_token);
-            var _accesstoken = resp.body.access_token;
-            var myDate = new Date();
-            UserList.forEach(function (item) {
-                var _color = "#FF004F";
-                var WXData = {
-                    "touser": item.openid,
-                    'url': "http://apis.map.qq.com/uri/v1/geocoder?coord="+location_x+","+location_y+"&referer=mankangapp",
-                    "template_id": 
-                    'l9RO9mMPockQ2giCHHSPietOcYQXHwHJjfX52B1Y2T0',
-                    "data": {
-                        "first": {
-                            "value": "紧急通知",
-                        },
-                        "keyword1": {
-                            "value": localUser.name + '发送紧急呼救请关注',
-                            "color": _color
-                        },
-                        "keyword2": {
-                            "value": label,
-                            "color": _color
-                        },
-                        "keyword3": {
-                            "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
-                            "color": _color
-                        },
-                        "remark": {
-                            "value": "曼康信息提示，你关注的亲友紧急呼叫，社区医生已经紧急赶往"
+        var url = "http://apis.map.qq.com/ws/geocoder/v1/?location="+location_x+","+location_y+"&key=6UWBZ-BRKR3-YWG3Y-337NE-DRCMZ-EGBF7";
+        needle.get(encodeURI(url), null, function (err, localInfo) {
+
+            EWTRACE(localInfo.result.address);
+            
+            require('dotenv').config({ path: './config/.env' });
+            Request_WxToken().then(function (resp) {
+                EWTRACE(resp.body.access_token);
+                var _accesstoken = resp.body.access_token;
+                var myDate = new Date();
+                UserList.forEach(function (item) {
+                    var _color = "#FF004F";
+                    var WXData = {
+                        "touser": item.openid,
+                        'url': "http://apis.map.qq.com/uri/v1/geocoder?coord=" + location_x + "," + location_y + "&referer=mankangapp",
+                        "template_id":
+                        'l9RO9mMPockQ2giCHHSPietOcYQXHwHJjfX52B1Y2T0',
+                        "data": {
+                            "first": {
+                                "value": "紧急通知",
+                            },
+                            "keyword1": {
+                                "value": localUser.name + '发送紧急呼救请关注',
+                                "color": _color
+                            },
+                            "keyword2": {
+                                "value": label,
+                                "color": _color
+                            },
+                            "keyword3": {
+                                "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
+                                "color": _color
+                            },
+                            "remark": {
+                                "value": "曼康信息提示，你关注的亲友紧急呼叫，社区医生已经紧急赶往"
+                            }
                         }
                     }
-                }
-                EWTRACE("self_sendWX");
-                EWTRACEIFY(WXData);
-                self_sendWX(_accesstoken, WXData);
+                    EWTRACE("self_sendWX");
+                    EWTRACEIFY(WXData);
+                    self_sendWX(_accesstoken, WXData);
+                });
+            }, function (err) {
+                console.log(err);
             });
-        }, function (err) {
-            console.log(err);
         });
     }
-    
+
     SendWX = function (obj, type) {
         var _type = "";
         if (!_.isEmpty(type)) {
@@ -517,13 +523,15 @@ module.exports = function (common) {
     GetWXNickName2 = function (fromOpenid) {
         return new Promise(function (resolve, reject) {
             Request_WxToken().then(function (resp) {
-                var url = "https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=" + resp.body.access_token ;
+                var url = "https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=" + resp.body.access_token;
 
-                var List = {user_list:[{
-                    "openid": fromOpenid,
-                    "lang": 'zh_CN'
-                }]};
-                needle.post(encodeURI(url), List, {json:true}, function (err, userInfo) {
+                var List = {
+                    user_list: [{
+                        "openid": fromOpenid,
+                        "lang": 'zh_CN'
+                    }]
+                };
+                needle.post(encodeURI(url), List, { json: true }, function (err, userInfo) {
                     // you can pass params as a string or as an object.
                     if (err) {
                         //cb(err, { status: 0, "result": "" });
@@ -534,7 +542,7 @@ module.exports = function (common) {
                         var result = {};
                         result.body = userInfo.body.user_info_list[0];
                         result.body.access_token = resp.body.access_token;
-                        
+
                         resolve(result.body);
                     }
                 });
