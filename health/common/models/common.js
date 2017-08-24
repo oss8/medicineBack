@@ -332,20 +332,20 @@ module.exports = function (common) {
         };
         var needle = require('needle');
         require('dotenv').config({ path: './config/.env' });
-        var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
+        var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + process.env.WX_APP_ID;
         var IP = getIPAdress();
-        if ( IP.indexOf('172.19') >= 0 ){
-            tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
+        if (IP.indexOf('172.19') >= 0) {
+            tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + process.env.WX_APP_ID;
         }
         needle.get(encodeURI(tokenUrl), {}, function (err, resp) {
             // you can pass params as a string or as an object.
             if (err || !_.isUndefined(resp.headers.errcode)) {
                 //cb(err, { status: 0, "result": "" });
                 var _msg = "";
-                if ( !_.isNull(err)){
+                if (!_.isNull(err)) {
                     _msg = err.message;
                 }
-                else{
+                else {
                     _msg = resp.headers.errmsg;
                 }
                 EWTRACE(_msg);
@@ -532,24 +532,49 @@ module.exports = function (common) {
 
     GetWXNickName = function (fromOpenid) {
         return new Promise(function (resolve, reject) {
+
+            Request_WxToken().then(function (resp) {
+                var url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + resp.body.access_token + "&openid=" + fromOpenid + "&lang=zh_CN";
+                needle.get(encodeURI(url), null, function (err, resp) {
+                    // you can pass params as a string or as an object.
+                    if (err) {
+                        //cb(err, { status: 0, "result": "" });
+                        EWTRACE(err.message);
+                        reject(err);
+                    }
+                    else {
+                        EWTRACEIFY(resp.body);
+                        resolve(resp.body);
+                    }
+                });
+            }, function (err) {
+                cb(err, { status: 0, "result": "" });
+            })
+
+        })
+    }
+
+    _GetWXNickName = function (fromOpenid) {
+        return new Promise(function (resolve, reject) {
             try {
                 require('dotenv').config({ path: './config/.env' });
-                var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
+                var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + process.env.WX_APP_ID;
                 var IP = getIPAdress();
-                if ( IP.indexOf('172.19') >= 0 ){
-                    tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
+                if (IP.indexOf('172.19') >= 0) {
+                    tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + process.env.WX_APP_ID;
                 }
-                
+
                 var needle = require('needle');
                 needle.get(encodeURI(tokenUrl), null, function (err, resp) {
+
                     // you can pass params as a string or as an object.
                     if (err || !_.isUndefined(resp.headers.errcode)) {
                         //cb(err, { status: 0, "result": "" });
                         var _msg = "";
-                        if ( !_.isNull(err)){
+                        if (!_.isNull(err)) {
                             _msg = err.message;
                         }
-                        else{
+                        else {
                             _msg = resp.headers.errmsg;
                         }
                         EWTRACE(_msg);
@@ -586,20 +611,20 @@ module.exports = function (common) {
         };
         var needle = require('needle');
         require('dotenv').config({ path: './config/.env' });
-        var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+process.env.WX_APP_ID;
+        var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + process.env.WX_APP_ID;
         var IP = getIPAdress();
-        if ( IP.indexOf('172.19') >= 0 ){
-            tokenUrl = 'http://0.0.0.0:3000/token/token?appId='+process.env.WX_APP_ID;
+        if (IP.indexOf('172.19') >= 0) {
+            tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + process.env.WX_APP_ID;
         }
         needle.get(encodeURI(tokenUrl), {}, function (err, resp) {
             // you can pass params as a string or as an object.
             if (err || !_.isUndefined(resp.headers.errcode)) {
                 //cb(err, { status: 0, "result": "" });
                 var _msg = "";
-                if ( !_.isNull(err)){
+                if (!_.isNull(err)) {
                     _msg = err.message;
                 }
-                else{
+                else {
                     _msg = resp.headers.errmsg;
                 }
                 EWTRACE(_msg);
@@ -612,11 +637,11 @@ module.exports = function (common) {
 
                 var _color = "#3300FF";
                 var relativeRisk = "不变";
-                if ( CheckData.relativeRisk == 0){
+                if (CheckData.relativeRisk == 0) {
                     relativeRisk = "变低";
                     _color = '#00cc00';
                 }
-                if ( CheckData.relativeRisk == 2){
+                if (CheckData.relativeRisk == 2) {
                     relativeRisk = "变高";
                     _color = '#cc3300';
                 }
@@ -630,9 +655,9 @@ module.exports = function (common) {
                         },
                         "keyword1": {
                             "value": userInfo.name
-                        },                        
+                        },
                         "keyword2": {
-                            "value": "\r\n  心率："+CheckData.hrCount + "\r\n  血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n   PWV："+CheckData.pwv+"\r\n   硬化风险："+relativeRisk,
+                            "value": "\r\n  心率：" + CheckData.hrCount + "\r\n  血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n   PWV：" + CheckData.pwv + "\r\n   硬化风险：" + relativeRisk,
                             color: _color
                         },
                         "keyword3": {
@@ -664,4 +689,34 @@ module.exports = function (common) {
         });
 
     }
-};    
+
+
+    Request_WxToken = function () {
+
+        return new Promise(function (resolve, reject) {
+            require('dotenv').config({ path: './config/.env' });
+            var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + process.env.WX_APP_ID;
+            var IP = getIPAdress();
+            if (IP.indexOf('172.19') >= 0) {
+                tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + process.env.WX_APP_ID;
+            }
+            var needle = require('needle');
+            needle.get(encodeURI(tokenUrl), null, function (err, resp) {
+                // you can pass params as a string or as an object.
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    if (!_.isUndefined(resp.headers.errcode)) {
+                        reject(new Error(resp.headers.errmsg));
+                    }
+                    else {
+                        resolve(resp);
+                    }
+                }
+            });
+
+        });
+    }
+
+}
