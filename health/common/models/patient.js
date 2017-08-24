@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 21:49:13
+ * @Last Modified time: 2017-08-24 21:52:59
  */
 'use strict';
 
@@ -258,7 +258,7 @@ module.exports = function (Patient) {
     function UpdateUserLBS(location){
         console.log(location);
 
-        var bsSQL = "update hh_publicuser set location_x = " + location.longitude[0] + ", localtion_y = " + location.latitude[0] + " where openid = '"+ location.fromusername[0]+"'";
+        var bsSQL = "update hh_publicuser set location_x = '" + location.longitude[0] + "', location_y = '" + location.latitude[0] + "' where openid = '"+ location.fromusername[0]+"'";
 
         DoSQL(bsSQL).then(function(){
             EWTRACE("update ok");
