@@ -282,7 +282,7 @@ module.exports = function (Patient) {
         GetWXNickName(openid).then(function (userInfo) {
             require('dotenv').config({ path: './config/.env' });
 
-            var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + userInfo.body.access_token;
+            var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + userInfo.access_token;
 
             var SendData = {
                 "touser": openid,
