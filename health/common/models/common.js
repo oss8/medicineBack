@@ -548,7 +548,7 @@ module.exports = function (common) {
                     }
                 });
             }, function (err) {
-                cb(err, { status: 0, "result": "" });
+                reject(err);
             })
 
         })
