@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 16:23:22
+ * @Last Modified time: 2017-08-24 16:35:37
  */
 
 var log4js = require('log4js');
@@ -381,7 +381,7 @@ module.exports = function (common) {
                 var _color = "#FF004F";
                 var WXData = {
                     "touser": item.openid,
-                    'url': "http://apis.map.qq.com/uri/v1/geocoder?coord="+localtion.location_x[0]+","+localtion.location_y[0]+"&referer=myapp",
+                    'url': "http://apis.map.qq.com/uri/v1/geocoder?coord="+localtion.location_x[0]+","+localtion.location_y[0]+"&referer=mankangapp",
                     "template_id": 
                     'l9RO9mMPockQ2giCHHSPietOcYQXHwHJjfX52B1Y2T0',
                     "data": {
