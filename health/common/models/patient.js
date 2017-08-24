@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 15:47:29
+ * @Last Modified time: 2017-08-24 15:49:54
  */
 'use strict';
 
@@ -124,6 +124,8 @@ module.exports = function (Patient) {
 
                     });
                 }
+            }
+            if ( _event == 'location_select'){
                 if ( _eventKey == 'sos'){
                     EWTRACE("call WXClick_SOS");
                     WXClick_SOS(req, res, cb);
