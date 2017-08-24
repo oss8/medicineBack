@@ -6,71 +6,14 @@ module.exports = function (Watch) {
     var _ = require('underscore');
     var uuid = require('node-uuid');
     var needle = require('needle');
+    var config = require('../../config/config')
 
     Watch.CreateWXMenu = function (cb) {
         EWTRACE("CreateWXMenu Begin");
 
         Request_WxToken().then(function (resp) {
 
-            var data = {
-                "button": [
-                    {
-                        "name": "我的",
-                        "sub_button": [
-                            {
-                                "type": "view",
-                                "name": "个人信息",
-                                "url": "http://www.soso.com/"
-                            },
-                            {
-                                "type": "view",
-                                "name": "设备绑定",
-                                "url": "http://v.qq.com/"
-                            },
-                            {
-                                "type": "view",
-                                "name": "初学者教学",
-                                "url": "http://v.qq.com/"
-                            },
-                            {
-                                "type": "view",
-                                "name": "联系客服",
-                                "url": "http://v.qq.com/"
-                            },
-                            {
-                                "type": "view",
-                                "name": "认识PWV",
-                                "url": "http://v.qq.com/"
-                            },
-                        ]
-                    },
-                    {
-                        "name": "健康档案",
-                        "sub_button": [
-                            {
-                                "type": "view",
-                                "name": "历史数据",
-                                "url": "http://www.soso.com/"
-                            },
-                            {
-                                "type": "view",
-                                "name": "健康报告",
-                                "url": "http://v.qq.com/"
-                            },
-                            {
-                                "type": "view",
-                                "name": "健康之道",
-                                "url": "http://v.qq.com/"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "click",
-                        "name": "SOS",
-                        "key": "SOS_Notify"
-                    }
-                ]
-            }
+            var data = config.menu;
 
             var url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + resp.body.access_token;
 
@@ -111,7 +54,6 @@ module.exports = function (Watch) {
             cb(null, { status: 403, "result": "" });
             return;
         }
-        _openid = OpenID.openid;
 
         var ps = [];
         var bsSQL = "select name,sex,birthday,height,weight,mobile,cardNo,disease_list from hh_publicuser where openid = '" + _openid + "'";

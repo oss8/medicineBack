@@ -108,6 +108,16 @@ module.exports = function (Patient) {
                 if (_eventKey == "SOS_Notify") {
                     WXClick_SOS(req, res, cb);
                 }
+                if ( _eventKey == "Create_Token"){
+                    GetWXNickName(req.body.xml.fromusername[0]).then(function(result){
+                        var userInfo = {};
+                        GetTokenFromOpenID(userInfo, result).then(function(token){
+                            EWTRACE(token);
+                        })
+                    },function(err){
+
+                    });
+                }
             }
         }
         else {

@@ -5,5 +5,59 @@
     "token": "mankang",
     "prefix": "https://api.weixin.qq.com/cgi-bin/",
     "mpPrefix": "https://mp.weixin.qq.com/cgi-bin/"
+  },
+  "menu": {
+    "button": [
+      {
+        "name": "我的",
+        "sub_button": [
+          {
+            "type": "view",
+            "name": "个人信息",
+            "url": "http://www.soso.com/"
+          },
+          {
+            "type": "view",
+            "name": "初学者教学",
+            "url": "http://v.qq.com/"
+          },
+          {
+            "type": "view",
+            "name": "联系客服",
+            "url": "http://v.qq.com/"
+          },
+          {
+            "type": "view",
+            "name": "认识PWV",
+            "url": "http://v.qq.com/"
+          }
+        ]
+      },
+      {
+        "name": "健康档案",
+        "sub_button": [
+          {
+            "type": "view",
+            "name": "历史数据",
+            "url": "http://www.soso.com/"
+          },
+          {
+            "type": "view",
+            "name": "健康报告",
+            "url": "http://v.qq.com/"
+          },
+          {
+            "type": "click",
+            "name": "健康之道",
+            "key": "Create_Token"
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "name": "SOS",
+        "key": "SOS_Notify"
+      }
+    ]
   }
 }
