@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 15:26:40
+ * @Last Modified time: 2017-08-24 15:34:40
  */
 'use strict';
 
@@ -85,7 +85,7 @@ module.exports = function (Patient) {
         var q = req.query;
         var openid = q.openid; //微信加密签名  
 
-        if (!_.isEmpty(req.body.xml.event)) {
+        if (!_.isEmpty(req.body.xml.event) ) {
             EWTRACE("Event:" + req.body.xml.event[0]);
             var _event = req.body.xml.event[0];
             EWTRACE(_event);
@@ -124,14 +124,12 @@ module.exports = function (Patient) {
 
                     });
                 }
+                if ( _eventKey == 'sos'){
+                    WXClick_SOS(req, res, cb);
+                }
             }
         }
         else {
-            var msgtype = req.body.xml.msgtype;
-
-            if ( msgtype == 'localtion'){
-                WXClick_SOS(req, res, cb);
-            }
             res.write(new Buffer("").toString("UTF-8"));
             res.end();
         }
