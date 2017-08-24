@@ -544,8 +544,9 @@ module.exports = function (common) {
                         reject(err);
                     }
                     else {
-                        EWTRACEIFY(userInfo.body);
+
                         userInfo.body.access_token = resp.body.access_token;
+                        EWTRACEIFY(userInfo.body);
                         resolve(userInfo.body);
                     }
                 });
