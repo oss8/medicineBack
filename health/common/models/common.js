@@ -302,7 +302,6 @@ module.exports = function (common) {
                     reject(err);
                 } else {
                     resolve(token);
-                    EWTRACETIP(token);
                     demotoken.token = token;
                 }
             });
@@ -363,19 +362,7 @@ module.exports = function (common) {
                         }
                     }
                 }
-                EWTRACEIFY(WXData);
-
-                url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
-                needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
-                    // you can pass params as a string or as an object.
-                    if (err) {
-                        //cb(err, { status: 0, "result": "" });
-                        console.log(err);
-                    }
-                    else {
-                        EWTRACEIFY(resp.body);
-                    }
-                });
+                self_sendWX(_accesstoken, WXData);
             });
         }, function (err) {
             console.log(err);
@@ -581,25 +568,27 @@ module.exports = function (common) {
                     }
                 }
             }
-            EWTRACEIFY(WXData);
-
-            url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
-            needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
-                // you can pass params as a string or as an object.
-                if (err) {
-                    //cb(err, { status: 0, "result": "" });
-                    console.log(err);
-                }
-                else {
-                    EWTRACEIFY(resp.body);
-                }
-            });
-
+            
+            self_sendWX(_accesstoken, WXData);
         }, function (err) {
             console.log(err);
         });
     }
 
+    self_sendWX = function(_accesstoken, WXData){
+        EWTRACEIFY(WXData);
+        url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
+        needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
+            // you can pass params as a string or as an object.
+            if (err) {
+                //cb(err, { status: 0, "result": "" });
+                console.log(err);
+            }
+            else {
+                EWTRACEIFY(resp.body);
+            }
+        });
+    }
 
     Request_WxToken = function () {
 

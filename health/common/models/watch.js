@@ -42,25 +42,17 @@ module.exports = function (Watch) {
         }
     );
 
-    Watch.RequestUserInfo = function (token, cb) {
+    Watch.RequestUserInfo = function (OpenID, cb) {
         EWTRACE("RequestUserInfo Begin");
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(token);
-            _openid = OpenID.openId;
-        } catch (err) {
-            cb(null, { status: 403, "result": "" });
-            return;
-        }
+        var _openid = OpenID.openid;
 
         var ps = [];
         var bsSQL = "select name,sex,birthday,height,weight,mobile,cardNo,disease_list from hh_publicuser where openid = '" + _openid + "'";
         var userInfo = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, userInfo));
 
-        bsSQL = "select openid,followopenid,name,tel,ecc from hh_familyuser where openid = '" + _openid + "'";
+        bsSQL = "select openid,followopenid,nickname,tel,ecc from hh_familyuser where openid = '" + _openid + "'";
         var myfollow = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, myfollow));
 
@@ -82,15 +74,15 @@ module.exports = function (Watch) {
         'RequestUserInfo',
         {
             http: { verb: 'post' },
-            description: '用户登录',
+            description: '获取用户信息',
             accepts:
             {
-                arg: 'token', type: 'string',
+                arg: 'OpenID', type: 'object',
                 http: function (ctx) {
                     var req = ctx.req;
-                    return req.headers.token;
+                    return GetOpenIDFromToken(req.headers.token);
                 },
-                description: '{"token":""}'
+                description: '{"OpenID":""}'
             }
             ,
             returns: { arg: 'UserInfo', type: 'object', root: true }
@@ -98,19 +90,10 @@ module.exports = function (Watch) {
     );
 
 
-    Watch.ModifyUserInfo = function (p, cb) {
+    Watch.ModifyUserInfo = function (p, OpenID, cb) {
         EWTRACE("ModifyUserInfo Begin");
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(token);
-            _openid = OpenID.openid;            
-        } catch (err) {
-            cb(null, { status: 1, "result": "" });
-            return;
-        }
-
+        var _openid = OpenID.openid;            
 
         var bsSQL = "update hh_publicuser set ";
         var fieldContext = "";
@@ -158,14 +141,14 @@ module.exports = function (Watch) {
         {
             http: { verb: 'post' },
             description: '用户编辑信息',
-            accepts: [{ arg: 'p', type: 'object', description: '{"name":"葛岭","sex":1,"birthday":"1974-02-11","height":"178","weight":"62","mobile":"18958064659","cardNo":"330102197420111536","disease_list":{}}' },
+            accepts: [{ arg: 'p', type: 'object', http: { source: 'body' },  description: '{"name":"葛岭","sex":1,"birthday":"1974-02-11","height":"178","weight":"62","mobile":"18958064659","cardNo":"330102197420111536","disease_list":{}}' },
             {
-                arg: 'token', type: 'string',
+                arg: 'OpenID', type: 'object',
                 http: function (ctx) {
                     var req = ctx.req;
-                    return req.headers.token;
+                    return GetOpenIDFromToken(req.headers.token);
                 },
-                description: '{"token":""}'
+                description: '{"OpenID":""}'
             }
             ],
             returns: { arg: 'UserInfo', type: 'object', root: true }
@@ -173,17 +156,9 @@ module.exports = function (Watch) {
     );
 
 
-    Watch.RequestMyQRCode = function (token, cb) {
+    Watch.RequestMyQRCode = function (OpenID, cb) {
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(token);
-            _openid = OpenID.openId;
-        } catch (err) {
-            cb(null, { status: 403, "result": "" });
-            return;
-        }
+        var _openid = OpenID.openid;
 
         EWTRACE("RequestMyQRCode:" + _openid);
         Request_WxToken().then(function (resp) {
@@ -215,29 +190,21 @@ module.exports = function (Watch) {
             http: { verb: 'get' },
             description: '生成我的二维码',
             accepts: {
-                arg: 'token', type: 'string',
+                arg: 'OpenID', type: 'object',
                 http: function (ctx) {
                     var req = ctx.req;
-                    return req.headers.token;
+                    return GetOpenIDFromToken(req.headers.token);
                 },
-                description: '{"token":""}'
+                description: '{"OpenID":""}'
             },
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
 
 
-    Watch.ModifyFollowInfo = function (followInfo, token, cb) {
+    Watch.ModifyFollowInfo = function (followInfo, OpenID, cb) {
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(token);
-            _openid = OpenID.openId;
-        } catch (err) {
-            cb(null, { status: 403, "result": "" });
-            return;
-        }
+        var _openid = OpenID.openid;
 
         var bsSQL = "update hh_familyuser set ";
         var fileds = "";
@@ -270,30 +237,23 @@ module.exports = function (Watch) {
         {
             http: { verb: 'get' },
             description: '编辑亲友信息',
-            accepts: [{ arg: 'followInfo', type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' }, {
-                arg: 'token', type: 'string',
+            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' }, 
+            {
+                arg: 'OpenID', type: 'object',
                 http: function (ctx) {
                     var req = ctx.req;
-                    return req.headers.token;
+                    return GetOpenIDFromToken(req.headers.token);
                 },
-                description: '{"token":""}'
+                description: '{"OpenID":""}'
             }],
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
 
 
-    Watch.removeFollow = function (followInfo, token, cb) {
+    Watch.removeFollow = function (followInfo, OpenID, cb) {
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(token);
-            _openid = OpenID.openId;
-        } catch (err) {
-            cb(null, { status: 1, "result": "" });
-            return;
-        }
+        var _openid = OpenID.openid;
 
         var bsSQL = "delete from hh_familyuser  where openid = '" + _openid + "' and followopenid = '" + followInfo.followOpenid + "'";
 
@@ -311,30 +271,23 @@ module.exports = function (Watch) {
         {
             http: { verb: 'get' },
             description: '编辑亲友信息',
-            accepts: [{ arg: 'followInfo', type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' }, {
-                arg: 'token', type: 'string',
+            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' },  {
+                arg: 'OpenID', type: 'object',
                 http: function (ctx) {
                     var req = ctx.req;
-                    return req.headers.token;
+                    return GetOpenIDFromToken(req.headers.token);
                 },
-                description: '{"token":""}'
+                description: '{"OpenID":""}'
             }],
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
 
-    Watch.RequestUserMonitor = function (p, token, cb) {
+    Watch.RequestUserMonitor = function (p, OpenID, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
-        var _openid = null;
-        var OpenID = {};
-        try {
-            OpenID = GetOpenIDFromToken(token);
-            _openid = OpenID.openId;
-        } catch (err) {
-            cb(null, { status: 403, "result": "" });
-            return;
-        }
+        var _openid = OpenID.openid;
+
         if (_.isUndefined(p.followOpenid)) {
             _openid = OpenID.openid;
         }
@@ -412,14 +365,14 @@ module.exports = function (Watch) {
         {
             http: { verb: 'post' },
             description: '查询用户检测数据',
-            accepts: [{ arg: 'p', type: 'object', description: '{"followopenid":""}' },
+            accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followopenid":""}' },
             {
-                arg: 'token', type: 'string',
+                arg: 'OpenID', type: 'object',
                 http: function (ctx) {
                     var req = ctx.req;
-                    return req.headers.token;
+                    return GetOpenIDFromToken(req.headers.token);
                 },
-                description: '{"token":""}'
+                description: '{"OpenID":""}'
             }],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
