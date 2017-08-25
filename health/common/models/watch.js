@@ -15,7 +15,6 @@ module.exports = function (Watch) {
         Request_WxToken().then(function (resp) {
 
             var data = config.menu;
-
             var url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + resp.body.access_token;
 
             needle.post(encodeURI(url), data, { json: true }, function (err, resp) {
@@ -99,27 +98,14 @@ module.exports = function (Watch) {
 
         var bsSQL = "update hh_publicuser set ";
         var fieldContext = "";
-        if (!_.isUndefined(p.name)) {
-            fieldContext += " name = '" + p.name + "',";
-        }
-        if (!_.isUndefined(p.sex)) {
-            fieldContext += " sex = '" + p.sex + "',";
-        }
-        if (!_.isUndefined(p.birthday)) {
-            fieldContext += " birthday = '" + p.birthday + "',";
-        }
-        if (!_.isUndefined(p.height)) {
-            fieldContext += " height = '" + p.height + "',";
-        }
-        if (!_.isUndefined(p.weight)) {
-            fieldContext += " weight = '" + p.weight + "',";
-        }
-        if (!_.isUndefined(p.mobile)) {
-            fieldContext += " mobile = '" + p.mobile + "',";
-        }
-        if (!_.isUndefined(p.cardNo)) {
-            fieldContext += " cardNo = '" + p.cardNo + "',";
-        }
+        fieldContext += fillUpdateSQL( p, 'name');
+        fieldContext += fillUpdateSQL( p, 'sex');
+        fieldContext += fillUpdateSQL( p, 'birthday');
+        fieldContext += fillUpdateSQL( p, 'height');
+        fieldContext += fillUpdateSQL( p, 'weight');
+        fieldContext += fillUpdateSQL( p, 'mobile');
+        fieldContext += fillUpdateSQL( p, 'cardNo');
+        fieldContext += fillUpdateSQL( p, 'name');
         if (!_.isUndefined(p.disease_list)) {
             fieldContext += " disease_list = '" + JSON.stringify(p.disease_list) + "' ,";
         }
@@ -210,18 +196,9 @@ module.exports = function (Watch) {
 
         var bsSQL = "update hh_familyuser set ";
         var fileds = "";
-        if (!_.isUndefined(followInfo.nickName)) {
-            fileds += " nickName = '" + followInfo.nickName + "',";
-        }
-        if (!_.isUndefined(followInfo.ecc)) {
-            fileds += " ecc = '" + followInfo.ecc + "',";
-        }
-        if (!_.isUndefined(followInfo.tel)) {
-            fileds += " tel = '" + followInfo.tel + "',";
-        }
-        if (fileds.length > 0) {
-            fileds = fileds.substr(0, fileds.length - 1);
-        }
+        fileds += fillUpdateSQL( followInfo, 'nickName');
+        fileds += fillUpdateSQL( followInfo, 'ecc');
+        fileds += fillUpdateSQL( followInfo, 'tel', 1);
 
         bsSQL += fileds + " where openid = '" + _openid + "' and followopenid = '" + followInfo.followOpenid + "'";
 
@@ -288,7 +265,7 @@ module.exports = function (Watch) {
     Watch.RequestUserMonitor = function (p, OpenID, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
-        var _openid = OpenID.openid;
+        var _openid = "";
 
         if (_.isUndefined(p.followOpenid)) {
             _openid = OpenID.openid;
