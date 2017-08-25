@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 22:34:06
+ * @Last Modified time: 2017-08-25 09:05:04
  */
 
 var log4js = require('log4js');
@@ -369,6 +369,27 @@ module.exports = function (common) {
         });
     }
 
+    GetAddressFromLBS = function (location_x, location_y) {
+        return new Promise(function (resolve, reject) {
+            var url = "http://apis.map.qq.com/ws/geocoder/v1/?location=" + location_x + "," + location_y + "&key=6UWBZ-BRKR3-YWG3Y-337NE-DRCMZ-EGBF7";
+
+            needle.get(encodeURI(url), null, function (err, localInfo) {
+
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    if (localInfo.body.result.status == 0) {
+                        resolve(localInfo.body.result.address);
+                    }
+                    else {
+                        reject(localInfo.body.result.message);
+                    }
+                }
+            });
+        });
+    }
+
     _SendSOSWX = function (UserList, localUser, localtion) {
 
         var location_x = "";
@@ -383,22 +404,10 @@ module.exports = function (common) {
         else {
             location_x = localUser.location_x;
             location_y = localUser.location_y;
-            
-        } 
 
+        }
 
-        var url = "http://apis.map.qq.com/ws/geocoder/v1/?location="+location_x+","+location_y+"&key=6UWBZ-BRKR3-YWG3Y-337NE-DRCMZ-EGBF7";
-        
-        needle.get(encodeURI(url), null, function (err, localInfo) {
-
-            if ( err ){
-                EWTRACE(err.message);
-            }
-            console.log(localInfo.body.result.address);
-            if ( label == ''){
-                label = localInfo.body.result.address ;
-            }
-           
+        GetAddressFromLBS(location_x, location_y).then(function (address) {
 
             require('dotenv').config({ path: './config/.env' });
             Request_WxToken().then(function (resp) {
@@ -421,7 +430,7 @@ module.exports = function (common) {
                                 "color": _color
                             },
                             "keyword2": {
-                                "value": label+"[地址仅供参考]",
+                                "value": address + "[地址仅供参考]",
                                 "color": _color
                             },
                             "keyword3": {
@@ -440,6 +449,8 @@ module.exports = function (common) {
             }, function (err) {
                 console.log(err);
             });
+        },function(err){
+            console.log(err);
         });
     }
 
