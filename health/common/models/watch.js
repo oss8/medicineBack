@@ -8,6 +8,7 @@ module.exports = function (Watch) {
     var needle = require('needle');
     var config = require('../../config/config')
 
+
     Watch.CreateWXMenu = function (cb) {
         EWTRACE("CreateWXMenu Begin");
 
@@ -89,7 +90,7 @@ module.exports = function (Watch) {
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
-
+    
 
     Watch.ModifyUserInfo = function (p, OpenID, cb) {
         EWTRACE("ModifyUserInfo Begin");
