@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-25 09:30:16
+ * @Last Modified time: 2017-08-25 09:31:28
  */
 
 var log4js = require('log4js');
@@ -369,7 +369,7 @@ module.exports = function (common) {
         });
     }
 
-    GetAddressFromLBS = function (location_x, location_y) {
+    GetAddressFromLBS_TX = function (location_x, location_y) {
         return new Promise(function (resolve, reject) {
             var url = "http://apis.map.qq.com/ws/geocoder/v1/?location=" + location_x + "," + location_y + "&key=6UWBZ-BRKR3-YWG3Y-337NE-DRCMZ-EGBF7";
 
@@ -428,7 +428,7 @@ module.exports = function (common) {
 
         }
 
-        GetAddressFromLBS_GD(location_x, location_y).then(function (address) {
+        GetAddressFromLBS_TX(location_x, location_y).then(function (address) {
 
             require('dotenv').config({ path: './config/.env' });
             Request_WxToken().then(function (resp) {
