@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-25 09:05:04
+ * @Last Modified time: 2017-08-25 09:10:12
  */
 
 var log4js = require('log4js');
@@ -379,11 +379,11 @@ module.exports = function (common) {
                     reject(err);
                 }
                 else {
-                    if (localInfo.body.result.status == 0) {
+                    if (localInfo.body.status == 0) {
                         resolve(localInfo.body.result.address);
                     }
                     else {
-                        reject(localInfo.body.result.message);
+                        reject(localInfo.body.message);
                     }
                 }
             });
