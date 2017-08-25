@@ -10,9 +10,6 @@ module.exports = function (Watch) {
 
     Watch.CreateWXMenu = function (cb) {
         EWTRACE("CreateWXMenu Begin");
-        GetAddressFromLBS(30.293077,120.140343).then(function(address){
-            EWTRACE(address);
-        })
 
         Request_WxToken().then(function (resp) {
 

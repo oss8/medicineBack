@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-25 09:10:12
+ * @Last Modified time: 2017-08-25 09:30:16
  */
 
 var log4js = require('log4js');
@@ -390,6 +390,27 @@ module.exports = function (common) {
         });
     }
 
+    GetAddressFromLBS_GD = function (location_x, location_y) {
+        return new Promise(function (resolve, reject) {
+            var url = "http://restapi.amap.com/v3/geocode/regeo?location="+location_y+","+location_x+"&key=974a2c2c4f3fdbc1892cc70aa679dc01";
+
+            needle.get(encodeURI(url), null, function (err, localInfo) {
+
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    if (localInfo.body.status == 1) {
+                        resolve(localInfo.body.regeocode.formatted_address);
+                    }
+                    else {
+                        reject(localInfo.body.message);
+                    }
+                }
+            });
+        });
+    }    
+
     _SendSOSWX = function (UserList, localUser, localtion) {
 
         var location_x = "";
@@ -407,7 +428,7 @@ module.exports = function (common) {
 
         }
 
-        GetAddressFromLBS(location_x, location_y).then(function (address) {
+        GetAddressFromLBS_GD(location_x, location_y).then(function (address) {
 
             require('dotenv').config({ path: './config/.env' });
             Request_WxToken().then(function (resp) {
@@ -419,8 +440,7 @@ module.exports = function (common) {
                     var WXData = {
                         "touser": item.openid,
                         'url': "http://apis.map.qq.com/uri/v1/geocoder?coord=" + location_x + "," + location_y + "&referer=mankangapp",
-                        "template_id":
-                        'l9RO9mMPockQ2giCHHSPietOcYQXHwHJjfX52B1Y2T0',
+                        "template_id":process.env.WeChat_TakeSOSID,
                         "data": {
                             "first": {
                                 "value": "紧急通知",
