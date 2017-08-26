@@ -386,39 +386,39 @@ module.exports = function (Watch) {
                     return fitem.addtime == curDate;
                 });
 
-                _filter.forEach(function(item){
+                _filter.forEach(function (item) {
                     if (_.isEmpty(_filter)) {
                         var dayData = {};
                         dayData.date = curDate;
                         dayData.addtime = curDate;
                         dayData.value = 0;
-    
+
                         _result.pwv.push(dayData);
                         _result.pressure.push(dayData);
                         _result.heartrate.push(dayData);
-    
+
                     } else {
                         var dayData = {};
                         dayData.date = curDate;
                         dayData.value = item.pwv;
                         dayData.addtime = item.testtime;
                         _result.pwv.push(dayData);
-    
+
                         var pressure = {};
                         pressure.date = curDate;
-                        pressure.addtime = item.testtime;                        
+                        pressure.addtime = item.testtime;
                         pressure.high = item.highpress;
                         pressure.low = item.lowpress;
                         _result.pressure.push(pressure);
-    
+
                         var heartrate = {};
                         heartrate.date = curDate;
-                        heartrate.addtime = item.testtime;                        
+                        heartrate.addtime = item.testtime;
                         heartrate.value = item.hrcount;
-                        _result.heartrate.push(heartrate);                    
+                        _result.heartrate.push(heartrate);
                     }
                 })
- 
+
 
                 var _find = _.find(_sportdata.Result, function (fitem) {
                     return fitem.addtime == curDate;
@@ -427,16 +427,16 @@ module.exports = function (Watch) {
                 if (!_.isUndefined(_find)) {
                     var walk = {};
                     walk.date = curDate;
-                    walk.addtime = item.testtime;                    
+                    walk.addtime = item.testtime;
                     walk.value = find.walknum;
-                    _result.walk.push(walk);  
+                    _result.walk.push(walk);
 
                     var sleep = {};
                     sleep.date = curDate;
-                    sleep.addtime = item.testtime;                    
+                    sleep.addtime = item.testtime;
                     sleep.deepsleep = find.deepsleep;
                     sleep.lightsleep = find.lightsleep;
-                    _result.walk.push(sleep);  
+                    _result.walk.push(sleep);
                 }
                 else {
                     var dayData = {};
@@ -461,15 +461,15 @@ module.exports = function (Watch) {
             http: { verb: 'post' },
             description: '查询用户检测数据',
             accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followopenid":""}' },
-            // {
-            //     arg: 'OpenID', type: 'object',
-            //     http: function (ctx) {
-            //         var req = ctx.req;
-            //         return GetOpenIDFromToken(req.headers.token);
-            //     },
-            //     description: '{"OpenID":""}'
-            // }
-        ],
+                // {
+                //     arg: 'OpenID', type: 'object',
+                //     http: function (ctx) {
+                //         var req = ctx.req;
+                //         return GetOpenIDFromToken(req.headers.token);
+                //     },
+                //     description: '{"OpenID":""}'
+                // }
+            ],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
@@ -502,9 +502,6 @@ module.exports = function (Watch) {
             cb(err, { status: 0, "result": "" });
         })
 
-
-
-
         EWTRACE("removeFollow End");
     }
 
@@ -513,6 +510,38 @@ module.exports = function (Watch) {
         {
             http: { verb: 'get' },
             description: '获取测试token',
+            returns: { arg: 'p', type: 'object', root: true }
+        }
+    );
+
+
+    Watch.requestToken = function (token, cb) {
+
+        var OpenID = GetOpenIDFromToken(token);
+        var _result = {};
+        GetTokenFromOpenID(_result, OpenID).then(function (result) {
+
+            cb(null, { status: 1, "result": result });
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        })
+
+        EWTRACE("removeFollow End");
+    }
+
+    Watch.remoteMethod(
+        'requestToken',
+        {
+            http: { verb: 'get' },
+            description: '获取测试token',
+            accepts: {
+                arg: 'token', type: 'object',
+                http: function (ctx) {
+                    var req = ctx.req;
+                    return req.headers.token;
+                },
+                description: '{"token":""}'
+            },            
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
