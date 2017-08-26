@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-25 12:02:02
+ * @Last Modified time: 2017-08-25 22:08:00
  */
 
 var log4js = require('log4js');
@@ -681,6 +681,33 @@ module.exports = function (common) {
         });
     }
 
+    Request_WxToken_dangtang = function () {
+        return new Promise(function (resolve, reject) {
+            var _appie = 'wx012a9130903a7396';
+            require('dotenv').config({ path: './config/.env' });
+            var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+_appie;
+            var IP = getIPAdress();
+            if (IP.indexOf('172.19') >= 0) {
+                tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + _appie;
+            }
+            var needle = require('needle');
+            needle.get(encodeURI(tokenUrl), null, function (err, resp) {
+                // you can pass params as a string or as an object.
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    if (!_.isUndefined(resp.headers.errcode)) {
+                        reject(new Error(resp.headers.errmsg));
+                    }
+                    else {
+                        resolve(resp);
+                    }
+                }
+            });
+        });
+    }
+    
     function fillUpdateSQL(result, name, isLast){
         if (!_.isUndefined(result[name])) {
             var SQL = " "+name+" = '" + result[name] + "'";

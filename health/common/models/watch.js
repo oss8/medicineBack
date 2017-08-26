@@ -8,6 +8,48 @@ module.exports = function (Watch) {
     var needle = require('needle');
     var config = require('../../config/config')
 
+    Watch.CreateWXMenu_dangtang = function (cb) {
+        EWTRACE("CreateWXMenu Begin");
+
+        Request_WxToken_dangtang().then(function (resp) {
+
+            var data = config.menu; 5
+            var url = "https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=" + resp.body.access_token;
+
+            needle.post(encodeURI(url), data, { json: true }, function (err, resp1) {
+                // you can pass params as a string or as an object.
+                if (err) {
+                    //cb(err, { status: 0, "result": "" });
+                    EWTRACE(err.message);
+                    cb(err, { status: 1, "result": "" });
+                }
+                else {
+                    resp1.body.selfmenu_info.button[1].sub_button.list[1].url = "http://wp.eshine.cn/auth/wechat?bu=http%3a%2f%2falliance.eshine.cn%2f%23%2f%3ftoken%3ddasd&brandid=100230&wpdomain=wp.eshine.cn";
+
+                    var data = resp1.body.selfmenu_info;
+                    var url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + resp.body.access_token;
+
+                    needle.post(encodeURI(url), data, { json: true }, function (err, resp) {
+                        cb(null, { status: 0, "result": resp.body });
+                    });
+                }
+            });
+        }, function (err) {
+            cb(err, { status: 1, "result": "" });
+        });
+        EWTRACE("CreateWXMenu End");
+    }
+
+    Watch.remoteMethod(
+        'CreateWXMenu_dangtang',
+        {
+            http: { verb: 'post' },
+            description: '创建微信菜单',
+            returns: { arg: 'AddDoctor', type: 'object', root: true }
+        }
+    );
+
+
 
     Watch.CreateWXMenu = function (cb) {
         EWTRACE("CreateWXMenu Begin");
@@ -89,29 +131,31 @@ module.exports = function (Watch) {
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
-    
+
 
     Watch.ModifyUserInfo = function (p, OpenID, cb) {
         EWTRACE("ModifyUserInfo Begin");
 
-        var _openid = OpenID.openid;            
+        var _openid = OpenID.openid;
 
         var bsSQL = "update hh_publicuser set ";
         var fieldContext = "";
-        fieldContext += fillUpdateSQL( p, 'name');
-        fieldContext += fillUpdateSQL( p, 'sex');
-        fieldContext += fillUpdateSQL( p, 'birthday');
-        fieldContext += fillUpdateSQL( p, 'height');
-        fieldContext += fillUpdateSQL( p, 'weight');
-        fieldContext += fillUpdateSQL( p, 'mobile');
-        fieldContext += fillUpdateSQL( p, 'cardNo');
-        fieldContext += fillUpdateSQL( p, 'name');
+        fieldContext += fillUpdateSQL(p, 'name');
+        fieldContext += fillUpdateSQL(p, 'sex');
+        fieldContext += fillUpdateSQL(p, 'birthday');
+        fieldContext += fillUpdateSQL(p, 'height');
+        fieldContext += fillUpdateSQL(p, 'weight');
+        fieldContext += fillUpdateSQL(p, 'mobile');
+        fieldContext += fillUpdateSQL(p, 'cardNo');
         if (!_.isUndefined(p.disease_list)) {
             fieldContext += " disease_list = '" + JSON.stringify(p.disease_list) + "' ,";
         }
 
-        var age = GetDateDiff(p.birthday, (new Date()).format('yyyy-MM-dd'), 'year');
-        fieldContext += " age = " + age;
+        var age = 0;
+        if (!_.isUndefined(p.birthday)) {
+            age = GetDateDiff(p.birthday, (new Date()).format('yyyy-MM-dd'), 'year');
+            fieldContext += " age = " + age;
+        }
 
         bsSQL += fieldContext + " where openid = '" + _openid + "'";
 
@@ -129,7 +173,7 @@ module.exports = function (Watch) {
         {
             http: { verb: 'post' },
             description: '用户编辑信息',
-            accepts: [{ arg: 'p', type: 'object', http: { source: 'body' },  description: '{"name":"葛岭","sex":1,"birthday":"1974-02-11","height":"178","weight":"62","mobile":"18958064659","cardNo":"330102197420111536","disease_list":{}}' },
+            accepts: [{ arg: 'p', type: 'object', http: { source: 'body' }, description: '{"name":"葛岭","sex":1,"birthday":"1974-02-11","height":"178","weight":"62","mobile":"18958064659","cardNo":"330102197420111536","disease_list":{}}' },
             {
                 arg: 'OpenID', type: 'object',
                 http: function (ctx) {
@@ -142,6 +186,8 @@ module.exports = function (Watch) {
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
+
+
 
 
     Watch.RequestMyQRCode = function (OpenID, cb) {
@@ -196,9 +242,9 @@ module.exports = function (Watch) {
 
         var bsSQL = "update hh_familyuser set ";
         var fileds = "";
-        fileds += fillUpdateSQL( followInfo, 'nickName');
-        fileds += fillUpdateSQL( followInfo, 'ecc');
-        fileds += fillUpdateSQL( followInfo, 'tel', 1);
+        fileds += fillUpdateSQL(followInfo, 'nickName');
+        fileds += fillUpdateSQL(followInfo, 'ecc');
+        fileds += fillUpdateSQL(followInfo, 'tel', 1);
 
         bsSQL += fileds + " where openid = '" + _openid + "' and followopenid = '" + followInfo.followOpenid + "'";
 
@@ -216,7 +262,7 @@ module.exports = function (Watch) {
         {
             http: { verb: 'get' },
             description: '编辑亲友信息',
-            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' }, 
+            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' },
             {
                 arg: 'OpenID', type: 'object',
                 http: function (ctx) {
@@ -250,7 +296,7 @@ module.exports = function (Watch) {
         {
             http: { verb: 'get' },
             description: '编辑亲友信息',
-            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' },  {
+            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' }, {
                 arg: 'OpenID', type: 'object',
                 http: function (ctx) {
                     var req = ctx.req;
@@ -258,6 +304,38 @@ module.exports = function (Watch) {
                 },
                 description: '{"OpenID":""}'
             }],
+            returns: { arg: 'p', type: 'object', root: true }
+        }
+    );
+
+    Watch.reqeustFollow = function (OpenID, cb) {
+
+        var _openid = OpenID.openid;
+
+        var bsSQL = "select * from hh_familyuser  where openid = '" + _openid + "'";
+
+        DoSQL(bsSQL).then(function (resut) {
+            cb(null, { status: 1, "result": result });
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        })
+
+        EWTRACE("removeFollow End");
+    }
+
+    Watch.remoteMethod(
+        'reqeustFollow',
+        {
+            http: { verb: 'get' },
+            description: '查询亲友信息',
+            accepts: {
+                arg: 'OpenID', type: 'object',
+                http: function (ctx) {
+                    var req = ctx.req;
+                    return GetOpenIDFromToken(req.headers.token);
+                },
+                description: '{"OpenID":""}'
+            },
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
@@ -356,4 +434,51 @@ module.exports = function (Watch) {
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
+
+
+    Watch.reqeustDemoToken = function (cb) {
+
+        var token = {
+            subscribe: 1,
+            openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
+            nickname: '葛岭ð¨ð³',
+            sex: 1,
+            language: 'zh_CN',
+            city: '杭州',
+            province: '浙江',
+            country: '中国',
+            headimgurl: 'http://wx.qlogo.cn/mmopen/SYeWkon6C6L4uAdUCBgCHs6oaicvlgEfnf3LLC0D4ibLTZyic1f2icMv1xF2K45xaVNJ0NuECFWUqyXsAUx9fJmIy13jHEpSAgGO/0',
+            subscribe_time: 1503563590,
+            unionid: 'oBQ4y01s_iPdv-NqE8zonMYFfuus',
+            remark: '',
+            groupid: 0,
+            tagid_list: []
+        };
+
+        var result = {};
+        GetTokenFromOpenID(result, token).then(function (result) {
+
+            cb(null, { status: 1, "result": result });
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        })
+
+
+
+
+        EWTRACE("removeFollow End");
+    }
+
+    Watch.remoteMethod(
+        'reqeustDemoToken',
+        {
+            http: { verb: 'get' },
+            description: '获取测试token',
+            returns: { arg: 'p', type: 'object', root: true }
+        }
+    );
 };
+
+
+
+
