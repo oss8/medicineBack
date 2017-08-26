@@ -191,7 +191,7 @@ module.exports = function (Watch) {
 
 
     Watch.RequestMyQRCode = function (OpenID, cb) {
-
+        EWTRACE("RequestMyQRCode Begin");
         var _openid = OpenID.openid;
 
         EWTRACE("RequestMyQRCode:" + _openid);
@@ -237,7 +237,7 @@ module.exports = function (Watch) {
 
 
     Watch.ModifyFollowInfo = function (followInfo, OpenID, cb) {
-
+        EWTRACE("ModifyFollowInfo Begin");
         var _openid = OpenID.openid;
 
         var bsSQL = "update hh_familyuser set ";
@@ -254,7 +254,7 @@ module.exports = function (Watch) {
             cb(err, { status: 0, "result": "" });
         })
 
-        EWTRACE("RequestMyQRCode End");
+        EWTRACE("ModifyFollowInfo End");
     }
 
     Watch.remoteMethod(
@@ -277,7 +277,7 @@ module.exports = function (Watch) {
 
 
     Watch.removeFollow = function (followInfo, OpenID, cb) {
-
+        EWTRACE("removeFollow Begin");
         var _openid = OpenID.openid;
 
         var bsSQL = "delete from hh_familyuser  where openid = '" + _openid + "' and followopenid = '" + followInfo.followOpenid + "'";
@@ -309,7 +309,7 @@ module.exports = function (Watch) {
     );
 
     Watch.reqeustFollow = function (OpenID, cb) {
-
+        EWTRACE("reqeustFollow Begin");
         var _openid = OpenID.openid;
 
         var bsSQL = "select * from hh_familyuser  where openid = '" + _openid + "'";
@@ -320,7 +320,7 @@ module.exports = function (Watch) {
             cb(err, { status: 0, "result": "" });
         })
 
-        EWTRACE("removeFollow End");
+        EWTRACE("reqeustFollow End");
     }
 
     Watch.remoteMethod(
