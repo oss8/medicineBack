@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-26 14:13:23
+ * @Last Modified time: 2017-08-26 15:23:49
  */
 
 var log4js = require('log4js');
@@ -392,7 +392,7 @@ module.exports = function (common) {
 
     GetAddressFromLBS_GD = function (location_x, location_y) {
         return new Promise(function (resolve, reject) {
-            var url = "http://restapi.amap.com/v3/geocode/regeo?location="+location_y+","+location_x+"&key=974a2c2c4f3fdbc1892cc70aa679dc01";
+            var url = "http://restapi.amap.com/v3/geocode/regeo?location=" + location_y + "," + location_x + "&key=974a2c2c4f3fdbc1892cc70aa679dc01";
 
             needle.get(encodeURI(url), null, function (err, localInfo) {
 
@@ -409,7 +409,7 @@ module.exports = function (common) {
                 }
             });
         });
-    }    
+    }
 
     _SendSOSWX = function (UserList, localUser, localtion) {
 
@@ -440,7 +440,7 @@ module.exports = function (common) {
                     var WXData = {
                         "touser": item.openid,
                         'url': "http://apis.map.qq.com/uri/v1/geocoder?coord=" + location_x + "," + location_y + "&referer=mankangapp",
-                        "template_id":process.env.WeChat_TakeSOSID,
+                        "template_id": process.env.WeChat_TakeSOSID,
                         "data": {
                             "first": {
                                 "value": "紧急通知",
@@ -469,7 +469,7 @@ module.exports = function (common) {
             }, function (err) {
                 console.log(err);
             });
-        },function(err){
+        }, function (err) {
             console.log(err);
         });
     }
@@ -685,7 +685,7 @@ module.exports = function (common) {
         return new Promise(function (resolve, reject) {
             var _appie = 'wx012a9130903a7396';
             require('dotenv').config({ path: './config/.env' });
-            var tokenUrl = 'http://style.man-kang.com:3000/token?appId='+_appie;
+            var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + _appie;
             var IP = getIPAdress();
             if (IP.indexOf('172.19') >= 0) {
                 tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + _appie;
@@ -707,15 +707,32 @@ module.exports = function (common) {
             });
         });
     }
-    
-    fillUpdateSQL = function(result, name, isLast){
+
+    fillUpdateSQL = function (result, name, isLast) {
         if (!_.isUndefined(result[name])) {
-            var SQL = " "+name+" = '" + result[name] + "'";
-            if ( _.isUndefined(isLast)){
+            var SQL = " " + name + " = '" + result[name] + "'";
+            if (_.isUndefined(isLast)) {
                 SQL += ",";
             }
             return SQL;
         }
         return "";
+    }
+
+
+    SendNotifyContext = function (openid, context) {
+        Request_WxToken().then(function (resp) {
+
+            var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;;
+
+            var SendData = {
+                "touser": openid,
+                "msgtype": "text",
+                "text":
+                {
+                    "content": context
+                }
+            };
+        });
     }
 }
