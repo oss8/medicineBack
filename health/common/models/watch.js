@@ -294,7 +294,7 @@ module.exports = function (Watch) {
     Watch.remoteMethod(
         'removeFollow',
         {
-            http: { verb: 'get' },
+            http: { verb: 'post' },
             description: '编辑亲友信息',
             accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' }, {
                 arg: 'OpenID', type: 'object',
