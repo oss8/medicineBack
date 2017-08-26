@@ -161,9 +161,9 @@ module.exports = function (Watch) {
 
         DoSQL(bsSQL).then(function () {
 
-            cb(null, { status: 0, "result": "" });
+            cb(null, { status: 1, "result": "" });
         }, function (err) {
-            cb(err, { status: 1, "result": "" });
+            cb(err, { status: 0, "result": "" });
         });
     }
 
