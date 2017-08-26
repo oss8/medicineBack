@@ -91,7 +91,7 @@ module.exports = function (Watch) {
         var _openid = OpenID.openid;
 
         var ps = [];
-        var bsSQL = "select name,sex,birthday,height,weight,mobile,cardNo,disease from hh_publicuser where openid = '" + _openid + "'";
+        var bsSQL = "select name,sex,birthday,height,weight,mobile,cardNo,disease_list as disease from hh_publicuser where openid = '" + _openid + "'";
         var userInfo = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, userInfo));
 
