@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-26 14:41:30
+ * @Last Modified time: 2017-08-26 14:44:48
  */
 'use strict';
 
@@ -701,7 +701,7 @@ module.exports = function (Patient) {
 
                 bsSQL = "";
                 if (_myfollow.Result.length == 0) {
-                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc,headimage) values('" + localOpenid + "','" + fromOpenid + "','" + userInfo.nickname + "','',0, '"+headimgurl+"');";
+                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc,headimage) values('" + localOpenid + "','" + fromOpenid + "','" + userInfo.nickname + "','',0, '"+userInfo.headimgurl+"');";
                 }
                 if (herfollow.Result.length == 0) {
 
@@ -715,7 +715,7 @@ module.exports = function (Patient) {
                         tel = _localUser.Result[0].mobile;
                     }
 
-                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc) values('" + fromOpenid + "','" + localOpenid + "','" + nickname + "','" + tel + "',0);";
+                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc) values('" + fromOpenid + "','" + localOpenid + "','" + nickname + "','" + tel + "',0,'"+_localUser.Result[0].headimage+"');";
                 }
                 DoSQL(bsSQL).then(function () {
 
