@@ -365,12 +365,12 @@ module.exports = function (Watch) {
         Promise.all(ps).then(function () {
 
             var _result = {};
-            _result.watchDetail = _.sortBy(_watchdata.Result, function (fitem) {
-                return -1 * fitem.addtime;
-            });;
-            _result.sportDetail = _.sortBy(_sportdata.Result, function (fitem) {
-                return -1 * fitem.addtime;
-            });
+            // _result.watchDetail = _.sortBy(_watchdata.Result, function (fitem) {
+            //     return -1 * fitem.addtime;
+            // });;
+            // _result.sportDetail = _.sortBy(_sportdata.Result, function (fitem) {
+            //     return -1 * fitem.addtime;
+            // });
             _result.pwv = [];
             _result.pressure = [];
             _result.heartrate = [];
