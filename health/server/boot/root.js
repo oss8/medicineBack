@@ -28,8 +28,9 @@ module.exports = function (server) {
 
     if (!_.isEmpty(find)) {
       if (req.headers.token == undefined) {
-        res.writeHead(401);
-        res.end();
+        // res.writeHead(401);
+        // res.end();
+        next();
       }
       else {
         var OpenID = {};

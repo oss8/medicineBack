@@ -260,7 +260,7 @@ module.exports = function (Watch) {
     Watch.remoteMethod(
         'ModifyFollowInfo',
         {
-            http: { verb: 'get' },
+            http: { verb: 'post' },
             description: '编辑亲友信息',
             accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' },
             {
@@ -340,25 +340,25 @@ module.exports = function (Watch) {
         }
     );
 
-    Watch.RequestUserMonitor = function (p, OpenID, cb) {
+    Watch.RequestUserMonitor = function (p, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
-        var _openid = "";
+        var _openid = "oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU";
 
-        if (_.isUndefined(p.followOpenid)) {
-            _openid = OpenID.openid;
-        }
-        else {
-            _openid = p.followOpenid;
-        }
+        // if (_.isUndefined(p.followOpenid)) {
+        //     _openid = OpenID.openid;
+        // }
+        // else {
+        //     _openid = p.followOpenid;
+        // }
 
 
         var ps = [];
-        var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,date_format(addtime, '%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where openid = '" + _openid + "' order by addtime desc";
+        var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where openid = '" + _openid + "' order by addtime desc";
         var _watchdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _watchdata));
 
-        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,date_format(addtime, '%Y-%m-%d') as addtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
+        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime, addtime as testtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
         var _sportdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _sportdata));
 
@@ -371,43 +371,81 @@ module.exports = function (Watch) {
             _result.sportDetail = _.sortBy(_sportdata.Result, function (fitem) {
                 return -1 * fitem.addtime;
             });
-            _result.dayList = [];
+            _result.pwv = [];
+            _result.pressure = [];
+            _result.heartrate = [];
+            _result.walk = [];
+            _result.sleep = [];
+
 
             for (var i = 0; i < 7; i++) {
 
                 var curDate = GetDateAdd((new Date()).format('yyyy-MM-dd'), -1 * i, 'day').format('yyyy-MM-dd');
 
-                var dayData = {};
-                dayData.index = i;
-                dayData.date = curDate;
-
                 var _filter = _.filter(_watchdata.Result, function (fitem) {
                     return fitem.addtime == curDate;
                 });
 
-                var _watch = _.sortBy(_filter, function (fitem) {
-                    return -1 * fitem.addtime2;
+                _filter.forEach(function(item){
+                    if (_.isEmpty(_filter)) {
+                        var dayData = {};
+                        dayData.date = curDate;
+                        dayData.addtime = curDate;
+                        dayData.value = 0;
+    
+                        _result.pwv.push(dayData);
+                        _result.pressure.push(dayData);
+                        _result.heartrate.push(dayData);
+    
+                    } else {
+                        var dayData = {};
+                        dayData.date = curDate;
+                        dayData.value = item.pwv;
+                        dayData.addtime = item.testtime;
+                        _result.pwv.push(dayData);
+    
+                        var pressure = {};
+                        pressure.date = curDate;
+                        pressure.addtime = item.testtime;                        
+                        pressure.high = item.highpress;
+                        pressure.low = item.lowpress;
+                        _result.pressure.push(pressure);
+    
+                        var heartrate = {};
+                        heartrate.date = curDate;
+                        heartrate.addtime = item.testtime;                        
+                        heartrate.value = item.hrcount;
+                        _result.heartrate.push(heartrate);                    
+                    }
                 })
-                dayData.watch = {};
+ 
 
-                if (_.isEmpty(_filter)) {
-                    dayData.watch.dispData = {};
-                } else {
-                    dayData.watch.dispData = _watch[0];
-                }
-
-                dayData.sport = {};
                 var _find = _.find(_sportdata.Result, function (fitem) {
                     return fitem.addtime == curDate;
                 });
 
                 if (!_.isUndefined(_find)) {
-                    dayData.sport.dispData = _find;
+                    var walk = {};
+                    walk.date = curDate;
+                    walk.addtime = item.testtime;                    
+                    walk.value = find.walknum;
+                    _result.walk.push(walk);  
+
+                    var sleep = {};
+                    sleep.date = curDate;
+                    sleep.addtime = item.testtime;                    
+                    sleep.deepsleep = find.deepsleep;
+                    sleep.lightsleep = find.lightsleep;
+                    _result.walk.push(sleep);  
                 }
                 else {
-                    dayData.sport.dispData = {};
+                    var dayData = {};
+                    dayData.date = curDate;
+                    dayData.addtime = curDate;
+                    dayData.value = 0;
+                    _result.walk.push(dayData);
+                    _result.sleep.push(dayData);
                 }
-                _result.dayList.push(dayData);
             }
             cb(null, { status: 0, "result": _result });
 
@@ -423,14 +461,15 @@ module.exports = function (Watch) {
             http: { verb: 'post' },
             description: '查询用户检测数据',
             accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followopenid":""}' },
-            {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
-                    var req = ctx.req;
-                    return GetOpenIDFromToken(req.headers.token);
-                },
-                description: '{"OpenID":""}'
-            }],
+            // {
+            //     arg: 'OpenID', type: 'object',
+            //     http: function (ctx) {
+            //         var req = ctx.req;
+            //         return GetOpenIDFromToken(req.headers.token);
+            //     },
+            //     description: '{"OpenID":""}'
+            // }
+        ],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
