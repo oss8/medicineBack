@@ -91,7 +91,7 @@ module.exports = function (Watch) {
         var _openid = OpenID.openid;
 
         var ps = [];
-        var bsSQL = "select name,sex,birthday,height,weight,mobile,cardNo,disease_list from hh_publicuser where openid = '" + _openid + "'";
+        var bsSQL = "select name,sex,birthday,height,weight,mobile,cardNo,disease from hh_publicuser where openid = '" + _openid + "'";
         var userInfo = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, userInfo));
 
@@ -102,9 +102,9 @@ module.exports = function (Watch) {
         Promise.all(ps).then(function () {
 
             userInfo.Result[0].followList = myfollow.Result;
-            userInfo.Result[0].disease_list = JSON.parse(userInfo.Result[0].disease_list);
+            userInfo.Result[0].disease_list = JSON.parse(userInfo.Result[0].disease);
 
-            delete userInfo.Result[0].disease_list;
+            delete userInfo.Result[0].disease;
 
             cb(null, { status: 0, "result": userInfo.Result[0] });
         }, function (err) {
