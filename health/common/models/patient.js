@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-26 14:31:15
+ * @Last Modified time: 2017-08-26 14:37:48
  */
 'use strict';
 
@@ -689,13 +689,13 @@ module.exports = function (Patient) {
         Promise.all(ps).then(function () {
 
             GetWXNickName(fromOpenid).then(function (userInfo) {
-
+                bsSQL = "";
                 if (_familyUser.Result.length == 0) {
                     bsSQL += "INSERT INTO hh_publicUser (id, openid,name, headimage) VALUES (uuid(),'" + fromOpenid + "','" + userInfo.nickname + "','"+ userInfo.headimgurl+"');";
                     DoSQL(bsSQL).then(function () {
 
                     }, function (err) {
-
+                        EWTRACE(err.message);
                     })
                 }
 
