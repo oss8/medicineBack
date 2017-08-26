@@ -441,7 +441,7 @@ module.exports = function (Watch) {
         var token = {
             subscribe: 1,
             openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
-            nickname: '葛岭ð¨ð³',
+            nickname: '路人甲',
             sex: 1,
             language: 'zh_CN',
             city: '杭州',

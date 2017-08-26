@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-25 22:08:00
+ * @Last Modified time: 2017-08-26 14:13:23
  */
 
 var log4js = require('log4js');
@@ -708,7 +708,7 @@ module.exports = function (common) {
         });
     }
     
-    function fillUpdateSQL(result, name, isLast){
+    fillUpdateSQL = function(result, name, isLast){
         if (!_.isUndefined(result[name])) {
             var SQL = " "+name+" = '" + result[name] + "'";
             if ( _.isUndefined(isLast)){
