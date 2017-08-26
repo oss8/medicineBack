@@ -106,9 +106,9 @@ module.exports = function (Watch) {
 
             delete userInfo.Result[0].disease;
 
-            cb(null, { status: 0, "result": userInfo.Result[0] });
+            cb(null, { status: 1, "result": userInfo.Result[0] });
         }, function (err) {
-            cb(err, { status: 1, "result": "" });
+            cb(err, { status: 0, "result": "" });
         });
     }
 
