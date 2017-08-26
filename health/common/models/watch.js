@@ -296,7 +296,7 @@ module.exports = function (Watch) {
         {
             http: { verb: 'post' },
             description: '编辑亲友信息',
-            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' }, {
+            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":""}' }, {
                 arg: 'OpenID', type: 'object',
                 http: function (ctx) {
                     var req = ctx.req;
