@@ -242,7 +242,7 @@ module.exports = function (Watch) {
 
         var bsSQL = "update hh_familyuser set ";
         var fileds = "";
-        fileds += fillUpdateSQL(followInfo, 'nickName');
+        fileds += fillUpdateSQL(followInfo, 'nickname');
         fileds += fillUpdateSQL(followInfo, 'ecc');
         fileds += fillUpdateSQL(followInfo, 'tel', 1);
 
@@ -262,7 +262,7 @@ module.exports = function (Watch) {
         {
             http: { verb: 'post' },
             description: '编辑亲友信息',
-            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickName":"","tel":"","ecc":""}' },
+            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickname":"","tel":"","ecc":""}' },
             {
                 arg: 'OpenID', type: 'object',
                 http: function (ctx) {
