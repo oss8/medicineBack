@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-26 14:24:58
+ * @Last Modified time: 2017-08-26 14:31:15
  */
 'use strict';
 
@@ -691,7 +691,7 @@ module.exports = function (Patient) {
             GetWXNickName(fromOpenid).then(function (userInfo) {
 
                 if (_familyUser.Result.length == 0) {
-                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name) VALUES (uuid(),'" + fromOpenid + "','" + userInfo.nickname + "');";
+                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name, headimage) VALUES (uuid(),'" + fromOpenid + "','" + userInfo.nickname + "','"+ userInfo.headimgurl+"');";
                     DoSQL(bsSQL).then(function () {
 
                     }, function (err) {
@@ -701,7 +701,7 @@ module.exports = function (Patient) {
 
                 bsSQL = "";
                 if (_myfollow.length == 0) {
-                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc) values('" + localOpenid + "','" + fromOpenid + "','" + userInfo.nickname + "','',0);";
+                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc,headimage) values('" + localOpenid + "','" + fromOpenid + "','" + userInfo.nickname + "','',0, '"+headimgurl+"');";
                 }
                 if (herfollow.length == 0) {
 
