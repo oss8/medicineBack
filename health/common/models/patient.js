@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-26 14:47:37
+ * @Last Modified time: 2017-08-26 15:12:31
  */
 'use strict';
 
@@ -407,10 +407,10 @@ module.exports = function (Patient) {
                                         bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
                                     }
 
-                                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type,headimage) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "'," + _userId + ",'" + userInfo.province + "','" + userInfo.city + "','" + userInfo.sex + "',0,0,'"+userInfo.headimgurl+"');";
+                                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type,headimage) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "'," + _userId + ",'" + userInfo.province + "','" + userInfo.city + "','" + userInfo.sex + "',0,0,'" + userInfo.headimgurl + "');";
                                 } else {
                                     bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
-                                    bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = " + _userId + ",name='" + userInfo.nickname + "',headimage='"+ userInfo.headimgurl+"' where openid ='" + openid + "'";
+                                    bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = " + _userId + ",name='" + userInfo.nickname + "',headimage='" + userInfo.headimgurl + "' where openid ='" + openid + "'";
                                 }
 
                                 DoSQL(bsSQL).then(function () {
@@ -668,6 +668,8 @@ module.exports = function (Patient) {
 
         var localOpenid = req.body.xml.eventkey[0].substr(7);
         var fromOpenid = req.body.xml.fromusername[0];
+        var localName = "";
+        var fromName = "";
 
         var ps = [];
         var bsSQL = "select * from hh_publicuser where openid = '" + localOpenid + "'";
@@ -689,9 +691,12 @@ module.exports = function (Patient) {
         Promise.all(ps).then(function () {
 
             GetWXNickName(fromOpenid).then(function (userInfo) {
-                bsSQL = "";
+                fromName = userInfo.nickname;
+                localName = _localUser.Result[0].name;
+                
+                bsSQL = "select * from hh_publicuser where 1=2;";
                 if (_familyUser.Result.length == 0) {
-                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name, headimage) VALUES (uuid(),'" + fromOpenid + "','" + userInfo.nickname + "','"+ userInfo.headimgurl+"');";
+                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name, headimage) VALUES (uuid(),'" + fromOpenid + "','" + userInfo.nickname + "','" + userInfo.headimgurl + "');";
                     DoSQL(bsSQL).then(function () {
 
                     }, function (err) {
@@ -699,15 +704,15 @@ module.exports = function (Patient) {
                     })
                 }
 
-                bsSQL = "";
                 if (_myfollow.Result.length == 0) {
-                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc,headimage) values('" + localOpenid + "','" + fromOpenid + "','" + userInfo.nickname + "','',0, '"+userInfo.headimgurl+"');";
+                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc,headimage) values('" + localOpenid + "','" + fromOpenid + "','" + userInfo.nickname + "','',0, '" + userInfo.headimgurl + "');";
                 }
                 if (herfollow.Result.length == 0) {
 
                     var nickname = "";
                     if (!_.isNull(_localUser.Result[0].name)) {
                         nickname = _localUser.Result[0].name;
+
                     }
 
                     var tel = "";
@@ -715,9 +720,57 @@ module.exports = function (Patient) {
                         tel = _localUser.Result[0].mobile;
                     }
 
-                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc,headimage) values('" + fromOpenid + "','" + localOpenid + "','" + nickname + "','" + tel + "',0,'"+_localUser.Result[0].headimage+"');";
+                    bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc,headimage) values('" + fromOpenid + "','" + localOpenid + "','" + nickname + "','" + tel + "',0,'" + _localUser.Result[0].headimage + "');";
                 }
                 DoSQL(bsSQL).then(function () {
+
+                    Request_WxToken().then(function (resp) {
+
+                        var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;;
+
+                        var SendData = {
+                            "touser": localOpenid,
+                            "msgtype": "text",
+                            "text":
+                            {
+                                "content": fromName + "已经关注了你"
+                            }
+                        };
+
+                        needle.post(encodeURI(url), SendData, { json: true }, function (err, resp) {
+                            if ( err ){
+                                EWTRACE(err.message);
+                            }else{
+                                console.log(resp);
+                            }
+
+                        });
+
+                        var SendData = {
+                            "touser": fromOpenid,
+                            "msgtype": "text",
+                            "text":
+                            {
+                                "content": localName + "已经关注成功"
+                            }
+                        };
+
+                        needle.post(encodeURI(url), SendData, { json: true }, function (err, resp) {
+                            if ( err ){
+                                EWTRACE(err.message);
+                            }else{
+                                console.log(resp);
+                            }
+                            
+                        });                        
+
+                    }, function (err) {
+
+
+                    })
+
+
+
 
                 }, function (err) {
                     EWTRACE(err.message);
