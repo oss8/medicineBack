@@ -314,7 +314,7 @@ module.exports = function (Watch) {
 
         var bsSQL = "select * from hh_familyuser  where openid = '" + _openid + "'";
 
-        DoSQL(bsSQL).then(function (resut) {
+        DoSQL(bsSQL).then(function (result) {
             cb(null, { status: 1, "result": result });
         }, function (err) {
             cb(err, { status: 0, "result": "" });
