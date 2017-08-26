@@ -95,7 +95,7 @@ module.exports = function (Watch) {
         var userInfo = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, userInfo));
 
-        bsSQL = "select openid,followopenid,nickname,tel,ecc,headimage from hh_familyuser where openid = '" + _openid + "'";
+        bsSQL = "select followopenid,nickname,tel,ecc,headimage from hh_familyuser where openid = '" + _openid + "'";
         var myfollow = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, myfollow));
 
