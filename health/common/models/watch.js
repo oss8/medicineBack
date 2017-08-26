@@ -102,7 +102,7 @@ module.exports = function (Watch) {
         Promise.all(ps).then(function () {
 
             userInfo.Result[0].followList = myfollow.Result;
-            userInfo.Result[0].disease = JSON.parse(userInfo.Result[0].disease_list);
+            userInfo.Result[0].disease_list = JSON.parse(userInfo.Result[0].disease_list);
 
             delete userInfo.Result[0].disease_list;
 

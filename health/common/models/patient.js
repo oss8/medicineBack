@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-24 22:05:47
+ * @Last Modified time: 2017-08-26 14:08:36
  */
 'use strict';
 
@@ -407,10 +407,10 @@ module.exports = function (Patient) {
                                         bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
                                     }
 
-                                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "'," + _userId + ",'" + userInfo.province + "','" + userInfo.city + "','" + userInfo.sex + "',0,0);";
+                                    bsSQL += "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type,headimage) VALUES (uuid(),'" + openid + "','" + userInfo.nickname + "','" + watch_iccid + "'," + _userId + ",'" + userInfo.province + "','" + userInfo.city + "','" + userInfo.sex + "',0,0,'"+headimgurl+"');";
                                 } else {
                                     bsSQL = "update hh_publicuser set watchuserid = null,iccid=null where iccid = '" + watch_iccid + "';"
-                                    bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = " + _userId + ",name='" + userInfo.nickname + "' where openid ='" + openid + "'";
+                                    bsSQL += "update hh_publicUser set iccid = '" + watch_iccid + "', watchuserid = " + _userId + ",name='" + userInfo.nickname + "',headimage='"+ userInfo.headimgurl+"' where openid ='" + openid + "'";
                                 }
 
                                 DoSQL(bsSQL).then(function () {
