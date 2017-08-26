@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-26 14:22:11
+ * @Last Modified time: 2017-08-26 14:24:58
  */
 'use strict';
 
@@ -720,15 +720,16 @@ module.exports = function (Patient) {
                 DoSQL(bsSQL).then(function () {
 
                 }, function (err) {
-
+                    EWTRACE(err.message);
                 })
 
             }, function (err) {
-
+                EWTRACE(err.message);
             })
         }, function (err) {
 
         })
+        EWTRACE("AddFamilyUser End");
     }
 
 };
