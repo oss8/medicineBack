@@ -344,17 +344,17 @@ module.exports = function (Watch) {
         }
     );
 
-    Watch.RequestUserMonitor = function (p, cb) {
+    Watch.RequestUserMonitor = function (p, OpenID, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
-        var _openid = "oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU";
+        var _openid = "";
 
-        // if (_.isUndefined(p.followOpenid)) {
-        //     _openid = OpenID.openid;
-        // }
-        // else {
-        //     _openid = p.followOpenid;
-        // }
+        if (_.isUndefined(p.followOpenid)) {
+            _openid = OpenID.openid;
+        }
+        else {
+            _openid = p.followOpenid;
+        }
 
 
         var ps = [];
@@ -465,14 +465,14 @@ module.exports = function (Watch) {
             http: { verb: 'post' },
             description: '查询用户检测数据',
             accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followopenid":""}' },
-                // {
-                //     arg: 'OpenID', type: 'object',
-                //     http: function (ctx) {
-                //         var req = ctx.req;
-                //         return GetOpenIDFromToken(req.headers.token);
-                //     },
-                //     description: '{"OpenID":""}'
-                // }
+                {
+                    arg: 'OpenID', type: 'object',
+                    http: function (ctx) {
+                        var req = ctx.req;
+                        return GetOpenIDFromToken(req.headers.token);
+                    },
+                    description: '{"OpenID":""}'
+                }
             ],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
