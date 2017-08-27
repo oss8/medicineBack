@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-26 15:25:15
+ * @Last Modified time: 2017-08-27 21:45:34
  */
 'use strict';
 
@@ -638,10 +638,10 @@ module.exports = function (Patient) {
                 }
                 if (_curMinute == '30') {
 
-                    var bsSQL = "insert into hh_usersportdata_history select * from hh_usersportdata where addtime > DATE_ADD(now(),interval -7 day);delete from hh_usersportdata where addtime > DATE_ADD(now(),interval -7 day)";
+                    var bsSQL = "insert into hh_usersportdata_history select * from hh_usersportdata where addtime <= DATE_ADD(now(),interval -7 day);delete from hh_usersportdata where addtime <= DATE_ADD(now(),interval -7 day)";
                     DoSQL(bsSQL).then(function () {
 
-                        bsSQL = "insert into hh_userwatchdata_history select * from hh_userwatchdata where addtime > DATE_ADD(now(),interval -7 day);delete from hh_userwatchdata where addtime > DATE_ADD(now(),interval -7 day)";
+                        bsSQL = "insert into hh_userwatchdata_history select * from hh_userwatchdata where addtime <= DATE_ADD(now(),interval -7 day);delete from hh_userwatchdata where addtime <= DATE_ADD(now(),interval -7 day)";
                         DoSQL(bsSQL).then(function () {
 
 
