@@ -424,13 +424,13 @@ module.exports = function (Watch) {
                 if (!_.isUndefined(_find)) {
                     var walk = {};
                     walk.date = curDate;
-                    walk.addtime = item.testtime;
+                    walk.addtime = _find.testtime;
                     walk.value = find.walknum;
                     _result.walk.push(walk);
 
                     var sleep = {};
                     sleep.date = curDate;
-                    sleep.addtime = item.testtime;
+                    sleep.addtime = _find.testtime;
                     sleep.deepsleep = find.deepsleep;
                     sleep.lightsleep = find.lightsleep;
                     _result.walk.push(sleep);
