@@ -392,36 +392,26 @@ module.exports = function (Watch) {
                 });
 
                 _filter.forEach(function (item) {
-                    if (_.isEmpty(_filter)) {
-                        var dayData = {};
-                        dayData.date = curDate;
-                        dayData.addtime = curDate;
-                        dayData.value = 0;
 
-                        _result.pwv.push(dayData);
-                        _result.pressure.push(dayData);
-                        _result.heartrate.push(dayData);
+                    var dayData = {};
+                    dayData.date = curDate;
+                    dayData.value = item.pwv;
+                    dayData.addtime = item.testtime;
+                    _result.pwv.push(dayData);
 
-                    } else {
-                        var dayData = {};
-                        dayData.date = curDate;
-                        dayData.value = item.pwv;
-                        dayData.addtime = item.testtime;
-                        _result.pwv.push(dayData);
+                    var pressure = {};
+                    pressure.date = curDate;
+                    pressure.addtime = item.testtime;
+                    pressure.high = item.highpress;
+                    pressure.low = item.lowpress;
+                    _result.pressure.push(pressure);
 
-                        var pressure = {};
-                        pressure.date = curDate;
-                        pressure.addtime = item.testtime;
-                        pressure.high = item.highpress;
-                        pressure.low = item.lowpress;
-                        _result.pressure.push(pressure);
+                    var heartrate = {};
+                    heartrate.date = curDate;
+                    heartrate.addtime = item.testtime;
+                    heartrate.value = item.hrcount;
+                    _result.heartrate.push(heartrate);
 
-                        var heartrate = {};
-                        heartrate.date = curDate;
-                        heartrate.addtime = item.testtime;
-                        heartrate.value = item.hrcount;
-                        _result.heartrate.push(heartrate);
-                    }
                 })
 
 
@@ -443,14 +433,6 @@ module.exports = function (Watch) {
                     sleep.lightsleep = find.lightsleep;
                     _result.walk.push(sleep);
                 }
-                else {
-                    var dayData = {};
-                    dayData.date = curDate;
-                    dayData.addtime = curDate;
-                    dayData.value = 0;
-                    _result.walk.push(dayData);
-                    _result.sleep.push(dayData);
-                }
             }
             cb(null, { status: 0, "result": _result });
 
@@ -466,14 +448,14 @@ module.exports = function (Watch) {
             http: { verb: 'post' },
             description: '查询用户检测数据',
             accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followOpenid":""}' },
-                {
-                    arg: 'OpenID', type: 'object',
-                    http: function (ctx) {
-                        var req = ctx.req;
-                        return GetOpenIDFromToken(req.headers.token);
-                    },
-                    description: '{"OpenID":""}'
-                }
+            {
+                arg: 'OpenID', type: 'object',
+                http: function (ctx) {
+                    var req = ctx.req;
+                    return GetOpenIDFromToken(req.headers.token);
+                },
+                description: '{"OpenID":""}'
+            }
             ],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
@@ -546,7 +528,7 @@ module.exports = function (Watch) {
                     return req.headers.token;
                 },
                 description: '{"token":""}'
-            },            
+            },
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
