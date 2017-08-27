@@ -349,11 +349,11 @@ module.exports = function (Watch) {
 
         var _openid = "";
 
-        if (_.isUndefined(p.followOpenid)) {
+        if (_.isUndefined(p.followopenid)) {
             _openid = OpenID.openid;
         }
         else {
-            _openid = p.followOpenid;
+            _openid = p.followopenid;
         }
 
 
