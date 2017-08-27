@@ -348,12 +348,13 @@ module.exports = function (Watch) {
         EWTRACE("RequestUserMonitor Begin");
 
         var _openid = "";
+        console.log(p);
 
-        if (_.isUndefined(p.followopenid)) {
+        if (_.isUndefined(p.followOpenid)) {
             _openid = OpenID.openid;
         }
         else {
-            _openid = p.followopenid;
+            _openid = p.followOpenid;
         }
 
 
@@ -464,7 +465,7 @@ module.exports = function (Watch) {
         {
             http: { verb: 'post' },
             description: '查询用户检测数据',
-            accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followopenid":""}' },
+            accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followOpenid":""}' },
                 {
                     arg: 'OpenID', type: 'object',
                     http: function (ctx) {
