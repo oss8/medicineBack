@@ -154,8 +154,10 @@ module.exports = function (Watch) {
         var age = 0;
         if (!_.isUndefined(p.birthday)) {
             age = GetDateDiff(p.birthday, (new Date()).format('yyyy-MM-dd'), 'year');
-            fieldContext += " age = " + age;
+            fieldContext += " age = " + age + ",";
         }
+
+        fieldContext = fieldContext.substr(0, fieldContext.length - 1);
 
         bsSQL += fieldContext + " where openid = '" + _openid + "'";
 
@@ -244,7 +246,9 @@ module.exports = function (Watch) {
         var fileds = "";
         fileds += fillUpdateSQL(followInfo, 'nickname');
         fileds += fillUpdateSQL(followInfo, 'ecc');
-        fileds += fillUpdateSQL(followInfo, 'tel', 1);
+        fileds += fillUpdateSQL(followInfo, 'tel');
+        fileds = fileds.substr(0, fileds.length - 1);
+
 
         bsSQL += fileds + " where openid = '" + _openid + "' and followopenid = '" + followInfo.followOpenid + "'";
 
