@@ -425,14 +425,14 @@ module.exports = function (Watch) {
                     var walk = {};
                     walk.date = curDate;
                     walk.addtime = _find.testtime;
-                    walk.value = find.walknum;
+                    walk.value = _find.walknum;
                     _result.walk.push(walk);
 
                     var sleep = {};
                     sleep.date = curDate;
                     sleep.addtime = _find.testtime;
-                    sleep.deepsleep = find.deepsleep;
-                    sleep.lightsleep = find.lightsleep;
+                    sleep.deepsleep = _find.deepsleep;
+                    sleep.lightsleep = _find.lightsleep;
                     _result.walk.push(sleep);
                 }
             }
