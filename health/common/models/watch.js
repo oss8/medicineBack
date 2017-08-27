@@ -433,7 +433,7 @@ module.exports = function (Watch) {
                     sleep.addtime = _find.testtime;
                     sleep.deepsleep = _find.deepsleep;
                     sleep.lightsleep = _find.lightsleep;
-                    _result.walk.push(sleep);
+                    _result.sleep.push(sleep);
                 }
             }
             cb(null, { status: 0, "result": _result });
