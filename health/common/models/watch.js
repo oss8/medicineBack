@@ -347,7 +347,7 @@ module.exports = function (Watch) {
     Watch.RequestUserMonitor = function (p, OpenID, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
-        var _openid = "";
+        var _openid = "oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU";
         console.log(p);
 
         if (_.isUndefined(p.followOpenid)) {
