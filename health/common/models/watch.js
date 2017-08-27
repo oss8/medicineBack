@@ -391,6 +391,8 @@ module.exports = function (Watch) {
                     return fitem.addtime == curDate;
                 });
 
+                console.log(_filter.length);
+
                 _filter.forEach(function (item) {
 
                     var dayData = {};
