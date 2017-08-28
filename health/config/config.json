@@ -17,19 +17,19 @@
             "url": "http://www.soso.com/"
           },
           {
-            "type": "view",
+            "type": "view_limited",
             "name": "初学者教学",
-            "url": "http://v.qq.com/"
+            "media_id": "YEZ1-hX2SqhxIoTprsAbGoaXA19m_27ZNjT-E0g98pg"
           },
           {
             "type": "view",
             "name": "联系客服",
-            "url": "http://v.qq.com/"
+            "url": "http://www.soso.com/"
           },
           {
-            "type": "view",
+            "type": "view_limited",
             "name": "认识PWV",
-            "url": "http://v.qq.com/"
+            "media_id": "YEZ1-hX2SqhxIoTprsAbGlId8YsyLrjkOJ1pKbx3uEM"
           }
         ]
       },

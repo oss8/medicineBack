@@ -8,48 +8,6 @@ module.exports = function (Watch) {
     var needle = require('needle');
     var config = require('../../config/config')
 
-    Watch.CreateWXMenu_dangtang = function (cb) {
-        EWTRACE("CreateWXMenu Begin");
-
-        Request_WxToken_dangtang().then(function (resp) {
-
-            var data = config.menu; 5
-            var url = "https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=" + resp.body.access_token;
-
-            needle.post(encodeURI(url), data, { json: true }, function (err, resp1) {
-                // you can pass params as a string or as an object.
-                if (err) {
-                    //cb(err, { status: 0, "result": "" });
-                    EWTRACE(err.message);
-                    cb(err, { status: 1, "result": "" });
-                }
-                else {
-                    resp1.body.selfmenu_info.button[1].sub_button.list[1].url = "http://wp.eshine.cn/auth/wechat?bu=http%3a%2f%2falliance.eshine.cn%2f%23%2f%3ftoken%3ddasd&brandid=100230&wpdomain=wp.eshine.cn";
-
-                    var data = resp1.body.selfmenu_info;
-                    var url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + resp.body.access_token;
-
-                    needle.post(encodeURI(url), data, { json: true }, function (err, resp) {
-                        cb(null, { status: 0, "result": resp.body });
-                    });
-                }
-            });
-        }, function (err) {
-            cb(err, { status: 1, "result": "" });
-        });
-        EWTRACE("CreateWXMenu End");
-    }
-
-    Watch.remoteMethod(
-        'CreateWXMenu_dangtang',
-        {
-            http: { verb: 'post' },
-            description: '创建微信菜单',
-            returns: { arg: 'AddDoctor', type: 'object', root: true }
-        }
-    );
-
-
 
     Watch.CreateWXMenu = function (cb) {
         EWTRACE("CreateWXMenu Begin");
@@ -81,6 +39,57 @@ module.exports = function (Watch) {
         {
             http: { verb: 'post' },
             description: '创建微信菜单',
+            returns: { arg: 'AddDoctor', type: 'object', root: true }
+        }
+    );
+
+    var iconv = require("iconv-lite");
+    Watch.requestMediaList = function (cb) {
+        EWTRACE("requestMediaList Begin");
+
+        Request_WxToken().then(function (resp) {
+
+            var data = {
+                "type":"news",
+                "offset":0,
+                "count":20
+             };
+            var url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=" + resp.body.access_token;
+            
+            EWTRACE(url);
+            needle.post(encodeURI(url), JSON.stringify(data), {'Content-Type':'text/plain'}, function (err, resp) {
+                // you can pass params as a string or as an object.
+                if (err) {
+                    //cb(err, { status: 0, "result": "" });
+                    EWTRACE(err.message);
+                    cb(err, { status: 1, "result": "" });
+                }
+                else {
+                    var aa = data = iconv.decode(resp.body, 'utf-8');
+                    var mediaList = JSON.parse(aa);
+
+                    var _result = [];
+                    mediaList.item.forEach(function(item){
+                        var _out = {};
+                        _out.media_id = item.media_id;
+                        _out.title = item.content.news_item[0].title;
+                        _result.push(_out);
+                    })
+
+                    cb(null, { status: 0, "result": _result });
+                }
+            });
+        }, function (err) {
+            cb(err, { status: 1, "result": "" });
+        });
+        EWTRACE("requestMediaList End");
+    }
+
+    Watch.remoteMethod(
+        'requestMediaList',
+        {
+            http: { verb: 'post' },
+            description: '获取素材列表',
             returns: { arg: 'AddDoctor', type: 'object', root: true }
         }
     );
@@ -188,9 +197,6 @@ module.exports = function (Watch) {
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
-
-
-
 
     Watch.RequestMyQRCode = function (OpenID, cb) {
         EWTRACE("RequestMyQRCode Begin");
