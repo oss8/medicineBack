@@ -68,9 +68,20 @@ module.exports = function (Watch) {
                     var aa = data = iconv.decode(mediaList.body, 'utf-8');
                     var mediaList = JSON.parse(aa);
 
-                    var find = _.find(mediaList.item, function(fitem){
+                    var find = _.find(mediaList.item, function (fitem) {
                         return fitem.media_id == "YEZ1-hX2SqhxIoTprsAbGlId8YsyLrjkOJ1pKbx3uEM";
                     })
+
+                    find.content.news_item.forEach(function (fitem) {
+                        var obj = {
+                            "title": fitem.title,
+                            "thumb_media_id": fitem.thumb_media_id,
+                            "content": fitem.content
+                        };
+
+                    })
+
+
                     var _result = [];
                     mediaList.item.forEach(function (item) {
                         var _out = {};
@@ -510,7 +521,7 @@ module.exports = function (Watch) {
     );
 
 
-    Watch.requestToken = function ( token, cb) {
+    Watch.requestToken = function (token, cb) {
 
         var OpenID = {};
         try {

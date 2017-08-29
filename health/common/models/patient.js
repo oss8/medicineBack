@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 13:54:42
+ * @Last Modified time: 2017-08-29 13:59:01
  */
 'use strict';
 
@@ -314,6 +314,7 @@ module.exports = function (Patient) {
                     var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;
                     
                     console.log(data1);
+                    console.log(data1.mpnews.articles);
                     needle.post(encodeURI(url), data1, { json: true }, function (err, resp) {
                         if (err) {
                             //cb(err, { status: 0, "result": "" });
