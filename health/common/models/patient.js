@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 14:12:17
+ * @Last Modified time: 2017-08-29 14:15:37
  */
 'use strict';
 
@@ -318,13 +318,23 @@ module.exports = function (Patient) {
                         };
                         data1.news.articles.push(obj);
                     })
-                                        
+                    console.log(data1);
+                    console.log(data1.news.articles);
+                    
+                    
+                    data1 = {
+                        "touser": openId,
+                        "msgtype": "mpnews",
+                        "mpnews": {
+                            "media_id": "YEZ1-hX2SqhxIoTprsAbGlId8YsyLrjkOJ1pKbx3uEM"
+                        }
+                    }
+
                     //data1.mpnews.articles = find.content.news_item;
         
                     var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;
                     
-                    console.log(data1);
-                    console.log(data1.news.articles);
+
                     needle.post(encodeURI(url), data1, { json: true }, function (err, resp) {
                         if (err) {
                             //cb(err, { status: 0, "result": "" });
