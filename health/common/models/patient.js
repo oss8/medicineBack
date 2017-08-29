@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 13:41:59
+ * @Last Modified time: 2017-08-29 13:42:37
  */
 'use strict';
 
@@ -306,7 +306,7 @@ module.exports = function (Patient) {
                 "touser": openId,
                 "msgtype": "mpnews",
                 "mpnews": {
-                    "media_id": "YEZ1-hX2SqhxIoTprsAbGoaXA19m_27ZNjT-E0g98pg"
+                    "media_id": "YEZ1-hX2SqhxIoTprsAbGt-QnzSnMiJzmyJUc0vA0P0"
                 }
             }
 
