@@ -516,7 +516,7 @@ module.exports = function (Watch) {
             cb(err, { status: 0, "result": "" });
         })
 
-        EWTRACE("removeFollow End");
+        EWTRACE("reqeustDemoToken End");
     }
 
     Watch.remoteMethod(
@@ -545,7 +545,7 @@ module.exports = function (Watch) {
             cb(err, { status: 0, "result": "" });
         })
 
-        EWTRACE("removeFollow End");
+        EWTRACE("requestToken End");
 
     }
 
