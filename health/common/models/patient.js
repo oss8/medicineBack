@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 13:59:01
+ * @Last Modified time: 2017-08-29 14:07:39
  */
 'use strict';
 
@@ -304,12 +304,22 @@ module.exports = function (Patient) {
                                         
                     var data1 = {
                         "touser": openId,
-                        "msgtype": "mpnews",
-                        "mpnews": {
+                        "msgtype": "news",
+                        "news": {
                             "articles": []
                         }
                     }
-                    data1.mpnews.articles = find.content.news_item;
+
+                    find.content.news_item.forEach(function (fitem) {
+                        var obj = {
+                            "title": fitem.title,
+                            "thumb_media_id": fitem.thumb_media_id,
+                            "content": fitem.content
+                        };
+                        data1.mpnews.articles.push(obj);
+                    })
+                                        
+                    //data1.mpnews.articles = find.content.news_item;
         
                     var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;
                     
