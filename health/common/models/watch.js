@@ -538,7 +538,6 @@ module.exports = function (Watch) {
             cb(err, { status: 0, "result": "" });
             return;
         }
-        delete OpenID.exp;
 
         GetTokenFromOpenID(OpenID).then(function (result) {
             cb(null, { status: 1, "result": result });

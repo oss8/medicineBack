@@ -15,8 +15,7 @@ module.exports = function (server) {
     'RequestMyQRCode',
     'ModifyFollowInfo',
     'removeFollow',
-    'RequestUserMonitor',
-    'requestToken'
+    'RequestUserMonitor'
   ];
 
 
