@@ -509,10 +509,10 @@ module.exports = function (Watch) {
 
 
     Watch.requestToken = function (token, cb) {
-
-        var OpenID = GetOpenIDFromToken(token);
-        var _result = {};
         try {
+            var OpenID = GetOpenIDFromToken(token);
+            var _result = {};
+
             GetTokenFromOpenID(_result, OpenID).then(function (result) {
 
                 cb(null, { status: 1, "result": result });
@@ -521,7 +521,7 @@ module.exports = function (Watch) {
             })
 
             EWTRACE("removeFollow End");
-        }catch(err){
+        } catch (err) {
             cb(err, { status: 0, "result": "" });
         }
 
