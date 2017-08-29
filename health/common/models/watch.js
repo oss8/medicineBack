@@ -507,9 +507,8 @@ module.exports = function (Watch) {
     );
 
 
-    Watch.requestToken = function ( cb) {
+    Watch.requestToken = function ( token, cb) {
 
-        var token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJzY3JpYmUiOjEsIm9wZW5pZCI6Im9GVlotMU1mM3l4V0xXSFFQRV8zQmhsVkZuR1UiLCJuaWNrbmFtZSI6IuiRm-WyrfCfh6jwn4ezIiwic2V4IjoxLCJsYW5ndWFnZSI6InpoX0NOIiwiY2l0eSI6IuadreW3niIsInByb3ZpbmNlIjoi5rWZ5rGfIiwiY291bnRyeSI6IuS4reWbvSIsImhlYWRpbWd1cmwiOiJodHRwOi8vd3gucWxvZ28uY24vbW1vcGVuL1NZZVdrb242QzZMNHVBZFVDQmdDSHM2b2FpY3ZsZ0VmbmYzTExDMEQ0aWJMVFp5aWMxZjJpY012MXhGMks0NXhhVk5KME51RUNGV1VxeVhzQVV4OWZKbUl5MTNqSEVwU0FnR08vMCIsInN1YnNjcmliZV90aW1lIjoxNTAzOTA3MTc4LCJ1bmlvbmlkIjoib0JRNHkwMXNfaVBkdi1OcUU4em9uTVlGZnV1cyIsInJlbWFyayI6IiIsImdyb3VwaWQiOjAsInRhZ2lkX2xpc3QiOltdLCJhY2Nlc3NfdG9rZW4iOiJsbkhZbUFZcWswMWxjSEhyTFBKalJ4UEhTY2JsQk9iOTk5bkJDdWd6a1czSmMzT2hWd25UNDE4R1l1amloNV8wZEw0WlhKV3VabE5tWFJEWDk1Zi0zd3hTMGw1NFBZVjhrdlBsZTRWRVNUNVEwSjNWSERGbEoxZzl6NU1YSHVDR0FBSGhBRkFKSlEiLCJpYXQiOjE1MDM5ODQwMDIsImV4cCI6MTUwNDA3MDQwMn0.iQRR-STuvvUAU3-Q2yjWHfvfUgog1cucU2u2wbbl2-Eq-zW1JKBJdQ1i-a_GQTU6NBsDYOeNlHguspHNs6dBEX_AT-M-Ytir8JktAdT33lSNo8xqifzHD2wB37PkXp8nqIAjqIy9r3nzfFtF4OACQCrYZ1gFmJ9IBBSd45cldXA';
         var OpenID = {};
         try {
             OpenID = GetOpenIDFromToken(token);
@@ -534,14 +533,14 @@ module.exports = function (Watch) {
         {
             http: { verb: 'get' },
             description: '获取测试token',
-            // accepts: {
-            //     arg: 'token', type: 'object',
-            //     http: function (ctx) {
-            //         var req = ctx.req;
-            //         return req.headers.token;
-            //     },
-            //     description: '{"token":""}'
-            // },
+            accepts: {
+                arg: 'token', type: 'object',
+                http: function (ctx) {
+                    var req = ctx.req;
+                    return req.headers.token;
+                },
+                description: '{"token":""}'
+            },
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
