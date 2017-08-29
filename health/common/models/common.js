@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 13:24:10
+ * @Last Modified time: 2017-08-29 17:17:05
  */
 
 var log4js = require('log4js');
@@ -710,7 +710,7 @@ module.exports = function (common) {
 
     fillUpdateSQL = function (result, name) {
         if (!_.isUndefined(result[name])) {
-            return SQL = " " + name + " = '" + result[name] + "'";
+            return SQL = " " + name + " = '" + result[name] + "',";
         }
         return "";
     }
