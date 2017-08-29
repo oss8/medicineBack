@@ -14,7 +14,7 @@
           {
             "type": "view",
             "name": "个人信息",
-            "url": "http://www.soso.com/"
+            "url": "http://m.man-kang.com/#/my-info"
           },
           {
             "type": "view_limited",
@@ -38,13 +38,8 @@
         "sub_button": [
           {
             "type": "view",
-            "name": "历史数据",
-            "url": "http://www.soso.com/"
-          },
-          {
-            "type": "location_select",
             "name": "健康报告",
-            "key": "SOS_Notify"
+            "url": "http://m.man-kang.com/#/history-data"
           },
           {
             "type": "click",

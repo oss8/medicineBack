@@ -50,14 +50,14 @@ module.exports = function (Watch) {
         Request_WxToken().then(function (resp) {
 
             var data = {
-                "type":"news",
-                "offset":0,
-                "count":20
-             };
+                "type": "news",
+                "offset": 0,
+                "count": 20
+            };
             var url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=" + resp.body.access_token;
-            
+
             EWTRACE(url);
-            needle.post(encodeURI(url), JSON.stringify(data), {'Content-Type':'text/plain'}, function (err, resp) {
+            needle.post(encodeURI(url), JSON.stringify(data), { 'Content-Type': 'text/plain' }, function (err, resp) {
                 // you can pass params as a string or as an object.
                 if (err) {
                     //cb(err, { status: 0, "result": "" });
@@ -69,7 +69,7 @@ module.exports = function (Watch) {
                     var mediaList = JSON.parse(aa);
 
                     var _result = [];
-                    mediaList.item.forEach(function(item){
+                    mediaList.item.forEach(function (item) {
                         var _out = {};
                         _out.media_id = item.media_id;
                         _out.title = item.content.news_item[0].title;
@@ -512,14 +512,19 @@ module.exports = function (Watch) {
 
         var OpenID = GetOpenIDFromToken(token);
         var _result = {};
-        GetTokenFromOpenID(_result, OpenID).then(function (result) {
+        try {
+            GetTokenFromOpenID(_result, OpenID).then(function (result) {
 
-            cb(null, { status: 1, "result": result });
-        }, function (err) {
+                cb(null, { status: 1, "result": result });
+            }, function (err) {
+                cb(err, { status: 0, "result": "" });
+            })
+
+            EWTRACE("removeFollow End");
+        }catch(err){
             cb(err, { status: 0, "result": "" });
-        })
+        }
 
-        EWTRACE("removeFollow End");
     }
 
     Watch.remoteMethod(
