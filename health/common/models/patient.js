@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 12:54:04
+ * @Last Modified time: 2017-08-29 12:55:25
  */
 'use strict';
 
@@ -281,17 +281,12 @@ module.exports = function (Patient) {
 
 
         var data = {
-            "touser":openId,
-            "msgtype":"mpnews",
-            "mpnews":{
-                "articles": [
-                 {
-                    "media_id":"YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"
-                 },
-                 {
-                    "media_id":"YEZ1-hX2SqhxIoTprsAbGnLMFScMYNfy51PYT8UdEpg"
-                 }
-                 ]
+            "touser": openId,
+            "msgtype": "mpnews",
+            "mpnews": {
+
+                "media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"
+
             }
         }
 
@@ -305,7 +300,7 @@ module.exports = function (Patient) {
                     EWTRACE(err.message);
                 }
                 else {
-                    console.log(resp.body );
+                    console.log(resp.body);
                 }
             });
         });
