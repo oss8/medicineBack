@@ -17,9 +17,9 @@
             "url": "http://m.man-kang.com/#/my-info"
           },
           {
-            "type": "view_limited",
+            "type": "click",
             "name": "初学者教学",
-            "media_id": "YEZ1-hX2SqhxIoTprsAbGoaXA19m_27ZNjT-E0g98pg"
+            "key": "firstUser"
           },
           {
             "type": "view",

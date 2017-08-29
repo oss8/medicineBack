@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-28 11:32:51
+ * @Last Modified time: 2017-08-29 12:06:16
  */
 'use strict';
 
@@ -128,6 +128,10 @@ module.exports = function (Patient) {
                     WXClick_SOS_NotifyLBS(req, res, cb);
                 }
 
+                if (_eventKey == 'firstUser') {
+                    EWTRACE("call firstUser");
+                    WXClick_Notify_firstUser(req, res, cb);
+                }
             }
             if (_event == 'location_select') {
                 if (_eventKey == 'SOS_Notify') {
@@ -270,6 +274,40 @@ module.exports = function (Patient) {
         DoSQL(bsSQL).then(function () {
             EWTRACE("update ok");
         })
+    }
+
+    function WXClick_Notify_firstUser(req, res, cb) {
+        var openId = req.body.xml.fromusername[0];
+
+
+        var data = {
+            "touser": [
+                "openId"
+            ],
+            "mpnews": {
+                "media_id": "YEZ1-hX2SqhxIoTprsAbGoaXA19m_27ZNjT-E0g98pg",
+                "media_id": "YEZ1-hX2SqhxIoTprsAbGnLMFScMYNfy51PYT8UdEpg",
+                "media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"
+            },
+            "msgtype": "mpnews",
+            "send_ignore_reprint": 0
+        }
+
+        Request_WxToken().then(function (resp) {
+
+            var url = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=" + resp.body.access_token;
+
+            needle.post(encodeURI(url), data, { json: true }, function (err, resp) {
+                if (err) {
+                    //cb(err, { status: 0, "result": "" });
+                    EWTRACE(err.message);
+                }
+                else {
+                    console.log(resp.body );
+                }
+            });
+        });
+
     }
 
     function WXClick_SOS(req, res, cb) {
@@ -720,10 +758,10 @@ module.exports = function (Patient) {
 
                     bsSQL += "insert into hh_familyuser(openid,followopenid,nickname,tel,ecc,headimage) values('" + fromOpenid + "','" + localOpenid + "','" + nickname + "','" + tel + "',0,'" + _localUser.Result[0].headimage + "');";
                 }
-                DoSQL(bsSQL).then(function () {                   
-                    SendNotifyContext( localOpenid, fromName + "已经关注了你");
-                    SendNotifyContext( fromOpenid, "你已经关注了" + localName);
-                    
+                DoSQL(bsSQL).then(function () {
+                    SendNotifyContext(localOpenid, fromName + "已经关注了你");
+                    SendNotifyContext(fromOpenid, "你已经关注了" + localName);
+
                 }, function (err) {
                     EWTRACE(err.message);
                 })
