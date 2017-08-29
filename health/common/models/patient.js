@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 13:04:27
+ * @Last Modified time: 2017-08-29 13:10:39
  */
 'use strict';
 
@@ -285,9 +285,11 @@ module.exports = function (Patient) {
             "msgtype": "mpnews",
             "mpnews": {
                 "articles": [
-                {"media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"},
-                {"thumb_media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"}
-            ]}
+
+                    { "media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80" },
+                    { "media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80" }
+                ]
+            }
         }
 
         Request_WxToken().then(function (resp) {
