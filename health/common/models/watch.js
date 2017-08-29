@@ -508,7 +508,9 @@ module.exports = function (Watch) {
     );
 
 
-    Watch.requestToken = function (token, cb) {
+    Watch.requestToken = function ( cb) {
+
+        var token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcGVuaWQiOiJvRlZaLTFNMjFQT2VFT1gyZ2VqV1JrREUtRVd3Iiwibmlja25hbWUiOiLpm7fmrKIiLCJzZXgiOjEsImxhbmd1YWdlIjoiemhfQ04iLCJjaXR5IjoiSGFuZ3pob3UiLCJwcm92aW5jZSI6IlpoZWppYW5nIiwiY291bnRyeSI6IkNoaW5hIiwiaGVhZGltZ3VybCI6Imh0dHA6Ly93eC5xbG9nby5jbi9tbW9wZW4vdmlfMzIvUTNhdUhnend6TTU4T241bE9oRFZwZkdDb1h4ZTVZU2xGc2tUVnNqak5xaWNsVXlVV0pvNGJaVUpoanYzS2ljcW1KblBGOWVzNk5PQTRacndGazlSemlja2cvMCIsInByaXZpbGVnZSI6W10sInVuaW9uaWQiOiJvQlE0eTA3bnNEU3VxVlNDSkpTd1pYWUdWcmdjIiwiaWF0IjoxNTAzOTc5NzcxLCJleHAiOjE1MDM5ODAwNzF9.ZYG7XqjeuiupdSw1P6Wzvllo78fJUpISBGFD2GA7fvPo3fjvdkrPYsQmWCbBfKEWl2gmlylyO_067TxPI7k5roX7-Z5nyjlLAJxUIwOHtcuhSuskn1feiRVF23vEK6FRj-CQ4IPhf-HI9tXRYv-G3LCZczf1hu4H4I3ZmwgRklI';
         var OpenID = {};
         try {
             OpenID = GetOpenIDFromToken(token);
@@ -535,14 +537,14 @@ re
         {
             http: { verb: 'get' },
             description: '获取测试token',
-            accepts: {
-                arg: 'token', type: 'object',
-                http: function (ctx) {
-                    var req = ctx.req;
-                    return req.headers.token;
-                },
-                description: '{"token":""}'
-            },
+            // accepts: {
+            //     arg: 'token', type: 'object',
+            //     http: function (ctx) {
+            //         var req = ctx.req;
+            //         return req.headers.token;
+            //     },
+            //     description: '{"token":""}'
+            // },
             returns: { arg: 'p', type: 'object', root: true }
         }
     );

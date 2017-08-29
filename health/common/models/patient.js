@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 12:06:16
+ * @Last Modified time: 2017-08-29 12:18:48
  */
 'use strict';
 
@@ -286,8 +286,6 @@ module.exports = function (Patient) {
             ],
             "mpnews": {
                 "media_id": "YEZ1-hX2SqhxIoTprsAbGoaXA19m_27ZNjT-E0g98pg",
-                "media_id": "YEZ1-hX2SqhxIoTprsAbGnLMFScMYNfy51PYT8UdEpg",
-                "media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"
             },
             "msgtype": "mpnews",
             "send_ignore_reprint": 0
