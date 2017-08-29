@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 12:18:48
+ * @Last Modified time: 2017-08-29 12:38:48
  */
 'use strict';
 
@@ -281,6 +281,7 @@ module.exports = function (Patient) {
 
 
         var data = {
+            "is_to_all":false,
             "touser": [
                 "openId"
             ],
