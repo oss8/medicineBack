@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 14:07:39
+ * @Last Modified time: 2017-08-29 14:08:36
  */
 'use strict';
 
@@ -304,8 +304,8 @@ module.exports = function (Patient) {
                                         
                     var data1 = {
                         "touser": openId,
-                        "msgtype": "news",
-                        "news": {
+                        "msgtype": "mpnews",
+                        "mpnews": {
                             "articles": []
                         }
                     }
