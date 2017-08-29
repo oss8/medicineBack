@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 13:02:55
+ * @Last Modified time: 2017-08-29 13:04:27
  */
 'use strict';
 
@@ -286,7 +286,7 @@ module.exports = function (Patient) {
             "mpnews": {
                 "articles": [
                 {"media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"},
-                {"media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"}
+                {"thumb_media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"}
             ]}
         }
 
