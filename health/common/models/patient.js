@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 14:21:47
+ * @Last Modified time: 2017-08-29 14:24:39
  */
 'use strict';
 
@@ -127,9 +127,8 @@ module.exports = function (Patient) {
                     WXClick_SOS_NotifyLBS(req, res, cb);
                 }
 
-                if (_eventKey == 'firstUser') {
-                    EWTRACE("call firstUser");
-                    WXClick_Notify_firstUser(req, res, cb);
+                if (_eventKey == 'firstUser' || _eventKey == 'PWV') {
+                    WXClick_Notify_firstUser(req, res, _eventKey);
                 }
             }
             if (_event == 'location_select') {
