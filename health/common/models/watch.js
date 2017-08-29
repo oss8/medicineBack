@@ -487,8 +487,7 @@ module.exports = function (Watch) {
             tagid_list: []
         };
 
-        var result = {};
-        GetTokenFromOpenID(result, token).then(function (result) {
+        GetTokenFromOpenID(token).then(function (result) {
 
             cb(null, { status: 1, "result": result });
         }, function (err) {
@@ -510,7 +509,7 @@ module.exports = function (Watch) {
 
     Watch.requestToken = function ( cb) {
 
-        var token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcGVuaWQiOiJvRlZaLTFNMjFQT2VFT1gyZ2VqV1JrREUtRVd3Iiwibmlja25hbWUiOiLpm7fmrKIiLCJzZXgiOjEsImxhbmd1YWdlIjoiemhfQ04iLCJjaXR5IjoiSGFuZ3pob3UiLCJwcm92aW5jZSI6IlpoZWppYW5nIiwiY291bnRyeSI6IkNoaW5hIiwiaGVhZGltZ3VybCI6Imh0dHA6Ly93eC5xbG9nby5jbi9tbW9wZW4vdmlfMzIvUTNhdUhnend6TTU4T241bE9oRFZwZkdDb1h4ZTVZU2xGc2tUVnNqak5xaWNsVXlVV0pvNGJaVUpoanYzS2ljcW1KblBGOWVzNk5PQTRacndGazlSemlja2cvMCIsInByaXZpbGVnZSI6W10sInVuaW9uaWQiOiJvQlE0eTA3bnNEU3VxVlNDSkpTd1pYWUdWcmdjIiwiaWF0IjoxNTAzOTc5NzcxLCJleHAiOjE1MDM5ODAwNzF9.ZYG7XqjeuiupdSw1P6Wzvllo78fJUpISBGFD2GA7fvPo3fjvdkrPYsQmWCbBfKEWl2gmlylyO_067TxPI7k5roX7-Z5nyjlLAJxUIwOHtcuhSuskn1feiRVF23vEK6FRj-CQ4IPhf-HI9tXRYv-G3LCZczf1hu4H4I3ZmwgRklI';
+        var token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJzY3JpYmUiOjEsIm9wZW5pZCI6Im9GVlotMU1mM3l4V0xXSFFQRV8zQmhsVkZuR1UiLCJuaWNrbmFtZSI6IuiRm-WyrfCfh6jwn4ezIiwic2V4IjoxLCJsYW5ndWFnZSI6InpoX0NOIiwiY2l0eSI6IuadreW3niIsInByb3ZpbmNlIjoi5rWZ5rGfIiwiY291bnRyeSI6IuS4reWbvSIsImhlYWRpbWd1cmwiOiJodHRwOi8vd3gucWxvZ28uY24vbW1vcGVuL1NZZVdrb242QzZMNHVBZFVDQmdDSHM2b2FpY3ZsZ0VmbmYzTExDMEQ0aWJMVFp5aWMxZjJpY012MXhGMks0NXhhVk5KME51RUNGV1VxeVhzQVV4OWZKbUl5MTNqSEVwU0FnR08vMCIsInN1YnNjcmliZV90aW1lIjoxNTAzOTA3MTc4LCJ1bmlvbmlkIjoib0JRNHkwMXNfaVBkdi1OcUU4em9uTVlGZnV1cyIsInJlbWFyayI6IiIsImdyb3VwaWQiOjAsInRhZ2lkX2xpc3QiOltdLCJhY2Nlc3NfdG9rZW4iOiJsbkhZbUFZcWswMWxjSEhyTFBKalJ4UEhTY2JsQk9iOTk5bkJDdWd6a1czSmMzT2hWd25UNDE4R1l1amloNV8wZEw0WlhKV3VabE5tWFJEWDk1Zi0zd3hTMGw1NFBZVjhrdlBsZTRWRVNUNVEwSjNWSERGbEoxZzl6NU1YSHVDR0FBSGhBRkFKSlEiLCJpYXQiOjE1MDM5ODQwMDIsImV4cCI6MTUwNDA3MDQwMn0.iQRR-STuvvUAU3-Q2yjWHfvfUgog1cucU2u2wbbl2-Eq-zW1JKBJdQ1i-a_GQTU6NBsDYOeNlHguspHNs6dBEX_AT-M-Ytir8JktAdT33lSNo8xqifzHD2wB37PkXp8nqIAjqIy9r3nzfFtF4OACQCrYZ1gFmJ9IBBSd45cldXA';
         var OpenID = {};
         try {
             OpenID = GetOpenIDFromToken(token);
@@ -518,17 +517,15 @@ module.exports = function (Watch) {
             cb(err, { status: 0, "result": "" });
             return;
         }
-        var _result = {};
+        delete OpenID.exp;
 
-        GetTokenFromOpenID(_result, OpenID).then(function (result) {
-
+        GetTokenFromOpenID(OpenID).then(function (result) {
             cb(null, { status: 1, "result": result });
         }, function (err) {
             cb(err, { status: 0, "result": "" });
         })
 
         EWTRACE("removeFollow End");
-re
 
     }
 

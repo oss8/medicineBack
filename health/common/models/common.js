@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-28 11:32:17
+ * @Last Modified time: 2017-08-29 13:18:55
  */
 
 var log4js = require('log4js');
@@ -302,7 +302,7 @@ module.exports = function (common) {
     /**
      * JWT加密、解密
      */
-    GetTokenFromOpenID = function (demotoken, userinfo) {
+    GetTokenFromOpenID = function (userinfo) {
         var rf = require("fs");
         var cert = rf.readFileSync("jwt_rsa_private_key.pem", "utf-8");
         return new Promise(function (resolve, reject) {
@@ -311,7 +311,6 @@ module.exports = function (common) {
                     reject(err);
                 } else {
                     resolve(token);
-                    demotoken.token = token;
                 }
             });
         });
