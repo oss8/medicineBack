@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 13:37:22
+ * @Last Modified time: 2017-08-29 13:38:43
  */
 'use strict';
 
@@ -279,34 +279,34 @@ module.exports = function (Patient) {
         var openId = req.body.xml.fromusername[0];
 
         Request_WxToken().then(function (resp) {
-            var data = {
-                "type": "news",
-                "offset": 0,
-                "count": 20
-            };
-            var url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=" + resp.body.access_token;
+            // var data = {
+            //     "type": "news",
+            //     "offset": 0,
+            //     "count": 20
+            // };
+            // var url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=" + resp.body.access_token;
 
-            EWTRACE(url);
-            needle.post(encodeURI(url), JSON.stringify(data), { 'Content-Type': 'text/plain' }, function (err, medialist) {
-                // you can pass params as a string or as an object.
-                if (err) {
-                    //cb(err, { status: 0, "result": "" });
-                    EWTRACE(err.message);
-                    cb(err, { status: 1, "result": "" });
-                }
-                else {
-                    var aa = data = iconv.decode(medialist.body, 'utf-8');
-                    var media_List = JSON.parse(aa);
-                    media_List.item.forEach(function (item) {
+            // EWTRACE(url);
+            // needle.post(encodeURI(url), JSON.stringify(data), { 'Content-Type': 'text/plain' }, function (err, medialist) {
+            //     // you can pass params as a string or as an object.
+            //     if (err) {
+            //         //cb(err, { status: 0, "result": "" });
+            //         EWTRACE(err.message);
+            //         cb(err, { status: 1, "result": "" });
+            //     }
+            //     else {
+            //         var aa = data = iconv.decode(medialist.body, 'utf-8');
+            //         var media_List = JSON.parse(aa);
+            //         media_List.item.forEach(function (item) {
 
-                    })
-                }
-            });
+            //         })
+            //     }
+            // });
             var data = {
                 "touser": openId,
                 "msgtype": "mpnews",
                 "mpnews": {
-                    "media_id ": "YEZ1-hX2SqhxIoTprsAbGlId8YsyLrjkOJ1pKbx3uEM"
+                    "media_id": "YEZ1-hX2SqhxIoTprsAbGlId8YsyLrjkOJ1pKbx3uEM"
                 }
             }
 
