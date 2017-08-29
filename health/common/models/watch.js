@@ -68,6 +68,9 @@ module.exports = function (Watch) {
                     var aa = data = iconv.decode(resp.body, 'utf-8');
                     var mediaList = JSON.parse(aa);
 
+                    var find = _.find(mediaList.item, function(fitem){
+                        return fitem.media_id == "YEZ1-hX2SqhxIoTprsAbGlId8YsyLrjkOJ1pKbx3uEM";
+                    })
                     var _result = [];
                     mediaList.item.forEach(function (item) {
                         var _out = {};
