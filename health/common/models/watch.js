@@ -509,21 +509,24 @@ module.exports = function (Watch) {
 
 
     Watch.requestToken = function (token, cb) {
+        var OpenID = {};
         try {
-            var OpenID = GetOpenIDFromToken(token);
-            var _result = {};
-
-            GetTokenFromOpenID(_result, OpenID).then(function (result) {
-
-                cb(null, { status: 1, "result": result });
-            }, function (err) {
-                cb(err, { status: 0, "result": "" });
-            })
-
-            EWTRACE("removeFollow End");
+            OpenID = GetOpenIDFromToken(token);
         } catch (err) {
             cb(err, { status: 0, "result": "" });
+            return;
         }
+        var _result = {};
+
+        GetTokenFromOpenID(_result, OpenID).then(function (result) {
+
+            cb(null, { status: 1, "result": result });
+        }, function (err) {
+            cb(err, { status: 0, "result": "" });
+        })
+
+        EWTRACE("removeFollow End");
+
 
     }
 
