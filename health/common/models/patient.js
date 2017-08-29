@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 12:55:25
+ * @Last Modified time: 2017-08-29 13:00:48
  */
 'use strict';
 
@@ -283,11 +283,10 @@ module.exports = function (Patient) {
         var data = {
             "touser": openId,
             "msgtype": "mpnews",
-            "mpnews": {
-
-                "media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"
-
-            }
+            "mpnews": [
+                {"media_id": "YEZ1-hX2SqhxIoTprsAbGnNV514Xs6TsBhOAOnegt80"},
+                {"media_id": "YEZ1-hX2SqhxIoTprsAbGt-QnzSnMiJzmyJUc0vA0P0"}
+            ]
         }
 
         Request_WxToken().then(function (resp) {
