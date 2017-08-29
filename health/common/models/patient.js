@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-29 13:51:56
+ * @Last Modified time: 2017-08-29 13:54:10
  */
 'use strict';
 
@@ -298,7 +298,7 @@ module.exports = function (Patient) {
                     var aa = data = iconv.decode(medialist.body, 'utf-8');
                     var media_List = JSON.parse(aa);
 
-                    var find = _.find(mediaList.item, function(fitem){
+                    var find = _.find(media_List.item, function(fitem){
                         return fitem.media_id == "YEZ1-hX2SqhxIoTprsAbGlId8YsyLrjkOJ1pKbx3uEM";
                     })
                                         

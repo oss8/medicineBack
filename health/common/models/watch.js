@@ -57,7 +57,7 @@ module.exports = function (Watch) {
             var url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=" + resp.body.access_token;
 
             EWTRACE(url);
-            needle.post(encodeURI(url), JSON.stringify(data), { 'Content-Type': 'text/plain' }, function (err, resp) {
+            needle.post(encodeURI(url), JSON.stringify(data), { 'Content-Type': 'text/plain' }, function (err, mediaList) {
                 // you can pass params as a string or as an object.
                 if (err) {
                     //cb(err, { status: 0, "result": "" });
@@ -65,7 +65,7 @@ module.exports = function (Watch) {
                     cb(err, { status: 1, "result": "" });
                 }
                 else {
-                    var aa = data = iconv.decode(resp.body, 'utf-8');
+                    var aa = data = iconv.decode(mediaList.body, 'utf-8');
                     var mediaList = JSON.parse(aa);
 
                     var find = _.find(mediaList.item, function(fitem){
