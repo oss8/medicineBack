@@ -556,10 +556,10 @@ module.exports = function (Watch) {
             http: { verb: 'get' },
             description: '获取测试token',
             accepts: {
-                arg: 'token', type: 'object',
+                arg: 'token', type: 'string',
                 http: function (ctx) {
                     var req = ctx.req;
-                    return req.headers.token;
+                    return req.query.token;
                 },
                 description: '{"token":""}'
             },

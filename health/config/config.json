@@ -40,11 +40,6 @@
             "type": "view",
             "name": "健康报告",
             "url": "http://m.man-kang.com/#/history-data"
-          },
-          {
-            "type": "click",
-            "name": "健康之道",
-            "key": "Create_Token"
           }
         ]
       },
