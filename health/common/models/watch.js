@@ -72,13 +72,21 @@ module.exports = function (Watch) {
                         return fitem.media_id == "YEZ1-hX2SqhxIoTprsAbGlId8YsyLrjkOJ1pKbx3uEM";
                     })
 
+                    var data1 = {
+                        "touser": '',
+                        "msgtype": "news",
+                        "news": {
+                            "articles": []
+                        }
+                    }                    
+
                     find.content.news_item.forEach(function (fitem) {
                         var obj = {
                             "title": fitem.title,
                             "thumb_media_id": fitem.thumb_media_id,
                             "content": fitem.content
                         };
-
+                        data1.news.articles.push(obj);
                     })
 
 
