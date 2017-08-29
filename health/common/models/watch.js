@@ -183,7 +183,7 @@ module.exports = function (Watch) {
         }
 
         var age = 0;
-        if (!_.isUndefined(p.birthday)) {
+        if (!_.isUndefined(p.birthday) && p.birthday != '') {
             age = GetDateDiff(p.birthday, (new Date()).format('yyyy-MM-dd'), 'year');
             fieldContext += " age = " + age + ",";
         }
