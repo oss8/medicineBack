@@ -122,7 +122,7 @@ module.exports = function (Watch) {
         var _openid = OpenID.openid;
 
         var ps = [];
-        var bsSQL = "select name,sex,birthday,height,weight,mobile,cardNo,disease_list as disease from hh_publicuser where openid = '" + _openid + "'";
+        var bsSQL = "select name,sex,birthday,height,weight,mobile,cardNo,disease_list as disease,isflag from hh_publicuser where openid = '" + _openid + "'";
         var userInfo = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, userInfo));
 
@@ -190,6 +190,7 @@ module.exports = function (Watch) {
             age = GetDateDiff(p.birthday, (new Date()).format('yyyy-MM-dd'), 'year');
             fieldContext += " age = " + age + ",";
         }
+        fieldContext += "isflag = 1,";
 
         fieldContext = fieldContext.substr(0, fieldContext.length - 1);
 
