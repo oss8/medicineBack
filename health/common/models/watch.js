@@ -372,26 +372,26 @@ module.exports = function (Watch) {
         }
     );
 
-    Watch.RequestUserMonitor = function (p, OpenID, cb) {
+    Watch.RequestUserMonitor = function (p, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
         var _openid = "oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU";
         console.log(p);
 
-        if (_.isUndefined(p.followOpenid)) {
-            _openid = OpenID.openid;
-        }
-        else {
-            _openid = p.followOpenid;
-        }
+        // if (_.isUndefined(p.followOpenid)) {
+        //     _openid = OpenID.openid;
+        // }
+        // else {
+        //     _openid = p.followOpenid;
+        // }
 
 
         var ps = [];
-        var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where openid = '" + _openid + "' order by addtime desc";
+        var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,DATE_FORMAT(testtime,'%Y-%m-%d %h:%m:%s') as testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where openid = '" + _openid + "' order by addtime desc";
         var _watchdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _watchdata));
 
-        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime, addtime as testtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
+        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime, ,DATE_FORMAT(addtime,'%Y-%m-%d %h:%m:%s') as testtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
         var _sportdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _sportdata));
 
@@ -476,14 +476,14 @@ module.exports = function (Watch) {
             http: { verb: 'post' },
             description: '查询用户检测数据',
             accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followOpenid":""}' },
-            {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
-                    var req = ctx.req;
-                    return GetOpenIDFromToken(req.headers.token);
-                },
-                description: '{"OpenID":""}'
-            }
+            // {
+            //     arg: 'OpenID', type: 'object',
+            //     http: function (ctx) {
+            //         var req = ctx.req;
+            //         return GetOpenIDFromToken(req.headers.token);
+            //     },
+            //     description: '{"OpenID":""}'
+            // }
             ],
             returns: { arg: 'UserInfo', type: 'object', root: true }
         }
