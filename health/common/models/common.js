@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-31 00:00:28
+ * @Last Modified time: 2017-08-31 00:02:48
  */
 
 var log4js = require('log4js');
@@ -729,7 +729,16 @@ module.exports = function (common) {
                     "content": context
                 }
             };
-            self_sendWX(resp.body.access_token, SendData);
+            needle.post(encodeURI(url), SendData, { json: true }, function (err, resp) {
+                // you can pass params as a string or as an object.
+                if (err) {
+                    //cb(err, { status: 0, "result": "" });
+                    EWTRACE("Send WX Notify Error:" + err.message);
+                }
+                else {
+                    EWTRACE("Send WX Notify OK!");
+                }
+            });
         });
     }
 }
