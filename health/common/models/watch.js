@@ -200,7 +200,7 @@ module.exports = function (Watch) {
         if (!_.isUndefined(p.disease_list)) {
             fieldContext += " disease_list = '" + JSON.stringify(p.disease_list) + "' ,";
         }
-
+        console.log(p.birthday);
         var age = 0;
         if (!_.isUndefined(p.birthday) && !_.isNaN(p.birthday) && p.birthday != '') {
             age = GetDateDiff(p.birthday, (new Date()).format('yyyy-MM-dd'), 'year');
