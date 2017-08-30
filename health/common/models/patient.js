@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-30 21:40:36
+ * @Last Modified time: 2017-08-30 21:53:12
  */
 'use strict';
 
@@ -357,8 +357,7 @@ module.exports = function (Patient) {
 
     function unregUser(req, res, cb) {
 
-        var q = req.query;
-        var openid = q.openid; //微信加密签名 
+        var openid = req.body.xml.fromusername[0];
 
         var bsSQL = "update hh_publicUser set iccid='' where openid = '" + openid + "'";
         DoSQL(bsSQL).then(function (userResult) {
@@ -372,8 +371,7 @@ module.exports = function (Patient) {
 
     function regUser(req, res, cb) {
 
-        var q = req.query;
-        var openid = q.openid; //微信加密签名 
+        var openid = req.body.xml.fromusername[0];        
         var watch_iccid = req.body.xml.eventkey[0];
         if (watch_iccid.indexOf('_') > 0) {
             watch_iccid = watch_iccid.substr(watch_iccid.indexOf('_') + 1);
