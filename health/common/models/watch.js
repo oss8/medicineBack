@@ -391,7 +391,7 @@ module.exports = function (Watch) {
         var _watchdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _watchdata));
 
-        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime, ,DATE_FORMAT(addtime,'%Y-%m-%d %h:%m:%s') as testtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
+        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,DATE_FORMAT(addtime,'%Y-%m-%d %h:%m:%s') as testtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
         var _sportdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _sportdata));
 
