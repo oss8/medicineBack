@@ -202,7 +202,7 @@ module.exports = function (Watch) {
         }
         console.log(p.birthday);
         var age = 0;
-        if (!_.isUndefined(p.birthday) && !_.isNaN(p.birthday) && p.birthday != '') {
+        if (!_.isUndefined(p.birthday) && !_.isNull(p.birthday) && p.birthday != '') {
             age = GetDateDiff(p.birthday, (new Date()).format('yyyy-MM-dd'), 'year');
             fieldContext += " age = " + age + ",";
         }
