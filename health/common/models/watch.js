@@ -202,7 +202,7 @@ module.exports = function (Watch) {
         }
 
         var age = 0;
-        if (!_.isUndefined(p.birthday) && p.birthday != '') {
+        if (!_.isUndefined(p.birthday) && !_.isNaN(p.birthday) && p.birthday != '') {
             age = GetDateDiff(p.birthday, (new Date()).format('yyyy-MM-dd'), 'year');
             fieldContext += " age = " + age + ",";
         }
@@ -589,7 +589,6 @@ module.exports = function (Watch) {
     var winxinconfig = {
         grant_type: 'client_credential',
         noncestr: Math.random().toString(36).substr(2, 15),
-        accessTokenUrl: 'https://api.weixin.qq.com/cgi-bin/token',
         ticketUrl: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
         cache_duration: 1000 * 60 * 60 * 24 //缓存时长为24小时
     }
