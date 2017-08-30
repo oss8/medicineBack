@@ -132,7 +132,10 @@ module.exports = function (Watch) {
 
         Promise.all(ps).then(function () {
 
-            userInfo.Result[0].followList = myfollow.Result;
+            userInfo.Result[0].followList = [];
+            if ( myfollow.Result.length > 0 ){
+                userInfo.Result[0].followList = myfollow.Result;
+            }
             userInfo.Result[0].disease_list = JSON.parse(userInfo.Result[0].disease);
 
             delete userInfo.Result[0].disease;
@@ -387,11 +390,11 @@ module.exports = function (Watch) {
 
 
         var ps = [];
-        var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,DATE_FORMAT(testtime,'%Y-%m-%d %h:%i:%s') as testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where openid = '" + _openid + "' order by addtime desc";
+        var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,DATE_FORMAT(testtime,'%m月%d日 %h:%i') as testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where openid = '" + _openid + "' order by addtime desc";
         var _watchdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _watchdata));
 
-        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,DATE_FORMAT(addtime,'%Y-%m-%d %h:%i:%s') as testtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
+        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,DATE_FORMAT(addtime,'%m月%d日 %h:%i') as testtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
         var _sportdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _sportdata));
 
