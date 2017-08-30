@@ -569,10 +569,18 @@ module.exports = function (Watch) {
         }
     );
 
-    
+    var winxinconfig = {
+        grant_type: 'client_credential',
+        noncestr: Math.random().toString(36).substr(2, 15),
+        accessTokenUrl: 'https://api.weixin.qq.com/cgi-bin/token',
+        ticketUrl: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
+        cache_duration: 1000 * 60 * 60 * 24 //缓存时长为24小时
+    }    
+
     var request = require('request');
     var cache = require('memory-cache');
     var sha1 = require('sha1');
+    var config = winxinconfig;
 
     var sign = function (url, callback) {
 
