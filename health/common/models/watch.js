@@ -551,6 +551,11 @@ module.exports = function (Watch) {
 
     Watch.requestToken = function (token, cb) {
 
+        if ( _.isUndefined(token)){
+            cb(err, { status: 0, "result": "" });
+            return;            
+        }
+        
         var OpenID = {};
         try {
             OpenID = GetOpenIDFromToken(token);
