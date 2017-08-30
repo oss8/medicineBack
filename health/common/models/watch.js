@@ -78,7 +78,7 @@ module.exports = function (Watch) {
                         "news": {
                             "articles": []
                         }
-                    }                    
+                    }
 
                     find.content.news_item.forEach(function (fitem) {
                         var obj = {
@@ -131,25 +131,25 @@ module.exports = function (Watch) {
         ps.push(ExecuteSyncSQLResult(bsSQL, myfollow));
 
         Promise.all(ps).then(function () {
-            if ( userInfo.Result.length == 0 ){
+            if (userInfo.Result.length == 0) {
                 bsSQL = "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type,headimage,isflag) VALUES (uuid(),'" + _openid + "','" + OpenID.nickname + "',null,null,'" + OpenID.province + "','" + OpenID.city + "','" + OpenID.sex + "',0,0,'" + OpenID.headimgurl + "',0);select name,sex,birthday,height,weight,mobile,cardNo,disease_list as disease,isflag from hh_publicuser where openid = '" + _openid + "'";
-                DoSQL(bsSQL).then(function(result){
+                DoSQL(bsSQL).then(function (result) {
                     userInfo.Result[0] = result[0];
                     userInfo.Result[0].followList = [];
-                    if ( myfollow.Result.length > 0 ){
+                    if (myfollow.Result.length > 0) {
                         userInfo.Result[0].followList = myfollow.Result;
                     }
                     userInfo.Result[0].disease_list = {};
-        
+
                     delete userInfo.Result[0].disease;
-        
+
                     cb(null, { status: 1, "result": userInfo.Result[0] });
                 })
                 return;
             }
 
             userInfo.Result[0].followList = [];
-            if ( myfollow.Result.length > 0 ){
+            if (myfollow.Result.length > 0) {
                 userInfo.Result[0].followList = myfollow.Result;
             }
             userInfo.Result[0].disease_list = JSON.parse(userInfo.Result[0].disease);
@@ -392,7 +392,7 @@ module.exports = function (Watch) {
         }
     );
 
-    Watch.RequestUserMonitor = function (p,OpenID, cb) {
+    Watch.RequestUserMonitor = function (p, OpenID, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
         var _openid = "oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU";
@@ -592,7 +592,7 @@ module.exports = function (Watch) {
         accessTokenUrl: 'https://api.weixin.qq.com/cgi-bin/token',
         ticketUrl: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
         cache_duration: 1000 * 60 * 60 * 24 //缓存时长为24小时
-    }    
+    }
 
     var request = require('request');
     var cache = require('memory-cache');
@@ -619,25 +619,28 @@ module.exports = function (Watch) {
                 signature: sha1('jsapi_ticket=' + jsapi_ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
             });
         } else {
-            request(config.accessTokenUrl + '?grant_type=' + config.grant_type + '&appid=' + config.appid + '&secret=' + config.secret, function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    var tokenMap = JSON.parse(body);
-                    request(config.ticketUrl + '?access_token=' + tokenMap.access_token + '&type=jsapi', function (error, resp, json) {
-                        if (!error && response.statusCode == 200) {
-                            var ticketMap = JSON.parse(json);
-                            cache.put('ticket', ticketMap.ticket, config.cache_duration);  //加入缓存
-                            console.log('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url);
-                            callback({
-                                noncestr: noncestr,
-                                timestamp: timestamp,
-                                url: url,
-                                appid: config.appid,
-                                signature: sha1('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
-                            });
-                        }
-                    })
-                }
-            })
+            // request(config.accessTokenUrl + '?grant_type=' + config.grant_type + '&appid=' + config.appid + '&secret=' + config.secret, function (error, response, body) {
+            //     if (!error && response.statusCode == 200) {
+            //         var tokenMap = JSON.parse(body);
+
+            Request_WxToken().then(function (respToken) {
+                request(config.ticketUrl + '?access_token=' + respToken.body.access_token + '&type=jsapi', function (error, resp, json) {
+                    if (!error && response.statusCode == 200) {
+                        var ticketMap = JSON.parse(json);
+                        cache.put('ticket', ticketMap.ticket, config.cache_duration);  //加入缓存
+                        console.log('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url);
+                        callback({
+                            noncestr: noncestr,
+                            timestamp: timestamp,
+                            url: url,
+                            appid: config.appid,
+                            signature: sha1('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
+                        });
+                    }
+                })
+            });
+            //     }
+            // })
 
         }
     }
@@ -651,7 +654,7 @@ module.exports = function (Watch) {
             cb(null, { status: 1, "result": result });
         }
         sign(GetTicket.url, callback);
-    };    
+    };
 
     Watch.remoteMethod(
         'GetTicket',
@@ -661,7 +664,7 @@ module.exports = function (Watch) {
             accepts: { arg: 'GetTicket', type: 'object', description: '{"url":""}' },
             returns: { arg: 'RegInfo', type: 'object', root: true }
         }
-    );    
+    );
 };
 
 
