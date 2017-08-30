@@ -625,7 +625,7 @@ module.exports = function (Watch) {
 
             Request_WxToken().then(function (respToken) {
                 request(config.ticketUrl + '?access_token=' + respToken.body.access_token + '&type=jsapi', function (error, resp, json) {
-                    if (!error && response.statusCode == 200) {
+                    if (!error && resp.statusCode == 200) {
                         var ticketMap = JSON.parse(json);
                         cache.put('ticket', ticketMap.ticket, config.cache_duration);  //加入缓存
                         console.log('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url);
