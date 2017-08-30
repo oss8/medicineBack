@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-30 21:53:12
+ * @Last Modified time: 2017-08-30 21:56:29
  */
 'use strict';
 
@@ -371,7 +371,8 @@ module.exports = function (Patient) {
 
     function regUser(req, res, cb) {
 
-        var openid = req.body.xml.fromusername[0];        
+        var openid = req.body.xml.fromusername[0];   
+        console.log('openid:' + openid);     
         var watch_iccid = req.body.xml.eventkey[0];
         if (watch_iccid.indexOf('_') > 0) {
             watch_iccid = watch_iccid.substr(watch_iccid.indexOf('_') + 1);
