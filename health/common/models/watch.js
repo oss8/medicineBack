@@ -131,6 +131,22 @@ module.exports = function (Watch) {
         ps.push(ExecuteSyncSQLResult(bsSQL, myfollow));
 
         Promise.all(ps).then(function () {
+            if ( userInfo.Result.length == 0 ){
+                bsSQL = "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type,headimage,isflag) VALUES (uuid(),'" + _openid + "','" + OpenID.nickname + "',null,null,'" + OpenID.province + "','" + OpenID.city + "','" + OpenID.sex + "',0,0,'" + OpenID.headimgurl + "',0);select name,sex,birthday,height,weight,mobile,cardNo,disease_list as disease,isflag from hh_publicuser where openid = '" + _openid + "'";
+                DoSQL(bsSQL).then(function(result){
+                    userInfo.Result[0] = result[0];
+                    userInfo.Result[0].followList = [];
+                    if ( myfollow.Result.length > 0 ){
+                        userInfo.Result[0].followList = myfollow.Result;
+                    }
+                    userInfo.Result[0].disease_list = JSON.parse(userInfo.Result[0].disease);
+        
+                    delete userInfo.Result[0].disease;
+        
+                    cb(null, { status: 1, "result": userInfo.Result[0] });
+                })
+                return;
+            }
 
             userInfo.Result[0].followList = [];
             if ( myfollow.Result.length > 0 ){
