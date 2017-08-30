@@ -568,6 +568,75 @@ module.exports = function (Watch) {
             returns: { arg: 'p', type: 'object', root: true }
         }
     );
+
+    
+    var request = require('request');
+    var cache = require('memory-cache');
+    var sha1 = require('sha1');
+
+    var sign = function (url, callback) {
+
+        require('dotenv').config({ path: './config/.env' });
+        config.appid = process.env.WX_APP_ID;
+        config.secret = process.env.WX_APP_SECRET;
+
+        var noncestr = config.noncestr,
+            timestamp = Math.floor(Date.now() / 1000), //精确到秒
+            jsapi_ticket;
+        if (cache.get('ticket')) {
+            jsapi_ticket = cache.get('ticket');
+            console.log('1' + 'jsapi_ticket=' + jsapi_ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url);
+            callback({
+                noncestr: noncestr,
+                timestamp: timestamp,
+                url: url,
+                appid: config.appid,
+                signature: sha1('jsapi_ticket=' + jsapi_ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
+            });
+        } else {
+            request(config.accessTokenUrl + '?grant_type=' + config.grant_type + '&appid=' + config.appid + '&secret=' + config.secret, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    var tokenMap = JSON.parse(body);
+                    request(config.ticketUrl + '?access_token=' + tokenMap.access_token + '&type=jsapi', function (error, resp, json) {
+                        if (!error && response.statusCode == 200) {
+                            var ticketMap = JSON.parse(json);
+                            cache.put('ticket', ticketMap.ticket, config.cache_duration);  //加入缓存
+                            console.log('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url);
+                            callback({
+                                noncestr: noncestr,
+                                timestamp: timestamp,
+                                url: url,
+                                appid: config.appid,
+                                signature: sha1('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
+                            });
+                        }
+                    })
+                }
+            })
+
+        }
+    }
+
+
+    Watch.GetTicket = function (GetTicket, cb) {
+        EWTRACE("GetTicket Begin");
+
+        var callback = function (result) {
+            EWTRACEIFY(result);
+            cb(null, { status: 1, "result": result });
+        }
+        sign(GetTicket.url, callback);
+    };    
+
+    Watch.remoteMethod(
+        'GetTicket',
+        {
+            http: { verb: 'post' },
+            description: '获得Ticket',
+            accepts: { arg: 'GetTicket', type: 'object', description: '{"url":""}' },
+            returns: { arg: 'RegInfo', type: 'object', root: true }
+        }
+    );    
 };
 
 

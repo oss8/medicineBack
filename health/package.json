@@ -22,6 +22,7 @@
     "loopback-component-explorer": "^4.0.0",
     "loopback-connector-mysql": "^4.0.0",
     "loopback-connector-rest": "^2.1.0",
+    "memory-cache": "^0.2.0",
     "needle": "^1.6.0",
     "node-schedule": "^1.2.4",
     "node-uuid": "^1.4.8",
