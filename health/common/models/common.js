@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-31 10:20:33
+ * @Last Modified time: 2017-08-31 14:53:51
  */
 
 var log4js = require('log4js');
@@ -331,44 +331,6 @@ module.exports = function (common) {
         }
     }
 
-    _SendWX = function (UserList, localUser) {
-        require('dotenv').config({ path: './config/.env' });
-        Request_WxToken().then(function (resp) {
-            EWTRACE(resp.body.access_token);
-            var _accesstoken = resp.body.access_token;
-            var myDate = new Date();
-            UserList.forEach(function (item) {
-                var _color = "#FF004F";
-                var WXData = {
-                    "touser": item.openid,
-                    "template_id": process.env.WeChat_TakeErrorID,
-                    "data": {
-                        "first": {
-                            "value": "紧急通知",
-                        },
-                        "keyword1": {
-                            "value": localUser.name,
-                        },
-                        "keyword2": {
-                            "value": item.name,
-                            "color": _color
-                        },
-                        "keyword3": {
-                            "value": (new Date()).format('yyyy-MM-dd hh:mm:ss'),
-                            "color": _color
-                        },
-                        "remark": {
-                            "value": "曼康信息提示，你关注的亲友紧急呼叫，社区医生已经紧急赶往"
-                        }
-                    }
-                }
-                self_sendWX(_accesstoken, WXData);
-            });
-        }, function (err) {
-            console.log(err);
-        });
-    }
-
     GetAddressFromLBS_TX = function (location_x, location_y) {
         return new Promise(function (resolve, reject) {
             var url = "http://apis.map.qq.com/ws/geocoder/v1/?location=" + location_x + "," + location_y + "&key=6UWBZ-BRKR3-YWG3Y-337NE-DRCMZ-EGBF7";
@@ -471,19 +433,6 @@ module.exports = function (common) {
             });
         }, function (err) {
             console.log(err);
-        });
-    }
-
-    SendWX = function (obj, type) {
-        var _type = "";
-        if (!_.isEmpty(type)) {
-            _type = "and onlineissuetype in (" + type + ")";
-        }
-        var bsSQL = "select openid from oss_users where openid is not null " + _type;
-        DoSQL(bsSQL, function (err1, result) {
-            if (!err1) {
-                _SendWX(result, obj);
-            }
         });
     }
 
