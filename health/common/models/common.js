@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-31 14:53:51
+ * @Last Modified time: 2017-08-31 15:32:30
  */
 
 var log4js = require('log4js');
@@ -391,7 +391,9 @@ module.exports = function (common) {
         }
 
         GetAddressFromLBS_TX(location_x, location_y).then(function (address) {
-
+            if ( label != '' ){
+                address = label;
+            }
             require('dotenv').config({ path: './config/.env' });
             Request_WxToken().then(function (resp) {
                 EWTRACE(resp.body.access_token);
