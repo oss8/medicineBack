@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-31 14:24:26
+ * @Last Modified time: 2017-08-31 15:14:02
  */
 'use strict';
 
@@ -217,8 +217,10 @@ module.exports = function (Patient) {
                     var localtion = {};
                     localtion.location_x = [];
                     localtion.location_y = [];
+                    localtion.label = [];
                     localtion.location_x.push(body.lat);
                     localtion.location_y.push(body.lon);
+                    localtion.label.push(body.address);
 
                     _SendSOSWX(_notifyList.Result, _localUser.Result[0],localtion);
                     cb(null, { code: 0, "message": "operate success" });
