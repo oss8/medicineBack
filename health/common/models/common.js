@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-08-31 10:19:56
+ * @Last Modified time: 2017-08-31 10:20:33
  */
 
 var log4js = require('log4js');
@@ -613,7 +613,7 @@ module.exports = function (common) {
 
             var sendText = "\r\n  心率：" + CheckData.hrCount + "\r\n  血压：" + CheckData.highPress + "/" + CheckData.lowPress + "\r\n   PWV：" + CheckData.pwv + "\r\n   硬化风险：" + relativeRisk;
             if ( CheckData.pwv < 0 ){
-                sendText = "本次测量信号不准确，请再次测量";
+                sendText = "本次测量信号不准确，无法计算有效心率、血压，请再次测量";
                 _color = '#cc3300';
             }
             var WXData = {
