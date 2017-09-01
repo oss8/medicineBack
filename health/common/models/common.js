@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-01 10:04:06
+ * @Last Modified time: 2017-09-01 16:34:01
  */
 
 var log4js = require('log4js');
@@ -646,7 +646,7 @@ module.exports = function (common) {
             var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + _appie;
             var IP = getIPAdress();
             if (IP.indexOf('172.19') >= 0) {
-                tokenUrl = 'http://0.0.0.0:3000/token/token?appId=' + _appie;
+                tokenUrl = 'http://0.0.0.0:3000/token?appId=' + _appie;
             }
             var needle = require('needle');
             needle.get(encodeURI(tokenUrl), null, function (err, resp) {
