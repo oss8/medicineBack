@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-01 16:35:50
+ * @Last Modified time: 2017-09-04 14:14:29
  */
 
 var log4js = require('log4js');
@@ -82,6 +82,7 @@ module.exports = function (common) {
                 var dataSource = Connect;
                 if (dataSource == undefined)
                     dataSource = common.app.datasources.main_DBConnect;
+                
                 dataSource.connector.executeSQL(bsSQL, {}, { transaction: tx }, function (err, result) {
                     if (err) {
                         reject(err);
@@ -544,7 +545,7 @@ module.exports = function (common) {
     }
 
     _SendCheckWX = function (userInfo, CheckData) {
-        var needle = require('needle');
+
         require('dotenv').config({ path: './config/.env' });
         Request_WxToken().then(function (resp) {
             EWTRACE(resp.body.access_token);
@@ -614,14 +615,16 @@ module.exports = function (common) {
     }
 
     Request_WxToken = function () {
+
         return new Promise(function (resolve, reject) {
+
             require('dotenv').config({ path: './config/.env' });
             var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + process.env.WX_APP_ID;
             var IP = getIPAdress();
             if (IP.indexOf('172.19') >= 0) {
                 tokenUrl = 'http://0.0.0.0:3000/token?appId=' + process.env.WX_APP_ID;
             }
-            var needle = require('needle');
+
             needle.get(encodeURI(tokenUrl), null, function (err, resp) {
                 // you can pass params as a string or as an object.
                 if (err) {
@@ -640,7 +643,9 @@ module.exports = function (common) {
     }
 
     Request_WxToken_dangtang = function () {
+
         return new Promise(function (resolve, reject) {
+
             var _appie = 'wx012a9130903a7396';
             require('dotenv').config({ path: './config/.env' });
             var tokenUrl = 'http://style.man-kang.com:3000/token?appId=' + _appie;
@@ -648,7 +653,7 @@ module.exports = function (common) {
             if (IP.indexOf('172.19') >= 0) {
                 tokenUrl = 'http://0.0.0.0:3000/token?appId=' + _appie;
             }
-            var needle = require('needle');
+
             needle.get(encodeURI(tokenUrl), null, function (err, resp) {
                 // you can pass params as a string or as an object.
                 if (err) {
@@ -667,7 +672,9 @@ module.exports = function (common) {
     }
 
     fillUpdateSQL = function (result, name) {
+
         if (!_.isUndefined(result[name])) {
+            
             return SQL = " " + name + " = '" + result[name] + "',";
         }
         return "";
@@ -675,6 +682,7 @@ module.exports = function (common) {
 
 
     SendNotifyContext = function (openid, context) {
+        
         Request_WxToken().then(function (resp) {
 
             var url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + resp.body.access_token;;
