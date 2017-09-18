@@ -42,7 +42,7 @@ module.exports = function (Watch) {
             returns: { arg: 'AddDoctor', type: 'object', root: true }
         }
     );
- 
+
     var iconv = require("iconv-lite");
     Watch.requestMediaList = function (cb) {
         EWTRACE("requestMediaList Begin");
@@ -398,7 +398,7 @@ module.exports = function (Watch) {
         var _openid = OpenID.openid;
         console.log(p);
 
-        if ( !_.isUndefined(p.followOpenid)) {
+        if (!_.isUndefined(p.followOpenid)) {
             _openid = p.followOpenid;
         }
 
@@ -620,31 +620,29 @@ module.exports = function (Watch) {
                 signature: sha1('jsapi_ticket=' + jsapi_ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
             });
         } else {
-            // request(config.accessTokenUrl + '?grant_type=' + config.grant_type + '&appid=' + config.appid + '&secret=' + config.secret, function (error, response, body) {
-            //     if (!error && response.statusCode == 200) {
-            //         var tokenMap = JSON.parse(body);
+            request(config.accessTokenUrl + '?grant_type=' + config.grant_type + '&appid=' + config.appid + '&secret=' + config.secret, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    var tokenMap = JSON.parse(body);
 
-            Request_WxToken().then(function (respToken) {
-                request(config.ticketUrl + '?access_token=' + respToken.body.access_token + '&type=jsapi', function (error, resp, json) {
-                    if (!error && resp.statusCode == 200) {
-                        var ticketMap = JSON.parse(json);
-                        cache.put('ticket', ticketMap.ticket, config.cache_duration);  //加入缓存
-                        console.log('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url);
-                        callback({
-                            noncestr: noncestr,
-                            timestamp: timestamp,
-                            url: url,
-                            appid: config.appid,
-                            signature: sha1('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
-                        });
-                    }
-                })
+                    request(config.ticketUrl + '?access_token=' + tokenMap.access_token + '&type=jsapi', function (error, resp, json) {
+                        if (!error && resp.statusCode == 200) {
+                            var ticketMap = JSON.parse(json);
+                            cache.put('ticket', ticketMap.ticket, config.cache_duration);  //加入缓存
+                            console.log('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url);
+                            callback({
+                                noncestr: noncestr,
+                                timestamp: timestamp,
+                                url: url,
+                                appid: config.appid,
+                                signature: sha1('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
+                            });
+                        }
+                    })
+                }
             });
-            //     }
-            // })
-
         }
     }
+
 
 
     Watch.GetTicket = function (GetTicket, cb) {
