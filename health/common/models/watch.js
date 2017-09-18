@@ -509,28 +509,11 @@ module.exports = function (Watch) {
 
     Watch.reqeustDemoToken = function (cb) {
 
-        var token = {
-            subscribe: 1,
-            openid: 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
-            nickname: '路人甲',
-            sex: 1,
-            language: 'zh_CN',
-            city: '杭州',
-            province: '浙江',
-            country: '中国',
-            headimgurl: 'http://wx.qlogo.cn/mmopen/SYeWkon6C6L4uAdUCBgCHs6oaicvlgEfnf3LLC0D4ibLTZyic1f2icMv1xF2K45xaVNJ0NuECFWUqyXsAUx9fJmIy13jHEpSAgGO/0',
-            subscribe_time: 1503563590,
-            unionid: 'oBQ4y01s_iPdv-NqE8zonMYFfuus',
-            remark: '',
-            groupid: 0,
-            tagid_list: []
-        };
+        Request_WxToken().then(function (resp) {
 
-        GetTokenFromOpenID(token).then(function (result) {
-
-            cb(null, { status: 1, "result": result });
+            cb(null, { status: 1, "result": resp.body });
         }, function (err) {
-            cb(err, { status: 0, "result": "" });
+            cb(err, { status: 0, "result": err.message });
         })
 
         EWTRACE("reqeustDemoToken End");
@@ -639,6 +622,8 @@ module.exports = function (Watch) {
                         });
                     }
                 })
+            }, function (err) {
+                EWTRACE(err.message);
             });
             //     }
             // })
