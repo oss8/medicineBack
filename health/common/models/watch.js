@@ -508,21 +508,11 @@ module.exports = function (Watch) {
 
 
     Watch.reqeustDemoToken = function (cb) {
-        var OpenID = { openid: 'oJS59uBh4tsyhM8H5jY09PxK3lag',
-           nickname: '汤尼哥',
-           sex: 1,
-           language: 'zh_CN',
-           city: 'Hangzhou',
-           province: 'Zhejiang',
-           country: 'China',
-           headimgurl: 'http://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJl7wUnGApR40enCTKuymuXVPTmHRBIJHcxPgspjCLXgoy46LGeRckXicoBjwfvUkV0HibdEjbL48rQ/0',
-           privilege: [],
-           iat: 1505733645,
-           exp: 1505733945 };
-
-        //var url = "http://0.0.0.0:3000/encrypt?appId=wx397644d24ec87fd1";
-        var url = "http://106.14.159.108:3000/encrypt?appId=wx397644d24ec87fd1";
-        needle.post(encodeURI(url), OpenID, {json:true}, function (err, resp) {
+        var config = require('../../config/config')
+        
+        var url = "http://0.0.0.0:3000/getaddress2?location_x=30.293072&location_y=120.140396";
+        //var url = "http://106.14.159.108:3000/createmenu?appId=wx397644d24ec87fd1";
+        needle.get(encodeURI(url), null, function (err, resp) {
 
             cb(null, { status: 1, "result": resp.body });
         }, function (err) {

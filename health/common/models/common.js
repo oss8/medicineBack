@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-04 14:14:29
+ * @Last Modified time: 2017-09-19 11:36:25
  */
 
 var log4js = require('log4js');
@@ -601,7 +601,7 @@ module.exports = function (common) {
 
     self_sendWX = function (_accesstoken, WXData) {
         EWTRACEIFY(WXData);
-        url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
+        var url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
         needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
             // you can pass params as a string or as an object.
             if (err) {
