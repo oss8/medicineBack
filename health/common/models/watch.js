@@ -510,8 +510,9 @@ module.exports = function (Watch) {
     Watch.reqeustDemoToken = function (cb) {
         var config = require('../../config/config')
         
-        var url = "http://0.0.0.0:3000/getaddress2?location_x=30.293072&location_y=120.140396";
-        //var url = "http://106.14.159.108:3000/createmenu?appId=wx397644d24ec87fd1";
+        var url = "http://0.0.0.0:3000/queryorders?appId=wxb74654c82da12482&out_trade_no=20170919-ek4o5xng4";
+        //url = "http://0.0.0.0:3000/closeorders?appId=wxb74654c82da12482&out_trade_no=20170919-ek4o5xng4";
+        url = "http://0.0.0.0:3000/createorders?appId=wxb74654c82da12482&fee=1&notifyUrl=http://gl.eshine.cn/wechatnotify";
         needle.get(encodeURI(url), null, function (err, resp) {
 
             cb(null, { status: 1, "result": resp.body });
