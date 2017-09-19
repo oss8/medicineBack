@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-19 09:37:00
+ * @Last Modified time: 2017-09-19 10:49:02
  */
 'use strict';
 
@@ -279,10 +279,6 @@ module.exports = function (Patient) {
         DoSQL(bsSQL).then(function () {
             EWTRACE("update ok");
         })
-
-        Request_WxToken().then(function (resp) {
-            _sendWX(resp.body.access_token,location.fromusername[0]);
-        });
     }
 
     function _sendWX(_accesstoken, openid) {
