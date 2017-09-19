@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-19 09:35:02
+ * @Last Modified time: 2017-09-19 09:36:12
  */
 'use strict';
 
@@ -313,7 +313,7 @@ module.exports = function (Patient) {
         }
         
         EWTRACEIFY(WXData);
-        url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
+        var url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
         needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
             // you can pass params as a string or as an object.
             if (err) {
