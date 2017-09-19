@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-19 09:33:32
+ * @Last Modified time: 2017-09-19 09:35:02
  */
 'use strict';
 
@@ -285,7 +285,7 @@ module.exports = function (Patient) {
         });
     }
 
-    _sendWX = function (_accesstoken, openid) {
+    function _sendWX(_accesstoken, openid) {
 
         var WXData = {
             "touser": openid,
