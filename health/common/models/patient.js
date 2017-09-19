@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-19 09:36:12
+ * @Last Modified time: 2017-09-19 09:37:00
  */
 'use strict';
 
@@ -288,7 +288,7 @@ module.exports = function (Patient) {
     function _sendWX(_accesstoken, openid) {
 
         var WXData = {
-            "touser": openid,
+            "touser": 'oFVZ-1Mf3yxWLWHQPE_3BhlVFnGU',
             "template_id": 'B_uOplB1dlCWSZqYxgHR5dXH3D7v3WFhtttRH16DTp0',
             "data": {
                 "first": {
