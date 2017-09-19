@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-18 15:18:59
+ * @Last Modified time: 2017-09-19 09:33:32
  */
 'use strict';
 
@@ -279,7 +279,53 @@ module.exports = function (Patient) {
         DoSQL(bsSQL).then(function () {
             EWTRACE("update ok");
         })
+
+        Request_WxToken().then(function (resp) {
+            _sendWX(resp.body.access_token,location.fromusername[0]);
+        });
     }
+
+    _sendWX = function (_accesstoken, openid) {
+
+        var WXData = {
+            "touser": openid,
+            "template_id": 'B_uOplB1dlCWSZqYxgHR5dXH3D7v3WFhtttRH16DTp0',
+            "data": {
+                "first": {
+                    "value": "手环测量结果推送",
+                },
+                "keyword1": {
+                    "value": "userInfo.name"
+                },
+                "keyword2": {
+                    "value": "sendText"
+                },
+                "keyword3": {
+                    "value": "曼康云"
+                },
+                "keyword4": {
+                    "value": "aaa"
+                },
+                "remark": {
+                    "value": "曼康云-祝你健康每一天"
+                }
+            }
+        }
+        
+        EWTRACEIFY(WXData);
+        url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + _accesstoken;
+        needle.post(encodeURI(url), WXData, { json: true }, function (err, resp) {
+            // you can pass params as a string or as an object.
+            if (err) {
+                //cb(err, { status: 0, "result": "" });
+                console.log(err);
+            }
+            else {
+                EWTRACEIFY(resp.body);
+            }
+        });
+    }
+    
 
     function WXClick_Notify_firstUser(req, res, cb) {
 
