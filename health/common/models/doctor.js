@@ -153,10 +153,10 @@ module.exports = function (Doctor) {
             var _uuid = "";
             if (_patientInfo.Result.length == 0) {
                 _uuid = uuid.v4();
-                bsSQL = "INSERT INTO hh_publicUser (userid, mobile, cardNo, medicalNo, status, name, type, sex, casetype, province, city, region, address, birthday) VALUES ('" + _uuid + "', '" + AddPatient.pmobile + "', '" + AddPatient.pcardno + "','"+AddPatient.pmedicalNo+"',  0,  '" + AddPatient.pname + "', 0, '" + AddPatient.psex + "', '" + AddPatient.casetype + "', '" + AddPatient.province + "', '" + AddPatient.city + "', '" + AddPatient.region + "', '" + AddPatient.address + "','"+ AddPatient.birthday+"');";
+                bsSQL = "INSERT INTO hh_publicUser (id, mobile, cardNo, medicalNo, status, name, type, sex, casetype, province, city, region, address, birthday) VALUES ('" + _uuid + "', '" + AddPatient.pmobile + "', '" + AddPatient.pcardno + "','"+AddPatient.pmedicalNo+"',  0,  '" + AddPatient.pname + "', 0, '" + AddPatient.psex + "', '" + AddPatient.casetype + "', '" + AddPatient.province + "', '" + AddPatient.city + "', '" + AddPatient.region + "', '" + AddPatient.address + "','"+ AddPatient.birthday+"');";
             } else {
                 _uuid = _patientInfo.Result[0].id;
-                bsSQL = "update hh_publicuser set name = '" + AddPatient.pname + "', cardNo = '" + AddPatient.pcardno + "',sex ='" + AddPatient.psex + "',casetype = '" + AddPatient.casetype + "',province='" + AddPatient.province + "',city='" + AddPatient.city + "',region='" + AddPatient.region + "',address='" + AddPatient.address + "',mobile = '" + AddPatient.pmobile + "',birthday = '"+ AddPatient.birthday +"' where userid = '"+ _uuid +"';";
+                bsSQL = "update hh_publicuser set name = '" + AddPatient.pname + "', cardNo = '" + AddPatient.pcardno + "',sex ='" + AddPatient.psex + "',casetype = '" + AddPatient.casetype + "',province='" + AddPatient.province + "',city='" + AddPatient.city + "',region='" + AddPatient.region + "',address='" + AddPatient.address + "',mobile = '" + AddPatient.pmobile + "',birthday = '"+ AddPatient.birthday +"' where id = '"+ _uuid +"';";
             }
 
             var find = _.find(_DoctorpatientInfo.Result, function (detail) {
