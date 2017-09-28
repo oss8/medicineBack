@@ -508,7 +508,7 @@ module.exports = function (Watch) {
 
 
     Watch.reqeustDemoToken = function (cb) {
-        var config = require('../../config/config')
+
         
         var url = "http://0.0.0.0:3000/queryorders?appId=wxb74654c82da12482&out_trade_no=20170919-ek4o5xng4";
         //url = "http://0.0.0.0:3000/closeorders?appId=wxb74654c82da12482&out_trade_no=20170919-ek4o5xng4";
@@ -585,15 +585,14 @@ module.exports = function (Watch) {
     var request = require('request');
     var cache = require('memory-cache');
     var sha1 = require('sha1');
-    var config = winxinconfig;
 
     var sign = function (url, callback) {
 
         require('dotenv').config({ path: './config/.env' });
-        config.appid = process.env.WX_APP_ID;
-        config.secret = process.env.WX_APP_SECRET;
+        winxinconfig.appid = process.env.WX_APP_ID;
+        winxinconfig.secret = process.env.WX_APP_SECRET;
 
-        var noncestr = config.noncestr,
+        var noncestr = winxinconfig.noncestr,
             timestamp = Math.floor(Date.now() / 1000), //精确到秒
             jsapi_ticket;
         if (cache.get('ticket')) {
@@ -603,25 +602,22 @@ module.exports = function (Watch) {
                 noncestr: noncestr,
                 timestamp: timestamp,
                 url: url,
-                appid: config.appid,
+                appid: winxinconfig.appid,
                 signature: sha1('jsapi_ticket=' + jsapi_ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
             });
         } else {
-            // request(config.accessTokenUrl + '?grant_type=' + config.grant_type + '&appid=' + config.appid + '&secret=' + config.secret, function (error, response, body) {
-            //     if (!error && response.statusCode == 200) {
-            //         var tokenMap = JSON.parse(body);
 
             Request_WxToken().then(function (respToken) {
-                request(config.ticketUrl + '?access_token=' + respToken.body.access_token + '&type=jsapi', function (error, resp, json) {
+                request(winxinconfig.ticketUrl + '?access_token=' + respToken.body.access_token + '&type=jsapi', function (error, resp, json) {
                     if (!error && resp.statusCode == 200) {
                         var ticketMap = JSON.parse(json);
-                        cache.put('ticket', ticketMap.ticket, config.cache_duration);  //加入缓存
+                        cache.put('ticket', ticketMap.ticket, winxinconfig.cache_duration);  //加入缓存
                         console.log('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url);
                         callback({
                             noncestr: noncestr,
                             timestamp: timestamp,
                             url: url,
-                            appid: config.appid,
+                            appid: winxinconfig.appid,
                             signature: sha1('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url)
                         });
                     }

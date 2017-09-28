@@ -1,53 +1,63 @@
 {
-  "wechat": {
-    "appId": "wx397644d24ec87fd1",
-    "appSecret": "57e9a3e879a08b817e1163a20e767ca3",
-    "token": "mankang",
-    "prefix": "https://api.weixin.qq.com/cgi-bin/",
-    "mpPrefix": "https://mp.weixin.qq.com/cgi-bin/"
-  },
-  "menu": {
-    "button": [
-      {
-        "name": "我的",
-        "sub_button": [
-          {
-            "type": "view",
-            "name": "个人信息",
-            "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fmy-info"
-          },
-          {
-            "type": "click",
-            "name": "初学者教学",
-            "key": "firstUser"
-          },
-          {
-            "type": "view",
-            "name": "联系客服",
-            "url": "http://www.soso.com/"
-          },
-          {
-            "type": "click",
-            "name": "认识PWV",
-            "key": "PWV"
-          }
+    "wechat": {
+        "appId": "wx397644d24ec87fd1",
+        "appSecret": "57e9a3e879a08b817e1163a20e767ca3",
+        "token": "mankang",
+        "prefix": "https://api.weixin.qq.com/cgi-bin/",
+        "mpPrefix": "https://mp.weixin.qq.com/cgi-bin/"
+    },
+    "menu": {
+        "button": [
+            {
+                "name": "我的",
+                "sub_button": [
+                    {
+                        "type": "view",
+                        "name": "个人信息",
+                        "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fmy-info"
+                    },
+                    {
+                        "type": "click",
+                        "name": "初学者教学",
+                        "key": "firstUser"
+                    },
+                    {
+                        "type": "view",
+                        "name": "联系客服",
+                        "url": "http://www.soso.com/"
+                    },
+                    {
+                        "type": "click",
+                        "name": "认识PWV",
+                        "key": "PWV"
+                    }
+                ]
+            },
+            {
+                "name": "健康档案",
+                "sub_button": [
+                    {
+                        "type": "view",
+                        "name": "健康报告",
+                        "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fhistory-data"
+                    }
+                ]
+            },
+            {
+                "name": "会员专享",
+                "sub_button": [
+                    {
+                        "type": "view",
+                        "name": "会员权益",
+                        "url": "http://mp.weixin.qq.com/s/IthKW0L-omZ7dLBbCUe3dQ"
+                    },                    
+                    {
+                        "type": "click",
+                        "name": "SOS",
+                        "key": "SOS_Notify"
+                    }
+                ]
+            }
         ]
-      },
-      {
-        "name": "健康档案",
-        "sub_button": [
-          {
-            "type": "view",
-            "name": "健康报告",
-            "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fhistory-data"
-          }
-        ]
-      },
-      {
-        "type": "click",
-        "name": "SOS",
-        "key": "SOS_Notify"
-      }
-    ]
-  }
+    }
 }
