@@ -42,7 +42,7 @@ module.exports = function (Watch) {
             returns: { arg: 'AddDoctor', type: 'object', root: true }
         }
     );
- 
+
     var iconv = require("iconv-lite");
     Watch.requestMediaList = function (cb) {
         EWTRACE("requestMediaList Begin");
@@ -392,13 +392,14 @@ module.exports = function (Watch) {
         }
     );
 
+
     Watch.RequestUserMonitor = function (p, OpenID, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
         var _openid = OpenID.openid;
         console.log(p);
 
-        if ( !_.isUndefined(p.followOpenid)) {
+        if (!_.isUndefined(p.followOpenid)) {
             _openid = p.followOpenid;
         }
 
@@ -509,7 +510,7 @@ module.exports = function (Watch) {
 
     Watch.reqeustDemoToken = function (cb) {
 
-        
+
         var url = "http://0.0.0.0:3000/queryorders?appId=wxb74654c82da12482&out_trade_no=20170919-ek4o5xng4";
         //url = "http://0.0.0.0:3000/closeorders?appId=wxb74654c82da12482&out_trade_no=20170919-ek4o5xng4";
         url = "http://0.0.0.0:3000/createorders?appId=wxb74654c82da12482&fee=1&notifyUrl=http://gl.eshine.cn/wechatnotify";
@@ -649,6 +650,38 @@ module.exports = function (Watch) {
             description: '获得Ticket',
             accepts: { arg: 'GetTicket', type: 'object', description: '{"url":""}' },
             returns: { arg: 'RegInfo', type: 'object', root: true }
+        }
+    );
+
+
+    Watch.CheckQR = function (storeId, res, cb) {
+        EWTRACE("CheckQR Begin" );
+
+        //res.send("code=0000&&desc=ok");
+        //res.end("code=0000&&desc=ok");
+
+        EWTRACE('send ok');
+
+        cb(null,"code=0000&&desc=ok");
+
+        EWTRACE("CheckQR End");
+    }
+
+    Watch.remoteMethod(
+        'CheckQR',
+        {
+            http: { verb: 'post' },
+            description: '查询亲友信息',
+            accepts: [{ arg: 'storeId', http: { source: 'body' }, type: 'object', description: '', root: true },
+            {
+                arg: 'res', type: 'object',
+                http: function (ctx) {
+                    var res = ctx.res;
+                    return res;
+                }
+            }
+        ],
+            returns: { arg: 'p', type: 'string',root:true }
         }
     );
 };

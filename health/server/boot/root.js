@@ -26,7 +26,7 @@ module.exports = function (server) {
       return item.toUpperCase() == f_name.toUpperCase();
     })
 
-    if (!_.isEmpty(find)) {
+    if (!_.isUndefined(find)) {
       if (req.headers.token == undefined) {
         // res.writeHead(401);
         // res.end();
