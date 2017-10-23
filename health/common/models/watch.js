@@ -658,11 +658,11 @@ module.exports = function (Watch) {
         EWTRACE("CheckQR Begin" );
 
         //res.send("code=0000&&desc=ok");
-        //res.end("code=0000&&desc=ok");
+        res.end("code=0000&&desc=ok");
 
         EWTRACE('send ok');
 
-        cb(null,"code=0000&&desc=ok");
+        //cb(null,"code=0000&&desc=ok");
 
         EWTRACE("CheckQR End");
     }
@@ -670,7 +670,7 @@ module.exports = function (Watch) {
     Watch.remoteMethod(
         'CheckQR',
         {
-            http: { verb: 'post' },
+            http: { verb: 'get' },
             description: '查询亲友信息',
             accepts: [{ arg: 'storeId', http: { source: 'body' }, type: 'object', description: '', root: true },
             {
