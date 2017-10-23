@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-19 10:49:02
+ * @Last Modified time: 2017-10-23 09:24:02
  */
 'use strict';
 
@@ -549,7 +549,7 @@ module.exports = function (Patient) {
                     return;
                 }
 
-                bsSQL = "insert into hh_userwatchdata(iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,addtime,trackid,addtime2) values('" + body.iccid + "','" + UserInfo[0].openid + "','" + body.sn + "'," + body.highPress + "," + body.lowPress + "," + body.hrCount + "," + body.anb + "," + body.pwv + "," + body.absoluteRisk + "," + body.relativeRisk + ",'" + body.testTime + "',date_format(now(), '%Y-%m-%d')," + body.trackId + ",unix_timestamp());";
+                bsSQL = "insert into hh_userwatchdata(iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,testtime,addtime,trackid,addtime2) values('" + body.iccid + "','" + UserInfo[0].openid + "','" + body.sn + "'," + body.highPress + "," + body.lowPress + "," + body.hrCount + "," + body.anb + "," + body.pwv + "," + body.absoluteRisk + "," + body.relativeRisk + ",now(),date_format(now(), '%Y-%m-%d')," + body.trackId + ",unix_timestamp());";
 
                 DoSQL(bsSQL).then(function () {
                     cb(null, { code: 0, "message": "operate success" });
