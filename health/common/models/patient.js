@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-23 09:24:02
+ * @Last Modified time: 2017-10-23 09:48:58
  */
 'use strict';
 
@@ -743,9 +743,6 @@ module.exports = function (Patient) {
         //return job;
     };
     initTimer();
-
-
-
 
 
     function AddFamilyUser(req, res, cb) {
