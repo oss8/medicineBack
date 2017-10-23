@@ -655,7 +655,7 @@ module.exports = function (Watch) {
 
 
     Watch.CheckQR = function (storeId, res, cb) {
-        EWTRACE("CheckQR Begin" );
+        EWTRACE("CheckQR Begin:" + storeId );
 
         //res.send("code=0000&&desc=ok");
         res.end("code=0000&&desc=ok");
@@ -672,7 +672,7 @@ module.exports = function (Watch) {
         {
             http: { verb: 'get' },
             description: '查询亲友信息',
-            accepts: [{ arg: 'storeId', http: { source: 'body' }, type: 'object', description: '', root: true },
+            accepts: [{ arg: 'storeId', type: 'string', description: '', root: true },
             {
                 arg: 'res', type: 'object',
                 http: function (ctx) {
