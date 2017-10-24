@@ -429,6 +429,8 @@ module.exports = function (Watch) {
                 _result.walk = [];
                 _result.sleep = [];
 
+                _result.weekDay = result;
+
                 if ( _avgData.Result.length == 0 ){
                     _result.weekly = '您上周没有任何检测，所以无法提供健康周报';
                 }else{
