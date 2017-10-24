@@ -419,6 +419,7 @@ module.exports = function (Watch) {
             var _avgData = {};
             ps.push(ExecuteSyncSQLResult(bsSQL, _avgData));
 
+            var _sunDay = result[0].sunDay;
             Promise.all(ps).then(function () {
 
                 var _result = {};
@@ -448,7 +449,7 @@ module.exports = function (Watch) {
 
                 for (var i = 0; i < 7; i++) {
 
-                    var curDate = GetDateAdd(result[0].sunDay, -1 * i, 'day').format('yyyy-MM-dd');
+                    var curDate = GetDateAdd(_sunDay, -1 * i, 'day').format('yyyy-MM-dd');
 
                     var _filter = _.filter(_watchdata.Result, function (fitem) {
                         return fitem.addtime == curDate;
