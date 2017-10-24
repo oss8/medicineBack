@@ -448,7 +448,7 @@ module.exports = function (Watch) {
 
                 for (var i = 0; i < 7; i++) {
 
-                    var curDate = GetDateAdd(result.sunDay, -1 * i, 'day').format('yyyy-MM-dd');
+                    var curDate = GetDateAdd(result[0].sunDay, -1 * i, 'day').format('yyyy-MM-dd');
 
                     var _filter = _.filter(_watchdata.Result, function (fitem) {
                         return fitem.addtime == curDate;
