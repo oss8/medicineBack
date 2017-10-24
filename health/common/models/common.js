@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-09-19 11:36:25
+ * @Last Modified time: 2017-10-24 14:09:33
  */
 
 var log4js = require('log4js');
@@ -554,12 +554,20 @@ module.exports = function (common) {
             var _color = "#3300FF";
             var relativeRisk = "不变";
             if (CheckData.relativeRisk == 0) {
-                relativeRisk = "变低";
+                relativeRisk = "低";
                 _color = '#00cc00';
             }
-            if (CheckData.relativeRisk == 2) {
-                relativeRisk = "变高";
-                _color = '#cc3300';
+            if (CheckData.relativeRisk == 2 ) {
+                if ( (_.isNull(userInfo.age) || userInfo.age >= 45) && CheckData.pwv >= 10){
+                    relativeRisk = "变高";
+                    _color = '#cc3300';
+                }
+                else{
+                    if ( CheckData.pwv >= 9 ){
+                        relativeRisk = "变高";
+                        _color = '#cc3300';
+                    }
+                }
             }
 
 

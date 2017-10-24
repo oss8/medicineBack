@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-24 13:58:45
+ * @Last Modified time: 2017-10-24 14:02:26
  */
 'use strict';
 
@@ -541,7 +541,7 @@ module.exports = function (Patient) {
 
         if (localSign.toUpperCase() == sign.toUpperCase()) {
 
-            var bsSQL = "select openid,name from hh_publicuser where iccid = '" + body.iccid + "'";
+            var bsSQL = "select openid,name,age from hh_publicuser where iccid = '" + body.iccid + "'";
             DoSQL(bsSQL).then(function (UserInfo) {
 
                 if (UserInfo.length == 0) {
