@@ -433,6 +433,8 @@ module.exports = function (Watch) {
 
                 if (_avgData.Result.length == 0) {
                     _result.weekly = '您上周没有任何检测，所以无法提供健康周报';
+                    cb(err, { status: 1, "result": "您上周没有任何检测，所以无法提供健康周报" });
+                    return;
                 } else {
                     if (_avgData.Result[0].high >= 180 || _avgData.Result[0].low >= 110) {
                         _result.weekly = '亲爱的用户您好，本周您的心血管健康状况比较危险，血压指数有X次超过危险值，整体血压波动趋势大，每日应保证血压监测至少一次，观察其变化情况。降压药物每日坚持服用，饮食方面避免油腻、辛辣、高盐，不可过多劳累，精神紧张焦虑不安都会使得血压骤然升高，危害人的身心健康。建议早日去往医院进行全方面的诊断，如有需要，我们可提供陪护服务，为您带去方便和安心！';
