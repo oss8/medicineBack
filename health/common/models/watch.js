@@ -403,21 +403,21 @@ module.exports = function (Watch) {
         }
 
         var bsSQL1 = "select subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7) as monDay,subdate(curdate(),date_format(curdate(),'%w')) as sunDay";
-        DoSQL(bsSQL1).then(function(result){
+        DoSQL(bsSQL1).then(function (result) {
 
             var ps = [];
-            var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,DATE_FORMAT(testtime,'%m月%d日 %H:%i') as testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where pwv <> -1 and openid = '" + _openid + "' and addtime between "+ result.monDay+" and "+ result.sunDay+" order by addtime desc";
+            var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,DATE_FORMAT(testtime,'%m月%d日 %H:%i') as testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where pwv <> -1 and openid = '" + _openid + "' and addtime between " + result[0].monDay + " and " + result[0].sunDay + " order by addtime desc";
             var _watchdata = {};
             ps.push(ExecuteSyncSQLResult(bsSQL, _watchdata));
 
-            bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,DATE_FORMAT(addtime,'%m月%d日 %H:%i') as testtime FROM hh_usersportdata where openid = '" + _openid + "' and addtime between "+ result.monDay+" and "+ result.sunDay+" order by addtime desc";
+            bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,DATE_FORMAT(addtime,'%m月%d日 %H:%i') as testtime FROM hh_usersportdata where openid = '" + _openid + "' and addtime between " + result[0].monDay + " and " + result[0].sunDay + " order by addtime desc";
             var _sportdata = {};
             ps.push(ExecuteSyncSQLResult(bsSQL, _sportdata));
 
 
-            bsSQL = "SELECT sum(highpress) / count(*) as high, sum(lowpress) / count(*) as low FROM hh_userwatchdata where openid = '" + _openid + "' and  addtime between "+ result.monDay+" and "+ result.sunDay+" order by addtime desc";
+            bsSQL = "SELECT sum(highpress) / count(*) as high, sum(lowpress) / count(*) as low FROM hh_userwatchdata where openid = '" + _openid + "' and  addtime between " + result[0].monDay + " and " + result[0].sunDay + " order by addtime desc";
             var _avgData = {};
-            ps.push(ExecuteSyncSQLResult(bsSQL, _avgData));            
+            ps.push(ExecuteSyncSQLResult(bsSQL, _avgData));
 
             Promise.all(ps).then(function () {
 
@@ -431,15 +431,15 @@ module.exports = function (Watch) {
 
                 _result.weekDay = result;
 
-                if ( _avgData.Result.length == 0 ){
+                if (_avgData.Result.length == 0) {
                     _result.weekly = '您上周没有任何检测，所以无法提供健康周报';
-                }else{
-                    if ( _avgData.Result[0].high >= 180 || _avgData.Result[0].low >= 110) {
+                } else {
+                    if (_avgData.Result[0].high >= 180 || _avgData.Result[0].low >= 110) {
                         _result.weekly = '亲爱的用户您好，本周您的心血管健康状况比较危险，血压指数有X次超过危险值，整体血压波动趋势大，每日应保证血压监测至少一次，观察其变化情况。降压药物每日坚持服用，饮食方面避免油腻、辛辣、高盐，不可过多劳累，精神紧张焦虑不安都会使得血压骤然升高，危害人的身心健康。建议早日去往医院进行全方面的诊断，如有需要，我们可提供陪护服务，为您带去方便和安心！';
-                    }else if ( _avgData.Result[0].high >= 140 || _avgData.Result[0].low >= 90 ){
-                        _result.weekly = '亲爱的用户您好，本周您的心血管健康状况趋于危险，血压指数有X次超过标准值，整体血压波动趋势较大，平时应加强血压的监测。生活中应注意调整自己的心态，压抑会使血压升高，保持乐观向上的心态不但可以预防高血压，还是治疗高血压的的良药哦。如血压波动起伏仍然较大，建议去往医院进行全方面的诊断，我们可提供陪护服务，为您带去方便和安心！';                        
-                    }else {
-                        _result.weekly = '亲爱的用户您好，本周您的心血管健康状况良好，整体血压波动趋势平稳，身体状况保持较好。平时注意劳逸结合，保持低盐饮食，维持体重，注意保暖，多进行有氧运动，保持心平气和状态，除了能有效避免高血压的变高，还能增强身心素质哦。';                           
+                    } else if (_avgData.Result[0].high >= 140 || _avgData.Result[0].low >= 90) {
+                        _result.weekly = '亲爱的用户您好，本周您的心血管健康状况趋于危险，血压指数有X次超过标准值，整体血压波动趋势较大，平时应加强血压的监测。生活中应注意调整自己的心态，压抑会使血压升高，保持乐观向上的心态不但可以预防高血压，还是治疗高血压的的良药哦。如血压波动起伏仍然较大，建议去往医院进行全方面的诊断，我们可提供陪护服务，为您带去方便和安心！';
+                    } else {
+                        _result.weekly = '亲爱的用户您好，本周您的心血管健康状况良好，整体血压波动趋势平稳，身体状况保持较好。平时注意劳逸结合，保持低盐饮食，维持体重，注意保暖，多进行有氧运动，保持心平气和状态，除了能有效避免高血压的变高，还能增强身心素质哦。';
                     }
                 }
 
@@ -638,15 +638,21 @@ module.exports = function (Watch) {
     Watch.reqeustDemoToken = function (cb) {
 
 
-        var url = "http://0.0.0.0:3000/queryorders?appId=wxb74654c82da12482&out_trade_no=20170919-ek4o5xng4";
-        //url = "http://0.0.0.0:3000/closeorders?appId=wxb74654c82da12482&out_trade_no=20170919-ek4o5xng4";
-        url = "http://0.0.0.0:3000/createorders?appId=wxb74654c82da12482&fee=1&notifyUrl=http://gl.eshine.cn/wechatnotify";
-        needle.get(encodeURI(url), null, function (err, resp) {
+        var token = {
+            openid: 'oFVZ-1M21POeEOX2gejWRkDE-EWw',
+            nickname: '雷欢',
+            sex: 1,
+            language: 'zh_CN',
+            city: 'Hangzhou',
+            province: 'Zhejiang',
+            country: 'China',
+            headimgurl: 'http://wx.qlogo.cn/mmhead/QtOicY3g3wVK98hoG4OwVAKgRYbaHWo98ufh9RJSTQyw/0',
+            privilege: [],
+            unionid: 'oBQ4y07nsDSuqVSCJJSwZXYGVrgc'
+        };
 
-            cb(null, { status: 1, "result": resp.body });
-        }, function (err) {
-            cb(err, { status: 0, "result": err.message });
-        })
+        cb(null, { status: 1, "result": GetTokenFromOpenID(token) });
+
 
         EWTRACE("reqeustDemoToken End");
     }
