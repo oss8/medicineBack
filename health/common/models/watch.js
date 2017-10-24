@@ -684,6 +684,29 @@ module.exports = function (Watch) {
             returns: { arg: 'p', type: 'string',root:true }
         }
     );
+
+    Watch.Demo = function (storeId, res, cb) {
+        EWTRACE("CheckQR Begin:" + storeId );
+
+        //res.send("code=0000&&desc=ok");
+        res.end("code=0000&&desc=ok");
+
+        EWTRACE('send ok');
+
+        //cb(null,"code=0000&&desc=ok");
+
+        EWTRACE("CheckQR End");
+    }
+
+    Watch.remoteMethod(
+        'Demo',
+        {
+            http: { verb: 'post' },
+            description: '查询亲友信息',
+            accepts: { arg: 'storeId', http: { source: 'body' },type: 'string', description: '', root: true },
+            returns: { arg: 'p', type: 'string',root:true }
+        }
+    );    
 };
 
 

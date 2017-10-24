@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-24 10:35:13
+ * @Last Modified time: 2017-10-24 13:43:49
  */
 'use strict';
 
@@ -440,7 +440,7 @@ module.exports = function (Patient) {
                 "msgtype": "text",
                 "text":
                 {
-                    "content": "欢迎加入曼康健康计划"
+                    "content": "”欢迎加入曼康计划，我们为每一位用户提供一只具有测量血压功能的健康手表，在使用过程中如有任何问题，可以通过”我的—联系客服“了解操作指南，我们将为您提供最全面的解答!"
                 }
             };
 

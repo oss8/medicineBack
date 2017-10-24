@@ -24,7 +24,7 @@
                     {
                         "type": "view",
                         "name": "联系客服",
-                        "url": "http://www.soso.com/"
+                        "url": "https://mp.weixin.qq.com/s/GFETJuKcLWNPllOGaqB6jA"
                     },
                     {
                         "type": "click",
@@ -38,8 +38,13 @@
                 "sub_button": [
                     {
                         "type": "view",
-                        "name": "健康报告",
+                        "name": "健康数据",
                         "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fhistory-data"
+                    },
+                    {
+                        "type": "view",
+                        "name": "每周报告",
+                        "url": "https://mp.weixin.qq.com/s/GFETJuKcLWNPllOGaqB6jA"
                     }
                 ]
             },
@@ -50,11 +55,6 @@
                         "type": "view",
                         "name": "会员权益",
                         "url": "http://mp.weixin.qq.com/s/IthKW0L-omZ7dLBbCUe3dQ"
-                    },                    
-                    {
-                        "type": "click",
-                        "name": "SOS",
-                        "key": "SOS_Notify"
                     }
                 ]
             }
