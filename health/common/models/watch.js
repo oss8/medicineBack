@@ -405,11 +405,11 @@ module.exports = function (Watch) {
 
 
         var ps = [];
-        var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,DATE_FORMAT(testtime,'%m月%d日 %h:%i') as testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where pwv <> -1 and openid = '" + _openid + "' order by addtime desc";
+        var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,DATE_FORMAT(testtime,'%m月%d日 %H:%i') as testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where pwv <> -1 and openid = '" + _openid + "' order by addtime desc";
         var _watchdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _watchdata));
 
-        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,DATE_FORMAT(addtime,'%m月%d日 %h:%i') as testtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
+        bsSQL = "SELECT userid,openid,belongdate,walknum,runnum,mileage,caloric,deepsleep,lightsleep,noadorn,sober,DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,DATE_FORMAT(addtime,'%m月%d日 %H:%i') as testtime FROM hh_usersportdata where openid = '" + _openid + "' order by addtime desc";
         var _sportdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _sportdata));
 
