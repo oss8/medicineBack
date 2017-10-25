@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-25 10:46:13
+ * @Last Modified time: 2017-10-25 20:18:10
  */
 'use strict';
 
@@ -697,10 +697,10 @@ module.exports = function (Patient) {
             //require('dotenv').config({ path: './config/.env' });
             var _curTime = currentTime.toTimeString().substr(0, 2);
 
-            if (_curTime == '10' ) {
+            if (_curTime == '20' ) {
                 var _curMinute = currentTime.toTimeString().substr(3, 2);
 
-                if (_curMinute == '47') {
+                if (_curMinute == '20') {
                     var now = new Date().format('yyyy-MM-dd');
                     var getDay = GetDateAdd(now, -1, 'day').format('yyyy-MM-dd');
                     getEveryDayData(getDay);
