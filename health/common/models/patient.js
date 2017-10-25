@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-25 20:18:10
+ * @Last Modified time: 2017-10-25 20:22:18
  */
 'use strict';
 
@@ -700,7 +700,7 @@ module.exports = function (Patient) {
             if (_curTime == '20' ) {
                 var _curMinute = currentTime.toTimeString().substr(3, 2);
 
-                if (_curMinute == '20') {
+                if (_curMinute == '24') {
                     var now = new Date().format('yyyy-MM-dd');
                     var getDay = GetDateAdd(now, -1, 'day').format('yyyy-MM-dd');
                     getEveryDayData(getDay);
