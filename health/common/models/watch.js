@@ -402,7 +402,7 @@ module.exports = function (Watch) {
             _openid = p.followOpenid;
         }
 
-        var bsSQL1 = "select DATE_FORMAT(subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7),'%Y-%m-%d') as monDay,DATE_FORMAT(subdate(curdate(),date_format(curdate(),'%w')),'%Y-%m-%d') as sunDay";
+        var bsSQL1 = "select DATE_FORMAT(subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7),'%Y-%m-%d') as monDay,DATE_FORMAT(subdate(curdate(),date_format(curdate(),'%w')),'%Y-%m-%d') as sunDay,DATE_FORMAT(subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7),'%Y年%m月%d日') as monDay1,DATE_FORMAT(subdate(curdate(),date_format(curdate(),'%w')),'%Y年%m月%d日') as sunDay1";
         DoSQL(bsSQL1).then(function (result) {
 
             var ps = [];
@@ -430,7 +430,9 @@ module.exports = function (Watch) {
                 _result.walk = [];
                 _result.sleep = [];
 
-                _result.weekDay = result;
+                _result.weekDay = {};
+                _result.weekDay.monDay = result[0].monDay1;
+                _result.weekDay.sunDay = result[0].sunDay1;
 
                 if (_avgData.Result.length == 0) {
                     _result.weekly = '您上周没有任何检测，所以无法提供健康周报';
