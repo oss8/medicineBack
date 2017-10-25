@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-24 16:09:34
+ * @Last Modified time: 2017-10-25 10:36:30
  */
 'use strict';
 
@@ -617,7 +617,7 @@ module.exports = function (Patient) {
     function _getLimitUserData(pageIndex, getDay) {
         return new Promise(function (resolve, reject) {
 
-            var bsSQL = "select watchuserid,openid,DATE_FORMAT(now(),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null and watchuserid not in (select userid from hh_usersportdata where addtime = '" + getDay + "') limit " + (pageIndex * pageSize) + "," + pageSize;
+            var bsSQL = "select watchuserid,openid,DATE_FORMAT(date_add(now(),interval -1 day),'%Y-%m-%d') as belongDate from hh_publicuser where watchuserid is not null and watchuserid not in (select userid from hh_usersportdata where addtime = '" + getDay + "') limit " + (pageIndex * pageSize) + "," + pageSize;
             DoSQL(bsSQL).then(function (result) {
                 if (result.length == 0) {
                     resolve(0);
