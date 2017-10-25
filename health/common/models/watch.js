@@ -436,6 +436,7 @@ module.exports = function (Watch) {
 
                 if (_avgData.Result.length == 0) {
                     _result.weekly = '您上周没有任何检测，所以无法提供健康周报';
+                    _result.weeklyStatus = '0';
                     cb(err, { status: 1, "result": "您上周没有任何检测，所以无法提供健康周报" });
                     return;
                 } else {
@@ -447,7 +448,7 @@ module.exports = function (Watch) {
                         _result.weeklyStatus = '60';
                     } else {
                         _result.weekly = '亲爱的用户您好，本周您的心血管健康状况良好，整体血压波动趋势平稳，身体状况保持较好。平时注意劳逸结合，保持低盐饮食，维持体重，注意保暖，多进行有氧运动，保持心平气和状态，除了能有效避免高血压的变高，还能增强身心素质哦。';
-                        _result.weeklyStatus = '0';
+                        _result.weeklyStatus = '30';
                     }
                 }
 
