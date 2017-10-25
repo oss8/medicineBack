@@ -802,12 +802,9 @@ module.exports = function (Watch) {
             res.send("code=0000&&desc=ok");
         }
         else{
-            res.send("code=0001&&desc=ok");
+            res.send("code=0001&&desc=bad");
         }
-        
         res.end();
-
-
         EWTRACE("CheckQR End");
     }
 
@@ -829,28 +826,6 @@ module.exports = function (Watch) {
         }
     );
 
-    Watch.Demo = function (storeId, res, cb) {
-        EWTRACE("CheckQR Begin:" + storeId);
-
-        //res.send("code=0000&&desc=ok");
-        res.end("code=0000&&desc=ok");
-
-        EWTRACE('send ok');
-
-        //cb(null,"code=0000&&desc=ok");
-
-        EWTRACE("CheckQR End");
-    }
-
-    Watch.remoteMethod(
-        'Demo',
-        {
-            http: { verb: 'post' },
-            description: '查询亲友信息',
-            accepts: { arg: 'storeId', http: { source: 'body' }, type: 'string', description: '', root: true },
-            returns: { arg: 'p', type: 'string', root: true }
-        }
-    );
 };
 
 
