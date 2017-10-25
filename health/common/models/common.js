@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-24 20:13:07
+ * @Last Modified time: 2017-10-25 10:22:33
  */
 
 var log4js = require('log4js');
@@ -211,7 +211,7 @@ module.exports = function (common) {
     }
 
     GetDateAdd = function (startTime, addTimes, diffType) {
-        EWTRACE(startTime);
+
         //将xxxx-xx-xx的时间格式，转换为 xxxx/xx/xx的格式 
         startTime = startTime.replace(/\-/g, "/");
         //将计算间隔类性字符转换为小写
