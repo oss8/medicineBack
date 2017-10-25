@@ -798,7 +798,7 @@ module.exports = function (Watch) {
 
         EWTRACE('send ok');
 
-        if ( storeId.vgdecoderesult == 'Rrrr'){
+        if ( storeId.vgdecoderesult == 'http://weixin.qq.com/q/02R1Wzh_lmd-k1Xk7VhpcS'){
             res.send("code=0000&&desc=ok");
         }
         else{
