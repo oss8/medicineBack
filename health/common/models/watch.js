@@ -402,7 +402,7 @@ module.exports = function (Watch) {
             _openid = p.followOpenid;
         }
 
-        var bsSQL1 = "select DATE_FORMAT(subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7),'%Y-%m-%d') as monDay,DATE_FORMAT(subdate(curdate(),date_format(curdate(),'%w')),'%Y-%m-%d') as sunDay,DATE_FORMAT(subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7),'%Y年%m月%d日') as monDay1,DATE_FORMAT(subdate(curdate(),date_format(curdate(),'%w')),'%Y年%m月%d日') as sunDay1";
+        var bsSQL1 = "select DATE_FORMAT(subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7),'%Y-%m-%d') as monDay,DATE_FORMAT(subdate(curdate(),date_format(curdate(),'%w')),'%Y-%m-%d') as sunDay,DATE_FORMAT(subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7),'%m月%d日') as monDay1,DATE_FORMAT(subdate(curdate(),date_format(curdate(),'%w')),'%m月%d日') as sunDay1";
         DoSQL(bsSQL1).then(function (result) {
 
             var ps = [];
