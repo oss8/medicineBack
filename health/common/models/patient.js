@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-25 20:22:18
+ * @Last Modified time: 2017-10-25 20:31:42
  */
 'use strict';
 
@@ -697,7 +697,7 @@ module.exports = function (Patient) {
             //require('dotenv').config({ path: './config/.env' });
             var _curTime = currentTime.toTimeString().substr(0, 2);
 
-            if (_curTime == '20' ) {
+            if (_curTime == '10' ) {
                 var _curMinute = currentTime.toTimeString().substr(3, 2);
 
                 if (_curMinute == '24') {
