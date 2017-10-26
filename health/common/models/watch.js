@@ -605,7 +605,7 @@ module.exports = function (Watch) {
                     var walk = {};
                     walk.date = curDate;
                     walk.addtime = _find.testtime;
-                    walk.value = _find.walknum;
+                    walk.value = _find.runnum;
                     _result.walk.push(walk);
 
                     var sleep = {};
