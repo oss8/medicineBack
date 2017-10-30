@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-25 10:22:33
+ * @Last Modified time: 2017-10-30 12:27:18
  */
 
 var log4js = require('log4js');
@@ -568,6 +568,13 @@ module.exports = function (common) {
                         relativeRisk = "变高";
                         _color = '#cc3300';
                     }
+                }
+                if ( _color != '#cc3300'){
+                    if ( CheckData.highPress > 140 ||
+                        CheckData.lowPress > 90 ||
+                        CheckData.hrCount > 100 ){
+                            _color = '#cc3300';
+                        }
                 }
             }
 
