@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:27:54 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-26 20:16:27
+ * @Last Modified time: 2017-11-01 11:12:13
  */
 'use strict';
 
@@ -205,7 +205,7 @@ module.exports = function (Patient) {
                 var openId = UserInfo[0].openid;
 
                 var ps = [];
-                var bsSQL = "select followopenid as openid,nickname as name from hh_familyuser where openid = '" + openId + "'";
+                var bsSQL = "select followopenid as openid,nickname as name from hh_familyuser where ecc = 1 and openid = '" + openId + "'";
                 var _notifyList = {};
                 ps.push(ExecuteSyncSQLResult(bsSQL, _notifyList));
 
