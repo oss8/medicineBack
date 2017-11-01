@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-10-30 12:27:18
+ * @Last Modified time: 2017-11-01 11:16:11
  */
 
 var log4js = require('log4js');
@@ -429,7 +429,6 @@ module.exports = function (common) {
                         }
                     }
                     EWTRACE("self_sendWX");
-                    EWTRACEIFY(WXData);
                     self_sendWX(_accesstoken, WXData);
                 });
             }, function (err) {
