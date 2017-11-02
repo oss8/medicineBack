@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (Watch) {
+module.exports = function(Watch) {
     var app = require('../../server/server');
     app.DisableSystemMethod(Watch);
     var _ = require('underscore');
@@ -9,45 +9,60 @@ module.exports = function (Watch) {
     var config = require('../../config/config')
 
 
-    Watch.CreateWXMenu = function (cb) {
+    Watch.CreateWXMenu = function(cb) {
         EWTRACE("CreateWXMenu Begin");
 
-        Request_WxToken().then(function (resp) {
+        Request_WxToken().then(function(resp) {
 
             var data = config.menu;
             var url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + resp.body.access_token;
 
-            needle.post(encodeURI(url), data, { json: true }, function (err, resp) {
+            needle.post(encodeURI(url), data, {
+                json: true
+            }, function(err, resp) {
                 // you can pass params as a string or as an object.
                 if (err) {
                     //cb(err, { status: 0, "result": "" });
                     EWTRACE(err.message);
-                    cb(err, { status: 1, "result": "" });
-                }
-                else {
-                    cb(null, { status: 0, "result": resp.body });
+                    cb(err, {
+                        status: 1,
+                        "result": ""
+                    });
+                } else {
+                    cb(null, {
+                        status: 0,
+                        "result": resp.body
+                    });
                 }
             });
-        }, function (err) {
-            cb(err, { status: 1, "result": "" });
+        }, function(err) {
+            cb(err, {
+                status: 1,
+                "result": ""
+            });
         });
         EWTRACE("CreateWXMenu End");
     }
 
     Watch.remoteMethod(
-        'CreateWXMenu',
-        {
-            http: { verb: 'post' },
+        'CreateWXMenu', {
+            http: {
+                verb: 'post'
+            },
             description: '创建微信菜单',
-            returns: { arg: 'AddDoctor', type: 'object', root: true }
+            returns: {
+                arg: 'AddDoctor',
+                type: 'object',
+                root: true
+            }
         }
     );
 
     var iconv = require("iconv-lite");
-    Watch.requestMediaList = function (cb) {
+    Watch.requestMediaList = function(cb) {
         EWTRACE("requestMediaList Begin");
 
-        Request_WxToken().then(function (resp) {
+        Request_WxToken().then(function(resp) {
 
             var data = {
                 "type": "news",
@@ -57,18 +72,22 @@ module.exports = function (Watch) {
             var url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=" + resp.body.access_token;
 
             EWTRACE(url);
-            needle.post(encodeURI(url), JSON.stringify(data), { 'Content-Type': 'text/plain' }, function (err, mediaList) {
+            needle.post(encodeURI(url), JSON.stringify(data), {
+                'Content-Type': 'text/plain'
+            }, function(err, mediaList) {
                 // you can pass params as a string or as an object.
                 if (err) {
                     //cb(err, { status: 0, "result": "" });
                     EWTRACE(err.message);
-                    cb(err, { status: 1, "result": "" });
-                }
-                else {
+                    cb(err, {
+                        status: 1,
+                        "result": ""
+                    });
+                } else {
                     var aa = data = iconv.decode(mediaList.body, 'utf-8');
                     var mediaList = JSON.parse(aa);
 
-                    var find = _.find(mediaList.item, function (fitem) {
+                    var find = _.find(mediaList.item, function(fitem) {
                         return fitem.media_id == "YEZ1-hX2SqhxIoTprsAbGlId8YsyLrjkOJ1pKbx3uEM";
                     })
 
@@ -80,7 +99,7 @@ module.exports = function (Watch) {
                         }
                     }
 
-                    find.content.news_item.forEach(function (fitem) {
+                    find.content.news_item.forEach(function(fitem) {
                         var obj = {
                             "title": fitem.title,
                             "thumb_media_id": fitem.thumb_media_id,
@@ -91,32 +110,43 @@ module.exports = function (Watch) {
 
 
                     var _result = [];
-                    mediaList.item.forEach(function (item) {
+                    mediaList.item.forEach(function(item) {
                         var _out = {};
                         _out.media_id = item.media_id;
                         _out.title = item.content.news_item[0].title;
                         _result.push(_out);
                     })
 
-                    cb(null, { status: 0, "result": _result });
+                    cb(null, {
+                        status: 0,
+                        "result": _result
+                    });
                 }
             });
-        }, function (err) {
-            cb(err, { status: 1, "result": "" });
+        }, function(err) {
+            cb(err, {
+                status: 1,
+                "result": ""
+            });
         });
         EWTRACE("requestMediaList End");
     }
 
     Watch.remoteMethod(
-        'requestMediaList',
-        {
-            http: { verb: 'post' },
+        'requestMediaList', {
+            http: {
+                verb: 'post'
+            },
             description: '获取素材列表',
-            returns: { arg: 'AddDoctor', type: 'object', root: true }
+            returns: {
+                arg: 'AddDoctor',
+                type: 'object',
+                root: true
+            }
         }
     );
 
-    Watch.RequestUserInfo = function (OpenID, cb) {
+    Watch.RequestUserInfo = function(OpenID, cb) {
         EWTRACE("RequestUserInfo Begin");
 
         var _openid = OpenID.openid;
@@ -130,10 +160,10 @@ module.exports = function (Watch) {
         var myfollow = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, myfollow));
 
-        Promise.all(ps).then(function () {
+        Promise.all(ps).then(function() {
             if (userInfo.Result.length == 0) {
                 bsSQL = "INSERT INTO hh_publicUser (id, openid,name, iccid, watchuserid,province,city,sex,status,type,headimage,isflag) VALUES (uuid(),'" + _openid + "','" + OpenID.nickname + "',null,null,'" + OpenID.province + "','" + OpenID.city + "','" + OpenID.sex + "',0,0,'" + OpenID.headimgurl + "',0);select name,sex,birthday,height,weight,mobile,cardNo,disease_list as disease,isflag from hh_publicuser where openid = '" + _openid + "'";
-                DoSQL(bsSQL).then(function (result) {
+                DoSQL(bsSQL).then(function(result) {
                     userInfo.Result[0] = result[0];
                     userInfo.Result[0].followList = [];
                     if (myfollow.Result.length > 0) {
@@ -143,7 +173,10 @@ module.exports = function (Watch) {
 
                     delete userInfo.Result[0].disease;
 
-                    cb(null, { status: 1, "result": userInfo.Result[0] });
+                    cb(null, {
+                        status: 1,
+                        "result": userInfo.Result[0]
+                    });
                 })
                 return;
             }
@@ -156,34 +189,44 @@ module.exports = function (Watch) {
 
             delete userInfo.Result[0].disease;
 
-            cb(null, { status: 1, "result": userInfo.Result[0] });
-        }, function (err) {
-            cb(err, { status: 0, "result": "" });
+            cb(null, {
+                status: 1,
+                "result": userInfo.Result[0]
+            });
+        }, function(err) {
+            cb(err, {
+                status: 0,
+                "result": ""
+            });
         });
     }
 
 
     Watch.remoteMethod(
-        'RequestUserInfo',
-        {
-            http: { verb: 'post' },
+        'RequestUserInfo', {
+            http: {
+                verb: 'post'
+            },
             description: '获取用户信息',
-            accepts:
-            {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
+            accepts: {
+                arg: 'OpenID',
+                type: 'object',
+                http: function(ctx) {
                     var req = ctx.req;
                     return GetOpenIDFromToken(req.headers.token);
                 },
                 description: '{"OpenID":""}'
+            },
+            returns: {
+                arg: 'UserInfo',
+                type: 'object',
+                root: true
             }
-            ,
-            returns: { arg: 'UserInfo', type: 'object', root: true }
         }
     );
 
 
-    Watch.ModifyUserInfo = function (p, OpenID, cb) {
+    Watch.ModifyUserInfo = function(p, OpenID, cb) {
         EWTRACE("ModifyUserInfo Begin");
 
         var _openid = OpenID.openid;
@@ -212,81 +255,124 @@ module.exports = function (Watch) {
 
         bsSQL += fieldContext + " where openid = '" + _openid + "'";
 
-        DoSQL(bsSQL).then(function () {
+        DoSQL(bsSQL).then(function() {
 
-            cb(null, { status: 1, "result": "" });
-        }, function (err) {
-            cb(err, { status: 0, "result": "" });
+            cb(null, {
+                status: 1,
+                "result": ""
+            });
+        }, function(err) {
+            cb(err, {
+                status: 0,
+                "result": ""
+            });
         });
     }
 
 
     Watch.remoteMethod(
-        'ModifyUserInfo',
-        {
-            http: { verb: 'post' },
+        'ModifyUserInfo', {
+            http: {
+                verb: 'post'
+            },
             description: '用户编辑信息',
-            accepts: [{ arg: 'p', type: 'object', http: { source: 'body' }, description: '{"name":"葛岭","sex":1,"birthday":"1974-02-11","height":"178","weight":"62","mobile":"18958064659","cardNo":"330102197420111536","disease_list":{}}' },
-            {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
-                    var req = ctx.req;
-                    return GetOpenIDFromToken(req.headers.token);
+            accepts: [{
+                    arg: 'p',
+                    type: 'object',
+                    http: {
+                        source: 'body'
+                    },
+                    description: '{"name":"葛岭","sex":1,"birthday":"1974-02-11","height":"178","weight":"62","mobile":"18958064659","cardNo":"330102197420111536","disease_list":{}}'
                 },
-                description: '{"OpenID":""}'
-            }
+                {
+                    arg: 'OpenID',
+                    type: 'object',
+                    http: function(ctx) {
+                        var req = ctx.req;
+                        return GetOpenIDFromToken(req.headers.token);
+                    },
+                    description: '{"OpenID":""}'
+                }
             ],
-            returns: { arg: 'UserInfo', type: 'object', root: true }
+            returns: {
+                arg: 'UserInfo',
+                type: 'object',
+                root: true
+            }
         }
     );
 
-    Watch.RequestMyQRCode = function (OpenID, cb) {
+    Watch.RequestMyQRCode = function(OpenID, cb) {
         EWTRACE("RequestMyQRCode Begin");
         var _openid = OpenID.openid;
 
         EWTRACE("RequestMyQRCode:" + _openid);
-        Request_WxToken().then(function (resp) {
+        Request_WxToken().then(function(resp) {
             var family = 'family_' + _openid;
-            var pp = { "expire_seconds": 604800, "action_name": "QR_STR_SCENE", "action_info": { "scene": { "scene_str": family } } };
+            var pp = {
+                "expire_seconds": 604800,
+                "action_name": "QR_STR_SCENE",
+                "action_info": {
+                    "scene": {
+                        "scene_str": family
+                    }
+                }
+            };
             var url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + resp.body.access_token;
-            needle.post(encodeURI(url), pp, { json: true }, function (err, resp) {
+            needle.post(encodeURI(url), pp, {
+                json: true
+            }, function(err, resp) {
                 // you can pass params as a string or as an object.
                 if (err) {
                     //cb(err, { status: 0, "result": "" });
                     EWTRACE(err.message);
-                    cb(err, { status: 0, "result": "" });
-                }
-                else {
+                    cb(err, {
+                        status: 0,
+                        "result": ""
+                    });
+                } else {
                     EWTRACE(resp.body.url);
-                    cb(null, { status: 1, "result": resp.body.url });
+                    cb(null, {
+                        status: 1,
+                        "result": resp.body.url
+                    });
                 }
             });
-        }, function (err) {
-            cb(err, { status: 0, "result": "" });
+        }, function(err) {
+            cb(err, {
+                status: 0,
+                "result": ""
+            });
         });
 
         EWTRACE("RequestMyQRCode End");
     }
 
     Watch.remoteMethod(
-        'RequestMyQRCode',
-        {
-            http: { verb: 'get' },
+        'RequestMyQRCode', {
+            http: {
+                verb: 'get'
+            },
             description: '生成我的二维码',
             accepts: {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
+                arg: 'OpenID',
+                type: 'object',
+                http: function(ctx) {
                     var req = ctx.req;
                     return GetOpenIDFromToken(req.headers.token);
                 },
                 description: '{"OpenID":""}'
             },
-            returns: { arg: 'p', type: 'object', root: true }
+            returns: {
+                arg: 'p',
+                type: 'object',
+                root: true
+            }
         }
     );
 
 
-    Watch.ModifyFollowInfo = function (followInfo, OpenID, cb) {
+    Watch.ModifyFollowInfo = function(followInfo, OpenID, cb) {
         EWTRACE("ModifyFollowInfo Begin");
         var _openid = OpenID.openid;
 
@@ -300,99 +386,150 @@ module.exports = function (Watch) {
 
         bsSQL += fileds + " where openid = '" + _openid + "' and followopenid = '" + followInfo.followOpenid + "'";
 
-        DoSQL(bsSQL).then(function () {
-            cb(null, { status: 1, "result": "" });
-        }, function (err) {
-            cb(err, { status: 0, "result": "" });
+        DoSQL(bsSQL).then(function() {
+            cb(null, {
+                status: 1,
+                "result": ""
+            });
+        }, function(err) {
+            cb(err, {
+                status: 0,
+                "result": ""
+            });
         })
 
         EWTRACE("ModifyFollowInfo End");
     }
 
     Watch.remoteMethod(
-        'ModifyFollowInfo',
-        {
-            http: { verb: 'post' },
+        'ModifyFollowInfo', {
+            http: {
+                verb: 'post'
+            },
             description: '编辑亲友信息',
-            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":"","nickname":"","tel":"","ecc":""}' },
-            {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
-                    var req = ctx.req;
-                    return GetOpenIDFromToken(req.headers.token);
+            accepts: [{
+                    arg: 'followInfo',
+                    http: {
+                        source: 'body'
+                    },
+                    type: 'object',
+                    description: '{"followOpenid":"","nickname":"","tel":"","ecc":""}'
                 },
-                description: '{"OpenID":""}'
-            }],
-            returns: { arg: 'p', type: 'object', root: true }
+                {
+                    arg: 'OpenID',
+                    type: 'object',
+                    http: function(ctx) {
+                        var req = ctx.req;
+                        return GetOpenIDFromToken(req.headers.token);
+                    },
+                    description: '{"OpenID":""}'
+                }
+            ],
+            returns: {
+                arg: 'p',
+                type: 'object',
+                root: true
+            }
         }
     );
 
 
-    Watch.removeFollow = function (followInfo, OpenID, cb) {
+    Watch.removeFollow = function(followInfo, OpenID, cb) {
         EWTRACE("removeFollow Begin");
         var _openid = OpenID.openid;
 
         var bsSQL = "delete from hh_familyuser  where openid = '" + _openid + "' and followopenid = '" + followInfo.followOpenid + "'";
 
-        DoSQL(bsSQL).then(function () {
-            cb(null, { status: 1, "result": "" });
-        }, function (err) {
-            cb(err, { status: 0, "result": "" });
+        DoSQL(bsSQL).then(function() {
+            cb(null, {
+                status: 1,
+                "result": ""
+            });
+        }, function(err) {
+            cb(err, {
+                status: 0,
+                "result": ""
+            });
         })
 
         EWTRACE("removeFollow End");
     }
 
     Watch.remoteMethod(
-        'removeFollow',
-        {
-            http: { verb: 'post' },
+        'removeFollow', {
+            http: {
+                verb: 'post'
+            },
             description: '编辑亲友信息',
-            accepts: [{ arg: 'followInfo', http: { source: 'body' }, type: 'object', description: '{"followOpenid":""}' }, {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
+            accepts: [{
+                arg: 'followInfo',
+                http: {
+                    source: 'body'
+                },
+                type: 'object',
+                description: '{"followOpenid":""}'
+            }, {
+                arg: 'OpenID',
+                type: 'object',
+                http: function(ctx) {
                     var req = ctx.req;
                     return GetOpenIDFromToken(req.headers.token);
                 },
                 description: '{"OpenID":""}'
             }],
-            returns: { arg: 'p', type: 'object', root: true }
+            returns: {
+                arg: 'p',
+                type: 'object',
+                root: true
+            }
         }
     );
 
-    Watch.reqeustFollow = function (OpenID, cb) {
+    Watch.reqeustFollow = function(OpenID, cb) {
         EWTRACE("reqeustFollow Begin");
         var _openid = OpenID.openid;
 
         var bsSQL = "select * from hh_familyuser  where openid = '" + _openid + "'";
 
-        DoSQL(bsSQL).then(function (result) {
-            cb(null, { status: 1, "result": result });
-        }, function (err) {
-            cb(err, { status: 0, "result": "" });
+        DoSQL(bsSQL).then(function(result) {
+            cb(null, {
+                status: 1,
+                "result": result
+            });
+        }, function(err) {
+            cb(err, {
+                status: 0,
+                "result": ""
+            });
         })
 
         EWTRACE("reqeustFollow End");
     }
 
     Watch.remoteMethod(
-        'reqeustFollow',
-        {
-            http: { verb: 'get' },
+        'reqeustFollow', {
+            http: {
+                verb: 'get'
+            },
             description: '查询亲友信息',
             accepts: {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
+                arg: 'OpenID',
+                type: 'object',
+                http: function(ctx) {
                     var req = ctx.req;
                     return GetOpenIDFromToken(req.headers.token);
                 },
                 description: '{"OpenID":""}'
             },
-            returns: { arg: 'p', type: 'object', root: true }
+            returns: {
+                arg: 'p',
+                type: 'object',
+                root: true
+            }
         }
     );
 
-    Watch.RequestUserWeekly = function (p, OpenID, cb) {
+    Watch.RequestUserWeekly = function(p, OpenID, cb) {
         EWTRACE("RequestUserWeekly Begin");
 
         var _openid = OpenID.openid;
@@ -403,7 +540,7 @@ module.exports = function (Watch) {
         }
 
         var bsSQL1 = "select DATE_FORMAT(subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7),'%Y-%m-%d') as monDay,DATE_FORMAT(subdate(curdate(),date_format(curdate(),'%w')),'%Y-%m-%d') as sunDay,DATE_FORMAT(subdate(subdate(curdate(),date_format(curdate(),'%w')-1),7),'%m／%d') as monDay1,DATE_FORMAT(subdate(curdate(),date_format(curdate(),'%w')),'%m／%d') as sunDay1";
-        DoSQL(bsSQL1).then(function (result) {
+        DoSQL(bsSQL1).then(function(result) {
 
             var ps = [];
             var bsSQL = "SELECT iccid,openid,sn,highpress,lowpress,hrcount,anb,pwv,absoluterisk,relativerisk,DATE_FORMAT(testtime,'%m月%d日 %H:%i') as testtime,  DATE_FORMAT(addtime,'%Y-%m-%d') as addtime,trackid,addtime2 FROM hh_userwatchdata where pwv <> -1 and openid = '" + _openid + "' and addtime between '" + result[0].monDay + "' and '" + result[0].sunDay + "' order by addtime desc";
@@ -420,7 +557,7 @@ module.exports = function (Watch) {
             ps.push(ExecuteSyncSQLResult(bsSQL, _avgData));
 
             var _sunDay = result[0].sunDay;
-            Promise.all(ps).then(function () {
+            Promise.all(ps).then(function() {
 
                 var _result = {};
 
@@ -437,7 +574,10 @@ module.exports = function (Watch) {
                 if (_avgData.Result.length == 0) {
                     _result.weekly = '您上周没有任何检测，所以无法提供健康周报';
                     _result.weeklyStatus = '0';
-                    cb(err, { status: 1, "result": "您上周没有任何检测，所以无法提供健康周报" });
+                    cb(err, {
+                        status: 1,
+                        "result": "您上周没有任何检测，所以无法提供健康周报"
+                    });
                     return;
                 } else {
                     if (_avgData.Result[0].high >= 180 || _avgData.Result[0].low >= 110) {
@@ -457,11 +597,11 @@ module.exports = function (Watch) {
 
                     var curDate = GetDateAdd(_sunDay, -1 * i, 'day').format('yyyy-MM-dd');
 
-                    var _filter = _.filter(_watchdata.Result, function (fitem) {
+                    var _filter = _.filter(_watchdata.Result, function(fitem) {
                         return fitem.addtime == curDate;
                     });
 
-                    _filter.forEach(function (item) {
+                    _filter.forEach(function(item) {
 
                         var dayData = {};
                         dayData.date = curDate;
@@ -485,7 +625,7 @@ module.exports = function (Watch) {
                     })
 
 
-                    var _find = _.find(_sportdata.Result, function (fitem) {
+                    var _find = _.find(_sportdata.Result, function(fitem) {
                         return fitem.addtime == curDate;
                     });
 
@@ -504,37 +644,59 @@ module.exports = function (Watch) {
                         _result.sleep.push(sleep);
                     }
                 }
-                cb(null, { status: 0, "result": _result });
+                cb(null, {
+                    status: 0,
+                    "result": _result
+                });
 
-            }, function (err) {
-                cb(err, { status: 1, "result": "" });
+            }, function(err) {
+                cb(err, {
+                    status: 1,
+                    "result": ""
+                });
             });
-        }, function (err) {
-            cb(err, { status: 1, "result": "" });
+        }, function(err) {
+            cb(err, {
+                status: 1,
+                "result": ""
+            });
         });
     }
 
 
     Watch.remoteMethod(
-        'RequestUserWeekly',
-        {
-            http: { verb: 'post' },
+        'RequestUserWeekly', {
+            http: {
+                verb: 'post'
+            },
             description: '查询用户检测周报',
-            accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followOpenid":""}' },
-            {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
-                    var req = ctx.req;
-                    return GetOpenIDFromToken(req.headers.token);
+            accepts: [{
+                    arg: 'p',
+                    http: {
+                        source: 'body'
+                    },
+                    type: 'object',
+                    description: '{"followOpenid":""}'
                 },
-                description: '{"OpenID":""}'
-            }
+                {
+                    arg: 'OpenID',
+                    type: 'object',
+                    http: function(ctx) {
+                        var req = ctx.req;
+                        return GetOpenIDFromToken(req.headers.token);
+                    },
+                    description: '{"OpenID":""}'
+                }
             ],
-            returns: { arg: 'UserInfo', type: 'object', root: true }
+            returns: {
+                arg: 'UserInfo',
+                type: 'object',
+                root: true
+            }
         }
     );
 
-    Watch.RequestUserMonitor = function (p, OpenID, cb) {
+    Watch.RequestUserMonitor = function(p, OpenID, cb) {
         EWTRACE("RequestUserMonitor Begin");
 
         var _openid = OpenID.openid;
@@ -554,7 +716,7 @@ module.exports = function (Watch) {
         var _sportdata = {};
         ps.push(ExecuteSyncSQLResult(bsSQL, _sportdata));
 
-        Promise.all(ps).then(function () {
+        Promise.all(ps).then(function() {
 
             var _result = {};
 
@@ -569,11 +731,11 @@ module.exports = function (Watch) {
 
                 var curDate = GetDateAdd((new Date()).format('yyyy-MM-dd'), -1 * i, 'day').format('yyyy-MM-dd');
 
-                var _filter = _.filter(_watchdata.Result, function (fitem) {
+                var _filter = _.filter(_watchdata.Result, function(fitem) {
                     return fitem.addtime == curDate;
                 });
 
-                _filter.forEach(function (item) {
+                _filter.forEach(function(item) {
 
                     var dayData = {};
                     dayData.date = curDate;
@@ -597,7 +759,7 @@ module.exports = function (Watch) {
                 })
 
 
-                var _find = _.find(_sportdata.Result, function (fitem) {
+                var _find = _.find(_sportdata.Result, function(fitem) {
                     return fitem.addtime == curDate;
                 });
 
@@ -616,35 +778,54 @@ module.exports = function (Watch) {
                     _result.sleep.push(sleep);
                 }
             }
-            cb(null, { status: 0, "result": _result });
+            cb(null, {
+                status: 0,
+                "result": _result
+            });
 
-        }, function (err) {
-            cb(err, { status: 1, "result": "" });
+        }, function(err) {
+            cb(err, {
+                status: 1,
+                "result": ""
+            });
         });
     }
 
 
     Watch.remoteMethod(
-        'RequestUserMonitor',
-        {
-            http: { verb: 'post' },
+        'RequestUserMonitor', {
+            http: {
+                verb: 'post'
+            },
             description: '查询用户检测数据',
-            accepts: [{ arg: 'p', http: { source: 'body' }, type: 'object', description: '{"followOpenid":""}' },
-            {
-                arg: 'OpenID', type: 'object',
-                http: function (ctx) {
-                    var req = ctx.req;
-                    return GetOpenIDFromToken(req.headers.token);
+            accepts: [{
+                    arg: 'p',
+                    http: {
+                        source: 'body'
+                    },
+                    type: 'object',
+                    description: '{"followOpenid":""}'
                 },
-                description: '{"OpenID":""}'
-            }
+                {
+                    arg: 'OpenID',
+                    type: 'object',
+                    http: function(ctx) {
+                        var req = ctx.req;
+                        return GetOpenIDFromToken(req.headers.token);
+                    },
+                    description: '{"OpenID":""}'
+                }
             ],
-            returns: { arg: 'UserInfo', type: 'object', root: true }
+            returns: {
+                arg: 'UserInfo',
+                type: 'object',
+                root: true
+            }
         }
     );
 
 
-    Watch.reqeustDemoToken = function (cb) {
+    Watch.reqeustDemoToken = function(cb) {
 
 
         var token = {
@@ -660,26 +841,37 @@ module.exports = function (Watch) {
             unionid: 'oBQ4y07nsDSuqVSCJJSwZXYGVrgc'
         };
 
-        cb(null, { status: 1, "result": GetTokenFromOpenID(token) });
+        cb(null, {
+            status: 1,
+            "result": GetTokenFromOpenID(token)
+        });
 
 
         EWTRACE("reqeustDemoToken End");
     }
 
     Watch.remoteMethod(
-        'reqeustDemoToken',
-        {
-            http: { verb: 'get' },
+        'reqeustDemoToken', {
+            http: {
+                verb: 'get'
+            },
             description: '获取测试token',
-            returns: { arg: 'p', type: 'object', root: true }
+            returns: {
+                arg: 'p',
+                type: 'object',
+                root: true
+            }
         }
     );
 
 
-    Watch.requestToken = function (token, cb) {
+    Watch.requestToken = function(token, cb) {
 
         if (_.isUndefined(token)) {
-            cb(err, { status: 0, "result": "" });
+            cb(err, {
+                status: 0,
+                "result": ""
+            });
             return;
         }
 
@@ -687,14 +879,23 @@ module.exports = function (Watch) {
         try {
             OpenID = GetOpenIDFromToken(token);
         } catch (err) {
-            cb(err, { status: 0, "result": "" });
+            cb(err, {
+                status: 0,
+                "result": ""
+            });
             return;
         }
 
-        GetTokenFromOpenID(OpenID).then(function (result) {
-            cb(null, { status: 1, "result": result });
-        }, function (err) {
-            cb(err, { status: 0, "result": "" });
+        GetTokenFromOpenID(OpenID).then(function(result) {
+            cb(null, {
+                status: 1,
+                "result": result
+            });
+        }, function(err) {
+            cb(err, {
+                status: 0,
+                "result": ""
+            });
         })
 
         EWTRACE("requestToken End");
@@ -702,19 +903,25 @@ module.exports = function (Watch) {
     }
 
     Watch.remoteMethod(
-        'requestToken',
-        {
-            http: { verb: 'get' },
+        'requestToken', {
+            http: {
+                verb: 'get'
+            },
             description: '获取测试token',
             accepts: {
-                arg: 'token', type: 'string',
-                http: function (ctx) {
+                arg: 'token',
+                type: 'string',
+                http: function(ctx) {
                     var req = ctx.req;
                     return req.query.token;
                 },
                 description: '{"token":""}'
             },
-            returns: { arg: 'p', type: 'object', root: true }
+            returns: {
+                arg: 'p',
+                type: 'object',
+                root: true
+            }
         }
     );
 
@@ -729,9 +936,11 @@ module.exports = function (Watch) {
     var cache = require('memory-cache');
     var sha1 = require('sha1');
 
-    var sign = function (url, callback) {
+    var sign = function(url, callback) {
 
-        require('dotenv').config({ path: './config/.env' });
+        require('dotenv').config({
+            path: './config/.env'
+        });
         winxinconfig.appid = process.env.WX_APP_ID;
         winxinconfig.secret = process.env.WX_APP_SECRET;
 
@@ -750,11 +959,11 @@ module.exports = function (Watch) {
             });
         } else {
 
-            Request_WxToken().then(function (respToken) {
-                request(winxinconfig.ticketUrl + '?access_token=' + respToken.body.access_token + '&type=jsapi', function (error, resp, json) {
+            Request_WxToken().then(function(respToken) {
+                request(winxinconfig.ticketUrl + '?access_token=' + respToken.body.access_token + '&type=jsapi', function(error, resp, json) {
                     if (!error && resp.statusCode == 200) {
                         var ticketMap = JSON.parse(json);
-                        cache.put('ticket', ticketMap.ticket, winxinconfig.cache_duration);  //加入缓存
+                        cache.put('ticket', ticketMap.ticket, winxinconfig.cache_duration); //加入缓存
                         console.log('jsapi_ticket=' + ticketMap.ticket + '&noncestr=' + noncestr + '&timestamp=' + timestamp + '&url=' + url);
                         callback({
                             noncestr: noncestr,
@@ -765,7 +974,7 @@ module.exports = function (Watch) {
                         });
                     }
                 })
-            }, function (err) {
+            }, function(err) {
                 EWTRACE(err.message);
             });
             //     }
@@ -775,36 +984,47 @@ module.exports = function (Watch) {
     }
 
 
-    Watch.GetTicket = function (GetTicket, cb) {
+    Watch.GetTicket = function(GetTicket, cb) {
         EWTRACE("GetTicket Begin");
 
-        var callback = function (result) {
+        var callback = function(result) {
             EWTRACEIFY(result);
-            cb(null, { status: 1, "result": result });
+            cb(null, {
+                status: 1,
+                "result": result
+            });
         }
         sign(GetTicket.url, callback);
     };
 
     Watch.remoteMethod(
-        'GetTicket',
-        {
-            http: { verb: 'post' },
+        'GetTicket', {
+            http: {
+                verb: 'post'
+            },
             description: '获得Ticket',
-            accepts: { arg: 'GetTicket', type: 'object', description: '{"url":""}' },
-            returns: { arg: 'RegInfo', type: 'object', root: true }
+            accepts: {
+                arg: 'GetTicket',
+                type: 'object',
+                description: '{"url":""}'
+            },
+            returns: {
+                arg: 'RegInfo',
+                type: 'object',
+                root: true
+            }
         }
     );
 
 
-    Watch.CheckQR = function (storeId, res, cb) {
+    Watch.CheckQR = function(storeId, res, cb) {
         EWTRACE("CheckQR Begin:" + storeId.vgdecoderesult);
 
         EWTRACE('send ok');
 
-        if ( storeId.vgdecoderesult == 'http://weixin.qq.com/q/02R1Wzh_lmd-k1Xk7VhpcS'){
+        if (storeId.vgdecoderesult == 'http://weixin.qq.com/q/02R1Wzh_lmd-k1Xk7VhpcS') {
             res.send("code=0000&&desc=ok");
-        }
-        else{
+        } else {
             res.send("code=0001&&desc=bad");
         }
         res.end();
@@ -812,25 +1032,35 @@ module.exports = function (Watch) {
     }
 
     Watch.remoteMethod(
-        'CheckQR',
-        {
-            http: { verb: 'post' },
+        'CheckQR', {
+            http: {
+                verb: 'post'
+            },
             description: '查询亲友信息',
-            accepts: [{ arg: 'storeId', http: { source: 'body' }, type: 'object', description: '', root: true },
-            {
-                arg: 'res', type: 'object',
-                http: function (ctx) {
-                    var res = ctx.res;
-                    return res;
+            accepts: [{
+                    arg: 'storeId',
+                    http: {
+                        source: 'body'
+                    },
+                    type: 'object',
+                    description: '',
+                    root: true
+                },
+                {
+                    arg: 'res',
+                    type: 'object',
+                    http: function(ctx) {
+                        var res = ctx.res;
+                        return res;
+                    }
                 }
-            }
             ],
-            returns: { arg: 'p', type: 'string', root: true }
+            returns: {
+                arg: 'p',
+                type: 'string',
+                root: true
+            }
         }
     );
 
 };
-
-
-
-
