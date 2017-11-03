@@ -28,6 +28,7 @@
     "node-uuid": "^1.4.8",
     "serve-favicon": "^2.0.1",
     "sha1": "^1.1.1",
+    "ssl-config": "^1.0.0",
     "strong-error-handler": "^1.0.1"
   },
   "devDependencies": {

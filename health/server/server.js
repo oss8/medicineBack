@@ -4,6 +4,10 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 var xmlparser = require('express-xml-bodyparser');
 
+var https = require('https');
+var http = require('http');
+var sslConfig = require('./ssl-config');
+
 var app = module.exports = loopback();
 var config = require('../config/config')
 app.start = function() {
@@ -54,13 +58,50 @@ app.DisableSystemMethod = function (_basemodel) {
 };
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
+
+
+app.start = function (httpOnly) {
+    // start the web server
+    if (httpOnly === undefined) {
+        httpOnly = process.env.HTTP;
+    }
+    var server = null;
+    if (!httpOnly) {
+        var options = {
+            key: sslConfig.privateKey,
+            cert: sslConfig.certificate,
+        };
+        server = https.createServer(options, app);
+    } else {
+        server = http.createServer(app);
+    }
+
+    var os = require('os');
+
+    console.log('This platform is ' + os.platform());
+    var _port = app.get('port');
+
+    // if (os.platform() == 'darwin') {
+    //     _port = 6800;
+    // }
+    server.listen(_port, function () {
+        //  server.listen(6800, function() {       
+        var baseUrl = (httpOnly ? 'http://' : 'https://') + app.get('host') + ':' + _port;
+        app.emit('started', baseUrl);
+        console.log('LoopBack server listening @ %s%s', baseUrl, '/explorer');
+    });
+
+    return server;
+};
+
+
 boot(app, __dirname, function(err) {
   if (err) throw err;
 
   // start the server if `$ node server.js`
   if (require.main === module)
    try{
-    app.start();
+    app.start(true);
    }
   catch(err){
     EWTRACEIFY(err);
