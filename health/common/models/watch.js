@@ -1017,12 +1017,19 @@ module.exports = function(Watch) {
     );
 
 
-    Watch.CheckQR = function(storeId, res, cb) {
-        EWTRACE("CheckQR Begin:" + storeId.vgdecoderesult);
+    Watch.CheckQR = function(userInfo, res, cb) {
+        EWTRACE("CheckQR Begin:" + userInfo.vgdecoderesult);
 
         EWTRACE('send ok');
 
-        if (storeId.vgdecoderesult == 'http://weixin.qq.com/q/02R1Wzh_lmd-k1Xk7VhpcS') {
+        var openList = [];
+        openList.push('https://u.wechat.com/ECQyBQ05Gt9zAJ6bEn42gzI');
+
+        var find = _.find(openList, function(fitem) {
+            return fitem == userInfo.vgdecoderesult;
+        })
+
+        if (!_.isUndefined(find)) {
             res.send("code=0000&&desc=ok");
         } else {
             res.send("code=0001&&desc=bad");
@@ -1038,7 +1045,7 @@ module.exports = function(Watch) {
             },
             description: '查询亲友信息',
             accepts: [{
-                    arg: 'storeId',
+                    arg: 'userInfo',
                     http: {
                         source: 'body'
                     },
