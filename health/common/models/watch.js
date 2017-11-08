@@ -1024,6 +1024,9 @@ module.exports = function(Watch) {
 
         var openList = [];
         openList.push('https://u.wechat.com/ECQyBQ05Gt9zAJ6bEn42gzI');
+        openList.push('https://u.wechat.com/EE-4qLrqzioUWCVyOuo3Ut0');
+        openList.push('https://u.wechat.com/EJNCZJLvGQZfpz8Gdvokm6k');
+        openList.push('https://u.wechat.com/EObHRybhBIqDOSH5pJc0FqU');
 
         var find = _.find(openList, function(fitem) {
             return fitem == userInfo.vgdecoderesult;
