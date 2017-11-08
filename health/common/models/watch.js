@@ -1020,8 +1020,6 @@ module.exports = function(Watch) {
     Watch.CheckQR = function(userInfo, res, cb) {
         EWTRACE("CheckQR Begin:" + userInfo.vgdecoderesult);
 
-        EWTRACE('send ok');
-
         var openList = [];
         openList.push('https://u.wechat.com/ECQyBQ05Gt9zAJ6bEn42gzI');
         openList.push('https://u.wechat.com/EE-4qLrqzioUWCVyOuo3Ut0');
@@ -1029,12 +1027,15 @@ module.exports = function(Watch) {
         openList.push('https://u.wechat.com/EObHRybhBIqDOSH5pJc0FqU');
 
         var find = _.find(openList, function(fitem) {
+            EWTRACE(fitem);
             return fitem == userInfo.vgdecoderesult;
         })
 
         if (!_.isUndefined(find)) {
+            EWTRACE('send ok');
             res.send("code=0000&&desc=ok");
         } else {
+            EWTRACE('send bad');
             res.send("code=0001&&desc=bad");
         }
         res.end();
