@@ -11,56 +11,123 @@ var sslConfig = require('./ssl-config');
 var app = module.exports = loopback();
 var config = require('../config/config')
 app.start = function() {
-  // start the web server
-  return app.listen(function() {
-    app.emit('started');
-    var baseUrl = app.get('url').replace(/\/$/, '');
-    console.log('Web server listening at: %s', baseUrl);
-    if (app.get('loopback-component-explorer')) {
-      var explorerPath = app.get('loopback-component-explorer').mountPath;
-      console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
-    }
-  });
+    // start the web server
+    return app.listen(function() {
+        app.emit('started');
+        var baseUrl = app.get('url').replace(/\/$/, '');
+        console.log('Web server listening at: %s', baseUrl);
+        if (app.get('loopback-component-explorer')) {
+            var explorerPath = app.get('loopback-component-explorer').mountPath;
+            console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
+        }
+    });
 };
 
 app.use(xmlparser());
 
 // app.use(utils.sign(config));
-app.DisableSystemMethod = function (_basemodel) {
-  _basemodel.disableRemoteMethodByName("create", true);
-  _basemodel.disableRemoteMethodByName("upsert", true);
-  _basemodel.disableRemoteMethodByName("updateAll", true);
-  _basemodel.disableRemoteMethodByName("updateAttributes", false);
+app.DisableSystemMethod = function(_basemodel) {
+    _basemodel.disableRemoteMethodByName("create", true);
+    _basemodel.disableRemoteMethodByName("upsert", true);
+    _basemodel.disableRemoteMethodByName("updateAll", true);
+    _basemodel.disableRemoteMethodByName("updateAttributes", false);
 
-  _basemodel.disableRemoteMethodByName("find", true);
-  _basemodel.disableRemoteMethodByName("findById", true);
-  _basemodel.disableRemoteMethodByName("findOne", true);
+    _basemodel.disableRemoteMethodByName("find", true);
+    _basemodel.disableRemoteMethodByName("findById", true);
+    _basemodel.disableRemoteMethodByName("findOne", true);
 
-  _basemodel.disableRemoteMethodByName("replaceById", true);
-  _basemodel.disableRemoteMethodByName("createChangeStream", true);
-  _basemodel.disableRemoteMethodByName("upsertWithWhere", true);
-  _basemodel.disableRemoteMethodByName("replaceOrCreate", true);
-  _basemodel.disableRemoteMethodByName("deleteById", true);
-  _basemodel.disableRemoteMethodByName("getId", true);
+    _basemodel.disableRemoteMethodByName("replaceById", true);
+    _basemodel.disableRemoteMethodByName("createChangeStream", true);
+    _basemodel.disableRemoteMethodByName("upsertWithWhere", true);
+    _basemodel.disableRemoteMethodByName("replaceOrCreate", true);
+    _basemodel.disableRemoteMethodByName("deleteById", true);
+    _basemodel.disableRemoteMethodByName("getId", true);
 
-  _basemodel.disableRemoteMethodByName("confirm", true);
-  _basemodel.disableRemoteMethodByName("count", true);
-  _basemodel.disableRemoteMethodByName("exists", true);
-  _basemodel.disableRemoteMethodByName("resetPassword", true);
+    _basemodel.disableRemoteMethodByName("confirm", true);
+    _basemodel.disableRemoteMethodByName("count", true);
+    _basemodel.disableRemoteMethodByName("exists", true);
+    _basemodel.disableRemoteMethodByName("resetPassword", true);
 
-  _basemodel.disableRemoteMethodByName('__count__accessTokens', false);
-  _basemodel.disableRemoteMethodByName('__create__accessTokens', false);
-  _basemodel.disableRemoteMethodByName('__delete__accessTokens', false);
-  _basemodel.disableRemoteMethodByName('__destroyById__accessTokens', false);
-  _basemodel.disableRemoteMethodByName('__findById__accessTokens', false);
-  _basemodel.disableRemoteMethodByName('__get__accessTokens', false);
-  _basemodel.disableRemoteMethodByName('__updateById__accessTokens', false);
+    _basemodel.disableRemoteMethodByName('__count__accessTokens', false);
+    _basemodel.disableRemoteMethodByName('__create__accessTokens', false);
+    _basemodel.disableRemoteMethodByName('__delete__accessTokens', false);
+    _basemodel.disableRemoteMethodByName('__destroyById__accessTokens', false);
+    _basemodel.disableRemoteMethodByName('__findById__accessTokens', false);
+    _basemodel.disableRemoteMethodByName('__get__accessTokens', false);
+    _basemodel.disableRemoteMethodByName('__updateById__accessTokens', false);
 };
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
 
+var net = require('net');
+var HOST = '192.168.6.165';
+var PORT = 6801;
 
-app.start = function (httpOnly) {
+function Bytes2Str(arr) {
+    var str = "";
+    for (var i = 0; i < arr.length; i++) {
+        var tmp = arr[i].toString(16);
+        if (tmp.length == 1) {
+            tmp = "0" + tmp;
+        }
+        str += tmp;
+    }
+
+    str = str.toUpperCase();
+    var _RecvList = [];
+    for (var i = 0; i < str.length; i += 2) {
+        _RecvList.push(str.substr(i, 2));
+    }
+
+    var CheckList = [];
+    for (var i = 0; i < _RecvList.length; i++) {
+        var _tmp = _RecvList[i];
+        if (_tmp != "F0") {
+            CheckList.push(_tmp);
+        }
+        else {
+            CheckList.push("F" + _RecvList[i + 1].substr(1, 1));
+            i++;
+        }
+    }
+
+    return CheckList.join("");
+}
+
+
+net.createServer(function(sock) {
+
+
+    // 我们获得一个连接 - 该连接自动关联一个socket对象
+    console.log('CONNECTED: ' +
+        sock.remoteAddress + ':' + sock.remotePort);
+    app.set('publicSocket', sock);
+
+
+    // 为这个socket实例添加一个"data"事件处理函数
+    sock.on('data', function(data) {
+        console.log('DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
+
+        var RecvData = Bytes2Str(data);
+        //var _l = RecvData.substr(10, 4);
+        var _t = Buffer.from(RecvData, 'hex').toString();
+        console.log(_t);
+    });
+
+    // 为这个socket实例添加一个"close"事件处理函数
+    sock.on('close', function(data) {
+        console.log(new Date().toTimeString() + ':CLOSED: ' +
+            sock.remoteAddress + ' ' + sock.remotePort);
+    });
+
+    sock.on('error', function(err) {
+        console.log(new Date().toTimeString() + ':ERROR: ' + err.message);
+    });
+
+}).listen(PORT);
+
+
+app.start = function(httpOnly) {
     // start the web server
     if (httpOnly === undefined) {
         httpOnly = process.env.HTTP;
@@ -84,7 +151,7 @@ app.start = function (httpOnly) {
     // if (os.platform() == 'darwin') {
     //     _port = 6800;
     // }
-    server.listen(_port, function () {
+    server.listen(_port, function() {
         //  server.listen(6800, function() {       
         var baseUrl = (httpOnly ? 'http://' : 'https://') + app.get('host') + ':' + _port;
         app.emit('started', baseUrl);
@@ -96,14 +163,14 @@ app.start = function (httpOnly) {
 
 
 boot(app, __dirname, function(err) {
-  if (err) throw err;
+    if (err) throw err;
 
-  // start the server if `$ node server.js`
-  if (require.main === module)
-   try{
-    app.start(true);
-   }
-  catch(err){
-    EWTRACEIFY(err);
-  }
+    // start the server if `$ node server.js`
+    if (require.main === module)
+        try {
+            app.start(true);
+        }
+    catch (err) {
+        EWTRACEIFY(err);
+    }
 });
