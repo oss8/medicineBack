@@ -1025,6 +1025,7 @@ module.exports = function(Watch) {
         openList.push('https://u.wechat.com/EE-4qLrqzioUWCVyOuo3Ut0');
         openList.push('https://u.wechat.com/EJNCZJLvGQZfpz8Gdvokm6k');
         openList.push('https://u.wechat.com/ENQ1N6rfRuSfMundNXqBmRg');
+        openList.push('123456');
 
         var find = _.find(openList, function(fitem) {
             EWTRACE(fitem);
