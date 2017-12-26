@@ -1024,7 +1024,7 @@ module.exports = function(Watch) {
         EWTRACE("CheckQR Begin:" + userInfo.vgdecoderesult);
 
         console.log(userInfo);
-        
+
         var rf = require("fs");
         var secret = rf.readFileSync("jwt_rsa_public_key.pem", "utf-8");
         var decoded = null;
@@ -1035,28 +1035,19 @@ module.exports = function(Watch) {
             throw (err);
         }
 
+        var bsSQL1 = "select * from ac_users where openid = '" + decode.openid + "'";
+        DoSQL(bsSQL1).then(function(result) {
+            if (result.length == 0) {
+                EWTRACE('send bad');
+                res.send("code=0001&&desc=bad");
+            } else {
+                EWTRACE('send ok');
+                res.send("code=0000&&desc=ok");
 
-        var openList = [];
-        openList.push('https://u.wechat.com/ECQyBQ05Gt9zAJ6bEn42gzI');
-        openList.push('https://u.wechat.com/EE-4qLrqzioUWCVyOuo3Ut0');
-        openList.push('https://u.wechat.com/EJNCZJLvGQZfpz8Gdvokm6k');
-        openList.push('https://u.wechat.com/ENQ1N6rfRuSfMundNXqBmRg');
-        openList.push('oFVZ-1F2N2OzhPynhvq5_WwW78gY');
-
-        var find = _.find(openList, function(fitem) {
-            EWTRACE(fitem);
-            return fitem == decoded.openid;
+            }
+            res.end();
+            EWTRACE("CheckQR End");
         })
-
-        if (!_.isUndefined(find)) {
-            EWTRACE('send ok');
-            res.send("code=0000&&desc=ok");
-        } else {
-            EWTRACE('send bad');
-            res.send("code=0001&&desc=bad");
-        }
-        res.end();
-        EWTRACE("CheckQR End");
     }
 
     Watch.remoteMethod(
