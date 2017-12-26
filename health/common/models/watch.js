@@ -8,7 +8,10 @@ module.exports = function(Watch) {
     var needle = require('needle');
     var config = require('../../config/config')
 
-
+    var jwtdecode = require('jwt-simple');
+    var rf = require("fs");
+    var jwt = require('jsonwebtoken');
+    
     Watch.CreateWXMenu = function(cb) {
         EWTRACE("CreateWXMenu Begin");
 
@@ -1019,6 +1022,16 @@ module.exports = function(Watch) {
 
     Watch.CheckQR = function(userInfo, res, cb) {
         EWTRACE("CheckQR Begin:" + userInfo.vgdecoderesult);
+        var rf = require("fs");
+        var secret = rf.readFileSync("jwt_rsa_public_key.pem", "utf-8");
+        var decoded = null;
+        try {
+            decoded = jwtdecode.decode(userInfo.vgdecoderesult, secret);
+            console.log(decoded);
+        } catch (err) {
+            throw (err);
+        }
+
 
         var openList = [];
         openList.push('https://u.wechat.com/ECQyBQ05Gt9zAJ6bEn42gzI');
