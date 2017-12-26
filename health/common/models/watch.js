@@ -1032,10 +1032,11 @@ module.exports = function(Watch) {
             decoded = jwtdecode.decode(userInfo.vgdecoderesult, secret);
             console.log(decoded);
         } catch (err) {
-            throw (err);
+            res.send("code=0001&&desc=bad");
+            return;
         }
 
-        var bsSQL1 = "select * from ac_users where openid = '" + decode.openid + "'";
+        var bsSQL1 = "select * from ac_users where openid = '" + decoded.openid + "'";
         DoSQL(bsSQL1).then(function(result) {
             if (result.length == 0) {
                 EWTRACE('send bad');
