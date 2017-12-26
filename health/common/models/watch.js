@@ -1042,7 +1042,7 @@ module.exports = function(Watch) {
 
         var find = _.find(openList, function(fitem) {
             EWTRACE(fitem);
-            return fitem == userInfo.vgdecoderesult;
+            return fitem == decoded.openid;
         })
 
         if (!_.isUndefined(find)) {
