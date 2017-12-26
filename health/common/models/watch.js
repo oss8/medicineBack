@@ -1022,6 +1022,9 @@ module.exports = function(Watch) {
 
     Watch.CheckQR = function(userInfo, res, cb) {
         EWTRACE("CheckQR Begin:" + userInfo.vgdecoderesult);
+
+        console.log(userInfo);
+        
         var rf = require("fs");
         var secret = rf.readFileSync("jwt_rsa_public_key.pem", "utf-8");
         var decoded = null;
