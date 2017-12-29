@@ -1036,7 +1036,7 @@ module.exports = function(Watch) {
             return;
         }
 
-        var bsSQL1 = "select * from ac_users where openid = '" + decoded.openid + "' and deviceid = '"+userInfo.devicenumber+"'";
+        var bsSQL1 = "select * from ac_users where openid = '" + decoded.openid + "' and deviceid like '%,"+userInfo.devicenumber+",%'";
         DoSQL(bsSQL1).then(function(result) {
             if (result.length == 0) {
                 EWTRACE('send bad');
