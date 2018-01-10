@@ -1,63 +1,63 @@
 {
-    "wechat": {
-        "appId": "wx397644d24ec87fd1",
-        "appSecret": "57e9a3e879a08b817e1163a20e767ca3",
-        "token": "mankang",
-        "prefix": "https://api.weixin.qq.com/cgi-bin/",
-        "mpPrefix": "https://mp.weixin.qq.com/cgi-bin/"
-    },
-    "menu": {
-        "button": [
-            {
-                "name": "我的",
-                "sub_button": [
-                    {
-                        "type": "view",
-                        "name": "个人信息",
-                        "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fmy-info"
-                    },
-                    {
-                        "type": "click",
-                        "name": "初学者教学",
-                        "key": "firstUser"
-                    },
-                    {
-                        "type": "view",
-                        "name": "联系客服",
-                        "url": "https://mp.weixin.qq.com/s/GFETJuKcLWNPllOGaqB6jA"
-                    },
-                    {
-                        "type": "click",
-                        "name": "认识PWV",
-                        "key": "PWV"
-                    }
-                ]
-            },
-            {
-                "name": "健康档案",
-                "sub_button": [
-                    {
-                        "type": "view",
-                        "name": "健康数据",
-                        "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fhistory-data"
-                    },
-                    {
-                        "type": "view",
-                        "name": "每周报告",
-                        "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fhealth-report"
-                    }
-                ]
-            },
-            {
-                "name": "门禁",
-                "sub_button": [
-                    {
-                        "type": "view",
-                        "name": "门禁二维码",
-                        "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx397644d24ec87fd1&redirect_uri=http%3A%2F%2Fw.man-kang.com%2Fauth%2Fwechat%2Fcallback%3Fbu%3Dhttp%253A%252F%252Fm.man-kang.com%252F%2523%252Flift&response_type=code&scope=snsapi_userinfo&state=init&connect_redirect=1#wechat_redirect"
-                    }
-                ]
-            }
+  "wechat": {
+    "appId": "wx397644d24ec87fd1",
+    "appSecret": "57e9a3e879a08b817e1163a20e767ca3",
+    "token": "mankang",
+    "prefix": "https://api.weixin.qq.com/cgi-bin/",
+    "mpPrefix": "https://mp.weixin.qq.com/cgi-bin/"
+  },
+  "menu": {
+    "button": [
+      {
+        "name": "我的",
+        "sub_button": [
+          {
+            "type": "view",
+            "name": "个人信息",
+            "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fmy-info"
+          },
+          {
+            "type": "click",
+            "name": "初学者教学",
+            "key": "firstUser"
+          },
+          {
+            "type": "view",
+            "name": "联系客服",
+            "url": "https://mp.weixin.qq.com/s/GFETJuKcLWNPllOGaqB6jA"
+          },
+          {
+            "type": "click",
+            "name": "认识PWV",
+            "key": "PWV"
+          }
         ]
-    }
+      },
+      {
+        "name": "健康档案",
+        "sub_button": [
+          {
+            "type": "view",
+            "name": "健康数据",
+            "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fhistory-data"
+          },
+          {
+            "type": "view",
+            "name": "每周报告",
+            "url": "http://w.man-kang.com/auth/wechat?bu=http%3a%2f%2fm.man-kang.com%2f%23%2f%3fpath%3d%2fhealth-report"
+          }
+        ]
+      },
+      {
+        "name": "门禁",
+        "sub_button": [
+          {
+            "type": "view",
+            "name": "门禁二维码",
+            "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx397644d24ec87fd1&redirect_uri=http%3A%2F%2Fw.man-kang.com%2Fauth%2Fwechat%2Fcallback%3Fbu%3Dhttp%253A%252F%252Fm.man-kang.com%252F%2523%252Flift&response_type=code&scope=snsapi_userinfo&state=init&connect_redirect=1#wechat_redirect"
+          }
+        ]
+      }
+    ]
+  }
 }

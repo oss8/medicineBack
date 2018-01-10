@@ -18,6 +18,16 @@
       "idleTimeoutMillis": 300
     }
   },
+  "commondb": {
+    "host": "rm-wz9q9pyn85tbd3785o.mysql.rds.aliyuncs.com",
+    "port": "3306",
+    "database": "clothing-test",
+    "password": "manKang@0307",
+    "name": "commondb",
+    "connector": "mysql",
+    "user": "mankang",
+    "multipleStatements": true
+  }, 
   "luosimaoRest": {
     "name": "luosimaoRest",
     "connector": "rest",
