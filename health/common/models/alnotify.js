@@ -2,6 +2,8 @@
 
 module.exports = function(Alnotify) {
     Alnotify.alnotify = function (a, cb) {
+        console.log("Alnotify.alnotify");
+
         console.log(a);
         var oo = {};
         oo.ordersId = a.out_trade_no;
