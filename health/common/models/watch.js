@@ -1,3 +1,7 @@
+import {
+    decode
+} from 'punycode';
+
 'use strict';
 
 module.exports = function(Watch) {
@@ -1049,39 +1053,45 @@ module.exports = function(Watch) {
 
             }
             res.end();
-            require('dotenv').config({ path: './config/.env' });           var _color = "#FF004F";
-            Request_WxToken().then(function(resp) {
-                EWTRACE(resp.body.access_token);
-                var _accesstoken = resp.body.access_token;
-                var WXData = {
-                    "touser": 'oFVZ-1GTo59nEW1okhO89KTbdUOQ',
-                    "template_id": process.env.WeChat_TakeCheckID,
-                    "data": {
-                        "first": {
-                            "value": "公司门禁扫码推送",
-                        },
-                        "keyword1": {
-                            "value": '设备号：' + userInfo.devicenumber
-                        },
-                        "keyword2": {
-                            "value": '返回结果：' + _start,
-                            color: _color
-                        },
-                        "keyword3": {
-                            "value": "曼康云"
-                        },
-                        "keyword4": {
-                            "value": (new Date()).format('yyyy-MM-dd hh:mm:ss')
-                        },
-                        "remark": {
-                            "value": ""
+
+            if (decode.openid == 'oFVZ-1GTo59nEW1okhO89KTbdUOQ') {
+                require('dotenv').config({
+                    path: './config/.env'
+                });
+                var _color = "#FF004F";
+                Request_WxToken().then(function(resp) {
+                    EWTRACE(resp.body.access_token);
+                    var _accesstoken = resp.body.access_token;
+                    var WXData = {
+                        "touser": 'oFVZ-1GTo59nEW1okhO89KTbdUOQ',
+                        "template_id": process.env.WeChat_TakeCheckID,
+                        "data": {
+                            "first": {
+                                "value": "公司门禁扫码推送",
+                            },
+                            "keyword1": {
+                                "value": '设备号：' + userInfo.devicenumber
+                            },
+                            "keyword2": {
+                                "value": '返回结果：' + _start,
+                                color: _color
+                            },
+                            "keyword3": {
+                                "value": "曼康云"
+                            },
+                            "keyword4": {
+                                "value": (new Date()).format('yyyy-MM-dd hh:mm:ss')
+                            },
+                            "remark": {
+                                "value": ""
+                            }
                         }
                     }
-                }
-                self_sendWX(_accesstoken, WXData);
-            }, function(err) {
-                console.log(err);
-            });
+                    self_sendWX(_accesstoken, WXData);
+                }, function(err) {
+                    console.log(err);
+                });
+            }
             EWTRACE("CheckQR End");
         })
     }
