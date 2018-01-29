@@ -1051,7 +1051,7 @@ module.exports = function(Watch) {
             }
             res.end();
 
-            if (decode.openid == 'oFVZ-1GTo59nEW1okhO89KTbdUOQ') {
+            if (decoded.openid == 'oFVZ-1GTo59nEW1okhO89KTbdUOQ') {
                 require('dotenv').config({
                     path: './config/.env'
                 });
