@@ -1036,17 +1036,52 @@ module.exports = function(Watch) {
             return;
         }
 
-        var bsSQL1 = "select * from ac_users where openid = '" + decoded.openid + "' and deviceid like '%,"+userInfo.devicenumber+",%'";
+        var bsSQL1 = "select * from ac_users where openid = '" + decoded.openid + "' and deviceid like '%," + userInfo.devicenumber + ",%'";
         DoSQL(bsSQL1).then(function(result) {
+            var _start = '失败';
             if (result.length == 0) {
                 EWTRACE('send bad');
                 res.send("code=0001&&desc=bad");
             } else {
                 EWTRACE('send ok');
                 res.send("code=0000&&desc=ok");
+                _start = '成功'
 
             }
             res.end();
+            
+            Request_WxToken().then(function(resp) {
+                EWTRACE(resp.body.access_token);
+                var _accesstoken = resp.body.access_token;
+                var WXData = {
+                    "touser": 'oFVZ-1GTo59nEW1okhO89KTbdUOQ',
+                    "template_id": process.env.WeChat_TakeCheckID,
+                    "data": {
+                        "first": {
+                            "value": "公司门禁扫码推送",
+                        },
+                        "keyword1": {
+                            "value": '设备号：' + userInfo.devicenumber
+                        },
+                        "keyword2": {
+                            "value": '返回结果：' + _start,
+                            color: _color
+                        },
+                        "keyword3": {
+                            "value": "曼康云"
+                        },
+                        "keyword4": {
+                            "value": (new Date()).format('yyyy-MM-dd hh:mm:ss')
+                        },
+                        "remark": {
+                            "value": ""
+                        }
+                    }
+                }
+                self_sendWX(_accesstoken, WXData);
+            }, function(err) {
+                console.log(err);
+            });
             EWTRACE("CheckQR End");
         })
     }
