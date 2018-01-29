@@ -1049,7 +1049,7 @@ module.exports = function(Watch) {
 
             }
             res.end();
-            require('dotenv').config({ path: './config/.env' });            
+            require('dotenv').config({ path: './config/.env' });           var _color = "#FF004F";
             Request_WxToken().then(function(resp) {
                 EWTRACE(resp.body.access_token);
                 var _accesstoken = resp.body.access_token;
