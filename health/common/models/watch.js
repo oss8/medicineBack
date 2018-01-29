@@ -1,6 +1,3 @@
-import {
-    decode
-} from 'punycode';
 
 'use strict';
 
