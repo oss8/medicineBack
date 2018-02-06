@@ -7,7 +7,7 @@ var xmlparser = require('express-xml-bodyparser');
 var https = require('https');
 var http = require('http');
 var sslConfig = require('./ssl-config');
-
+var _ = require('underscore');
 var app = module.exports = loopback();
 var config = require('../config/config')
 app.start = function() {
@@ -63,6 +63,26 @@ var net = require('net');
 var HOST = '192.168.6.165';
 var PORT = 6801;
 
+
+
+function Str2Bytes(str) {
+    var pos = 0;
+    var len = str.length;
+    if (len % 2 != 0) {
+        return null;
+    }
+    len /= 2;
+    var hexA = new Array();
+    for (var i = 0; i < len; i++) {
+        var s = str.substr(pos, 2);
+        var v = parseInt(s, 16);
+        hexA.push(v);
+        pos += 2;
+    }
+    return hexA;
+}
+
+
 function Bytes2Str(arr) {
     var str = "";
     for (var i = 0; i < arr.length; i++) {
@@ -96,7 +116,15 @@ function Bytes2Str(arr) {
 
 var socketList = [];
 
+function contains(sock, list, obj){
 
+    var iIndex = list.length
+    while( iIndex-- ){
+        if ( list[iIndex].remoteAddress == sock.remoteAddress && list[iIndex].remotePort == sock.remotePort){
+            return iIndex;
+        }
+    }
+}
 net.createServer(function(sock) {
 
 
@@ -114,18 +142,24 @@ net.createServer(function(sock) {
 
     // 为这个socket实例添加一个"data"事件处理函数
     sock.on('data', function(data) {
-        console.log('DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
+        console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
 
         var RecvData = Bytes2Str(data);
-        //var _l = RecvData.substr(10, 4);
-        var _t = Buffer.from(RecvData, 'hex').toString();
-        sock.write(RecvData);
+        var _out = Str2Bytes(RecvData);
+        sock.write(data);
     });
 
     // 为这个socket实例添加一个"close"事件处理函数
     sock.on('close', function(data) {
         console.log(new Date().toTimeString() + ':CLOSED: ' +
             sock.remoteAddress + ' ' + sock.remotePort);
+        var find = {};
+        find.remoteAddress = sock.remoteAddress;
+        find.remotePort = sock.remotePort;
+
+        var iIndex = contains(sock, socketList, find);
+
+        socketList.splice(iIndex, 1);
     });
 
     sock.on('error', function(err) {
