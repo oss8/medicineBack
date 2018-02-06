@@ -118,6 +118,7 @@ module.exports = function(Watch) {
                         var _out = {};
                         _out.media_id = item.media_id;
                         _out.title = item.content.news_item[0].title;
+                        _out.url = item.content.news_item[0].url;
                         _result.push(_out);
                     })
 
