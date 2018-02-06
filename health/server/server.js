@@ -145,8 +145,8 @@ net.createServer(function(sock) {
         console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
 
         var RecvData = Bytes2Str(data);
-        var _out = Str2Bytes(RecvData);
-        sock.write(data);
+        var _out = new Buffer(Str2Bytes(RecvData));
+        sock.write(_out);
     });
 
     // 为这个socket实例添加一个"close"事件处理函数
@@ -215,5 +215,5 @@ boot(app, __dirname, function(err) {
         }
     catch (err) {
         EWTRACEIFY(err);
-    }
+    }Str2Bytes
 });
