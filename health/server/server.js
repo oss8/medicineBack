@@ -94,6 +94,8 @@ function Bytes2Str(arr) {
     return CheckList.join("");
 }
 
+var socketList = [];
+
 
 net.createServer(function(sock) {
 
@@ -103,6 +105,12 @@ net.createServer(function(sock) {
         sock.remoteAddress + ':' + sock.remotePort);
     app.set('publicSocket', sock);
 
+    var socketClient = {};
+    socketClient.remoteAddress = sock.remoteAddress;
+    socketClient.remotePort = sock.remotePort;
+    socketClient.userSocket = sock;
+
+    socketList.push(socketClient);
 
     // 为这个socket实例添加一个"data"事件处理函数
     sock.on('data', function(data) {
@@ -111,7 +119,7 @@ net.createServer(function(sock) {
         var RecvData = Bytes2Str(data);
         //var _l = RecvData.substr(10, 4);
         var _t = Buffer.from(RecvData, 'hex').toString();
-        console.log(_t);
+        sock.write(RecvData);
     });
 
     // 为这个socket实例添加一个"close"事件处理函数
@@ -125,6 +133,7 @@ net.createServer(function(sock) {
     });
 
 }).listen(PORT);
+
 
 
 app.start = function(httpOnly) {
