@@ -168,6 +168,7 @@ net.createServer(function(sock) {
     socketClient.userSocket = sock;
 
     socketList.push(socketClient);
+    console.log('add socket client connected:' + sock.remoteAddress + ': ' + sock.remotePort);
 
     // 为这个socket实例添加一个"data"事件处理函数
     sock.on('data', function(data) {
@@ -179,8 +180,6 @@ net.createServer(function(sock) {
         if ( RecvData.indexOf('8A') != 0 && RecvData.indexOf('80') != 0){
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
-
-            
 
             var find = _.find(socketList, function(item){
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
