@@ -172,7 +172,7 @@ net.createServer(function(sock) {
     // 为这个socket实例添加一个"data"事件处理函数
     sock.on('data', function(data) {
         var socketList = app.get('m_socketList');
-        console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
+        //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
 
         var RecvData = Bytes2Str(data);
 
@@ -187,7 +187,7 @@ net.createServer(function(sock) {
             })
             if ( !_.isUndefined(find)){
                 find.DeviceID = Bytes2Str10(data);
-                console.log('add new deviceId:' + find.DeviceID);
+                console.log('refresh deviceId:' + find.DeviceID + 'IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
             }
         }
         else{

@@ -1157,6 +1157,7 @@ module.exports = function(Watch) {
             return item.DeviceID == GetTicket.deviceId;
         })
         if (!_.isUndefined(find)) {
+            console.log('Send Data:' + GetTicket.deviceId + ": " + GetTicket.Data);
             find.userSocket.write(new Buffer(Str2Bytes(GetTicket.Data)));
             cb(null, {
                 status: 1,
