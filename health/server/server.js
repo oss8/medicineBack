@@ -168,7 +168,7 @@ net.createServer(function(sock) {
         var _out = new Buffer(Str2Bytes(RecvData));
         sock.write(_out);
 
-        var _buffer = new Buffer('8A0001119B');
+        var _buffer = new Buffer('8A0101119B');
         sock.write(_buffer);
     });
 
