@@ -184,8 +184,8 @@ net.createServer(function(sock) {
         sock.write(_out);
 
         //var _buffer = new Buffer(Str2Bytes('8A0001119A'));
-        var _buffer = new Buffer(Str2Bytes('8A0101119B'));
-        sock.write(_buffer);
+        // var _buffer = new Buffer(Str2Bytes('8A0101119B'));
+        // sock.write(_buffer);
     });
 
     // 为这个socket实例添加一个"close"事件处理函数
