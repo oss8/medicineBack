@@ -125,8 +125,28 @@ function contains(sock, list, obj){
         }
     }
 }
+
+function convert2Hex(){
+    var result = [];
+    result.push('8A00');
+    result.push('0111');
+
+    var _check = 0;
+    result.forEach(function(item) {
+        _check += parseInt(item, 16);
+    })
+    var _Orcheck = 65535 - _check % 65536;
+
+    // 拼装成完整字符串
+    var _outstring = _Orcheck.toString(16).toUpperCase() + result.join("");
+
+    var _outstring = '8A0001119A';
+}
+
+
 net.createServer(function(sock) {
 
+    convert2Hex()
 
     // 我们获得一个连接 - 该连接自动关联一个socket对象
     console.log('CONNECTED: ' +
@@ -147,6 +167,9 @@ net.createServer(function(sock) {
         var RecvData = Bytes2Str(data);
         var _out = new Buffer(Str2Bytes(RecvData));
         sock.write(_out);
+
+        var _buffer = new Buffer('8A0001119A');
+        sock.write(_buffer);
     });
 
     // 为这个socket实例添加一个"close"事件处理函数
