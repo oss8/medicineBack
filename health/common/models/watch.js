@@ -1,4 +1,3 @@
-
 'use strict';
 
 module.exports = function(Watch) {
@@ -1044,10 +1043,10 @@ module.exports = function(Watch) {
             var _start = '失败';
             if (result.length == 0) {
 
-                if ( userInfo.devicenumber == '17057970'){
+                if (userInfo.devicenumber == '17057970') {
                     EWTRACE('send ok');
                     res.send("code=0000&&desc=ok");
-                }else{
+                } else {
                     EWTRACE('send bad');
                     res.send("code=0001&&desc=bad");
                 }
@@ -1128,6 +1127,64 @@ module.exports = function(Watch) {
             returns: {
                 arg: 'p',
                 type: 'string',
+                root: true
+            }
+        }
+    );
+    function Str2Bytes(str) {
+        var pos = 0;
+        var len = str.length;
+        if (len % 2 != 0) {
+            return null;
+        }
+        len /= 2;
+        var hexA = new Array();
+        for (var i = 0; i < len; i++) {
+            var s = str.substr(pos, 2);
+            var v = parseInt(s, 16);
+            hexA.push(v);
+            pos += 2;
+        }
+        return hexA;
+    }
+
+    Watch.openDoor = function(GetTicket, cb) {
+        EWTRACE("GetTicket Begin");
+
+        var socketList = app.get('m_socketList');
+
+        var find = _.find(socketList, function(item) {
+            return item.DeviceID == GetTicket.deviceId;
+        })
+        if (!_.isUndefined(find)) {
+            find.userSocket.write(new Buffer(Str2Bytes(GetTicket.Data)));
+            cb(null, {
+                status: 1,
+                "result": ""
+            });
+        }else{
+            cb(null, {
+                status: 0,
+                "result": "device not find!"
+            });
+        }
+
+    };
+
+    Watch.remoteMethod(
+        'openDoor', {
+            http: {
+                verb: 'post'
+            },
+            description: '获得Ticket',
+            accepts: {
+                arg: 'GetTicket',
+                type: 'object',
+                description: '{"deviceId":"12345678","Data":"8A0101119B"}'
+            },
+            returns: {
+                arg: 'RegInfo',
+                type: 'object',
                 root: true
             }
         }

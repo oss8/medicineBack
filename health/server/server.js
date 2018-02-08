@@ -82,6 +82,14 @@ function Str2Bytes(str) {
     return hexA;
 }
 
+function Bytes2Str10(arr) {
+    var str = "";
+    for (var i = 0; i < arr.length; i++) {
+        var tmp = String.fromCharCode(arr[i]);
+        str += tmp;
+    }
+    return str;
+}
 
 function Bytes2Str(arr) {
     var str = "";
@@ -115,6 +123,8 @@ function Bytes2Str(arr) {
 }
 
 var socketList = [];
+app.set('m_socketList', socketList);
+
 
 function contains(sock, list, obj){
 
@@ -126,22 +136,6 @@ function contains(sock, list, obj){
     }
 }
 
-function convert2Hex(){
-    var result = [];
-    result.push('8A00');
-    result.push('0111');
-
-    var _check = 0;
-    result.forEach(function(item) {
-        _check += parseInt(item, 16);
-    })
-    var _Orcheck = 65535 - _check % 65536;
-
-    // 拼装成完整字符串
-    var _outstring = _Orcheck.toString(16).toUpperCase() + result.join("");
-
-    var _outstring = '8A0001119A';
-}
 function Str2Bytes(str) {
     var pos = 0;
     var len = str.length;
@@ -161,7 +155,7 @@ function Str2Bytes(str) {
 
 net.createServer(function(sock) {
 
-    convert2Hex()
+    var socketList = app.get('m_socketList');
 
     // 我们获得一个连接 - 该连接自动关联一个socket对象
     console.log('CONNECTED: ' +
@@ -177,11 +171,29 @@ net.createServer(function(sock) {
 
     // 为这个socket实例添加一个"data"事件处理函数
     sock.on('data', function(data) {
+        var socketList = app.get('m_socketList');
         console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
 
         var RecvData = Bytes2Str(data);
-        var _out = new Buffer(Str2Bytes(RecvData));
-        sock.write(_out);
+
+        if ( RecvData.indexOf('8A') != 0 && RecvData.indexOf('80') != 0){
+            //var _out = new Buffer(Str2Bytes(RecvData));
+            sock.write(data);
+
+            
+
+            var find = _.find(socketList, function(item){
+                return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
+            })
+            if ( !_.isUndefined(find)){
+                find.DeviceID = Bytes2Str10(data);
+                console.log('add new deviceId:' + find.DeviceID);
+            }
+        }
+        else{
+            console.log(RecvData);
+        }
+
 
         //var _buffer = new Buffer(Str2Bytes('8A0001119A'));
         // var _buffer = new Buffer(Str2Bytes('8A0101119B'));
@@ -195,7 +207,7 @@ net.createServer(function(sock) {
         var find = {};
         find.remoteAddress = sock.remoteAddress;
         find.remotePort = sock.remotePort;
-
+        var socketList = app.get('m_socketList');
         var iIndex = contains(sock, socketList, find);
 
         socketList.splice(iIndex, 1);
