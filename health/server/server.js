@@ -168,8 +168,8 @@ net.createServer(function(sock) {
         var _out = new Buffer(Str2Bytes(RecvData));
         sock.write(_out);
 
-        var _buffer = new Buffer('8A0001119A');
-        sock.write(_buffer);
+        // var _buffer = new Buffer('8A0001119A');
+        // sock.write(_buffer);
     });
 
     // 为这个socket实例添加一个"close"事件处理函数
