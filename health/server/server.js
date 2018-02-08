@@ -142,7 +142,22 @@ function convert2Hex(){
 
     var _outstring = '8A0001119A';
 }
-
+function Str2Bytes(str) {
+    var pos = 0;
+    var len = str.length;
+    if (len % 2 != 0) {
+        return null;
+    }
+    len /= 2;
+    var hexA = new Array();
+    for (var i = 0; i < len; i++) {
+        var s = str.substr(pos, 2);
+        var v = parseInt(s, 16);
+        hexA.push(v);
+        pos += 2;
+    }
+    return hexA;
+}
 
 net.createServer(function(sock) {
 
@@ -168,7 +183,7 @@ net.createServer(function(sock) {
         var _out = new Buffer(Str2Bytes(RecvData));
         sock.write(_out);
 
-        var _buffer = new Buffer('8A0101119B');
+        var _buffer = new Buffer(Str2Bytes('8A0101119B'));
         sock.write(_buffer);
     });
 
