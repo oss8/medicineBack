@@ -1151,6 +1151,8 @@ module.exports = function(Watch) {
     Watch.openDoor = function(GetTicket, cb) {
         EWTRACE("GetTicket Begin");
 
+        // var _tmp = 'NBES,ID=22222222,STATE=FIRST';
+        // var _obj = _tmp.substr(4);        
 
         var socketList = app.get('m_socketList');
 
