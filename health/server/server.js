@@ -177,15 +177,15 @@ net.createServer(function(sock) {
 
         var RecvData = Bytes2Str(data);
 
-        if ( RecvData.indexOf('8A') != 0 && RecvData.indexOf('80') != 0){
+        if ( RecvData.indexOf('NBES') == 0){
             //var _out = new Buffer(Str2Bytes(RecvData));
-            sock.write(data);
+            sock.write(RecvData.substr(8,8));
 
             var find = _.find(socketList, function(item){
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
             })
             if ( !_.isUndefined(find)){
-                find.DeviceID = Bytes2Str10(data);
+                find.DeviceID = Bytes2Str10(data).substr(8,8);
                 console.log('refresh deviceId:' + find.DeviceID + 'IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
             }
         }

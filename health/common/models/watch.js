@@ -1151,6 +1151,7 @@ module.exports = function(Watch) {
     Watch.openDoor = function(GetTicket, cb) {
         EWTRACE("GetTicket Begin");
 
+
         var socketList = app.get('m_socketList');
 
         var find = _.find(socketList, function(item) {
