@@ -175,17 +175,17 @@ net.createServer(function(sock) {
         var socketList = app.get('m_socketList');
         //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
 
-        var RecvData = Bytes2Str(data);
+        var RecvData = Bytes2Str10(data);
 
         if ( RecvData.indexOf('NBES') == 0){
             //var _out = new Buffer(Str2Bytes(RecvData));
-            sock.write(Bytes2Str(data));
+            sock.write(Bytes2Str10(data));
 
             var find = _.find(socketList, function(item){
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
             })
             if ( !_.isUndefined(find)){
-                find.DeviceID = Bytes2Str(data);
+                find.DeviceID = Bytes2Str10(data);
                 console.log('refresh deviceId:' + find.DeviceID + 'IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
             }
         }
