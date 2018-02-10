@@ -185,7 +185,7 @@ net.createServer(function(sock) {
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
             })
             if ( !_.isUndefined(find)){
-                find.DeviceID = Bytes2Str10(data);
+                find.DeviceID = Bytes2Str10(data).substr(8,8);
                 console.log('refresh deviceId:' + find.DeviceID + 'IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
             }
         }
