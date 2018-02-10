@@ -176,10 +176,11 @@ net.createServer(function(sock) {
         //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
 
         var RecvData = Bytes2Str10(data);
-
+        console.log("ReceData : " + RecvData);
+        
         if ( RecvData.indexOf('NBES') == 0){
             //var _out = new Buffer(Str2Bytes(RecvData));
-            sock.write(Bytes2Str(data));
+            sock.write(Bytes2Str10(data));
 
             var find = _.find(socketList, function(item){
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
