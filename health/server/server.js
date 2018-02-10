@@ -180,7 +180,7 @@ net.createServer(function(sock) {
 
         if ( RecvData.indexOf('NBES') == 0){
             //var _out = new Buffer(Str2Bytes(RecvData));
-            sock.write(Bytes2Str10(data),substr(5));
+            sock.write(Bytes2Str10(data).substr(5));
 
             var find = _.find(socketList, function(item){
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
