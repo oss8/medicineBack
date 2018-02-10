@@ -197,7 +197,7 @@ net.createServer(function(sock) {
 
         if ( RecvData.indexOf('NBES') == 0){
             //var _out = new Buffer(Str2Bytes(RecvData));
-            sock.write(new Buffer(Str2Bytes10(RecvData)));
+            sock.write(data);
 
             var find = _.find(socketList, function(item){
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
