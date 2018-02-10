@@ -153,6 +153,23 @@ function Str2Bytes(str) {
     return hexA;
 }
 
+function Str2Bytes10(str) {
+    var pos = 0;
+    var len = str.length;
+    if (len % 2 != 0) {
+        return null;
+    }
+    len /= 2;
+    var hexA = new Array();
+    for (var i = 0; i < len; i++) {
+        var s = str.substr(pos, 2);
+        var v = parseInt(s, 10);
+        hexA.push(v);
+        pos += 2;
+    }
+    return hexA;
+}
+
 net.createServer(function(sock) {
 
     var socketList = app.get('m_socketList');
@@ -180,14 +197,14 @@ net.createServer(function(sock) {
 
         if ( RecvData.indexOf('NBES') == 0){
             //var _out = new Buffer(Str2Bytes(RecvData));
-            sock.write(new Buffer(data));
+            sock.write(new Buffer(Str2Bytes10(RecvData)));
 
             var find = _.find(socketList, function(item){
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
             })
             if ( !_.isUndefined(find)){
                 find.DeviceID = Bytes2Str10(data).substr(8,8);
-                console.log('refresh deviceId:' + find.DeviceID + 'IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
+                console.log('refresh deviceId:' + find.DeviceID + ',IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
             }
         }
         else{
