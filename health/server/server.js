@@ -126,11 +126,21 @@ var socketList = [];
 app.set('m_socketList', socketList);
 
 
-function contains(sock, list, obj){
+function contains(sock, list){
 
     var iIndex = list.length
     while( iIndex-- ){
         if ( list[iIndex].remoteAddress == sock.remoteAddress && list[iIndex].remotePort == sock.remotePort){
+            return iIndex;
+        }
+    }
+}
+
+function containsByID(list, obj){
+
+    var iIndex = list.length
+    while( iIndex-- ){
+        if ( list[iIndex].DeviceID == obj){
             return iIndex;
         }
     }
@@ -199,6 +209,11 @@ net.createServer(function(sock) {
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
+            var iIndex = containsByID(socketList, RecvData.substr(8,8));
+            if (iIndex >= 0 ){
+                socketList[iIndex].userSocket.destroy();
+            }
+            
             var find = _.find(socketList, function(item){
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
             })
@@ -211,21 +226,15 @@ net.createServer(function(sock) {
             console.log(RecvData);
         }
 
-
-        //var _buffer = new Buffer(Str2Bytes('8A0001119A'));
-        // var _buffer = new Buffer(Str2Bytes('8A0101119B'));
-        // sock.write(_buffer);
     });
 
     // 为这个socket实例添加一个"close"事件处理函数
     sock.on('close', function(data) {
         console.log(new Date().toTimeString() + ':CLOSED: ' +
             sock.remoteAddress + ' ' + sock.remotePort);
-        var find = {};
-        find.remoteAddress = sock.remoteAddress;
-        find.remotePort = sock.remotePort;
+
         var socketList = app.get('m_socketList');
-        var iIndex = contains(sock, socketList, find);
+        var iIndex = contains(sock, socketList);
 
         socketList.splice(iIndex, 1);
     });
