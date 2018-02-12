@@ -205,7 +205,7 @@ net.createServer(function(sock) {
         var RecvData = Bytes2Str10(data);
         console.log("ReceData : " + RecvData);
 
-        if ( RecvData.indexOf('NBES') == 0){
+        if ( RecvData.indexOf('8A') != 0 && RecvData.indexOf('80') != 0 ){
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
