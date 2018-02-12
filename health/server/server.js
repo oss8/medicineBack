@@ -211,7 +211,7 @@ net.createServer(function(sock) {
 
             var iIndex = containsByID(socketList, RecvData);
             if (iIndex >= 0 ){
-                if ( item.remoteAddress != sock.remoteAddress || item.remotePort != sock.remotePort ){
+                if ( socketList[iIndex].remoteAddress != sock.remoteAddress || socketList[iIndex].remotePort != sock.remotePort ){
                     socketList[iIndex].userSocket.destroy();
                 }
                 
