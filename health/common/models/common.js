@@ -2,7 +2,7 @@
  * @Author: summer.ge 
  * @Date: 2017-08-24 13:48:31 
  * @Last Modified by: summer.ge
- * @Last Modified time: 2017-11-01 11:16:11
+ * @Last Modified time: 2018-02-12 15:34:40
  */
 
 var log4js = require('log4js');
@@ -102,7 +102,7 @@ module.exports = function (common) {
      * 日志相关
      */
     log4js.configure('./logs/log4js.json');
-    var logger = log4js.getLogger('DEBUG_OSS::');
+    var logger = log4js.getLogger('DEBUG_HEALTH::');
     logger.setLevel('INFO');
     EWTRACE = function (Message) {
         var myDate = new Date();
