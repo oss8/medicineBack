@@ -209,10 +209,10 @@ net.createServer(function(sock) {
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
-            var iIndex = containsByID(socketList, RecvData, sock);
-            if (iIndex >= 0 ){
-                socketList[iIndex].userSocket.destroy();
-            }
+            // var iIndex = containsByID(socketList, RecvData, sock);
+            // if (iIndex >= 0 ){
+            //     socketList[iIndex].userSocket.destroy();
+            // }
             
             var find = _.find(socketList, function(item){
                 return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;

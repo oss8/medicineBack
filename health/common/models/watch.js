@@ -1178,8 +1178,8 @@ module.exports = function(Watch) {
             return item.DeviceID == GetTicket.deviceId;
         })
         if (!_.isUndefined(find)) {
-            var sendlength = find.userSocket.write(new Buffer(Str2Bytes(GetTicket.Data)));
-            console.log('DeviceID:' + GetTicket.deviceId + ": Data" + GetTicket.Data + ", sendOver:" + sendlength);
+            var sendOver = find.userSocket.write(new Buffer(Str2Bytes(GetTicket.Data)));
+            console.log('DeviceID:' + GetTicket.deviceId + ": Data" + GetTicket.Data + ", sendOver:" + sendOver);
 
             cb(null, {
                 status: 1,
