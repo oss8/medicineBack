@@ -1147,6 +1147,22 @@ module.exports = function(Watch) {
         }
         return hexA;
     }
+    function Str2Bytes10(str) {
+        var pos = 0;
+        var len = str.length;
+        if (len % 2 != 0) {
+            return null;
+        }
+        len /= 2;
+        var hexA = new Array();
+        for (var i = 0; i < len; i++) {
+            var s = str.substr(pos, 2);
+            var v = parseInt(s, 10);
+            hexA.push(v);
+            pos += 2;
+        }
+        return hexA;
+    }
 
     Watch.openDoor = function(GetTicket, cb) {
         EWTRACE("GetTicket Begin");
@@ -1161,7 +1177,7 @@ module.exports = function(Watch) {
         })
         if (!_.isUndefined(find)) {
             console.log('Send Data:' + GetTicket.deviceId + ": " + GetTicket.Data);
-            find.userSocket.write(new Buffer(Str2Bytes(GetTicket.Data)));
+            find.userSocket.write(new Buffer(Str2Bytes10(GetTicket.Data)));
             cb(null, {
                 status: 1,
                 "result": ""
