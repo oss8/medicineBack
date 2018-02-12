@@ -209,7 +209,7 @@ net.createServer(function(sock) {
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
-            var iIndex = containsByID(socketList, RecvData.substr(8,8));
+            var iIndex = containsByID(socketList, RecvData);
             if (iIndex >= 0 ){
                 socketList[iIndex].userSocket.destroy();
             }
