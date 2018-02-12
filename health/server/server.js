@@ -211,7 +211,7 @@ net.createServer(function(sock) {
             sock.write(data);
 
             var iIndex = containsByID(socketList, RecvData, sock);
-            if (iIndex >= 0 ){
+            if ( ! _.isUndefined(iIndex) ){
                 socketList[iIndex].userSocket.destroy();
             }
             
