@@ -1179,7 +1179,7 @@ module.exports = function(Watch) {
         })
         if (!_.isUndefined(find)) {
             var sendlength = find.userSocket.write(new Buffer(Str2Bytes(GetTicket.Data)));
-            console.log('Send Data:' + GetTicket.deviceId + ": " + GetTicket.Data + ", length:" + sendlength);
+            console.log('DeviceID:' + GetTicket.deviceId + ": Data" + GetTicket.Data + ", sendOver:" + sendlength);
 
             cb(null, {
                 status: 1,
