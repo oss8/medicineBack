@@ -136,11 +136,11 @@ function contains(sock, list){
     }
 }
 
-function containsByID(list, obj){
+function containsByID(list, obj, sock){
 
     var iIndex = list.length
     while( iIndex-- ){
-        if ( list[iIndex].DeviceID == obj){
+        if ( list[iIndex].DeviceID == obj && (list[iIndex].remoteAddress != sock.remoteAddress || list[iIndex].remotePort != sock.remotePort)){
             return iIndex;
         }
     }
@@ -209,12 +209,9 @@ net.createServer(function(sock) {
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
-            var iIndex = containsByID(socketList, RecvData);
+            var iIndex = containsByID(socketList, RecvData, sock);
             if (iIndex >= 0 ){
-                if ( socketList[iIndex].remoteAddress != sock.remoteAddress || socketList[iIndex].remotePort != sock.remotePort ){
-                    socketList[iIndex].userSocket.destroy();
-                }
-                
+                socketList[iIndex].userSocket.destroy();
             }
             
             var find = _.find(socketList, function(item){
