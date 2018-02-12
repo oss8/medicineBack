@@ -1131,6 +1131,7 @@ module.exports = function(Watch) {
             }
         }
     );
+
     function Str2Bytes(str) {
         var pos = 0;
         var len = str.length;
@@ -1147,6 +1148,7 @@ module.exports = function(Watch) {
         }
         return hexA;
     }
+
     function Str2Bytes10(str) {
         var pos = 0;
         var len = str.length;
@@ -1176,13 +1178,14 @@ module.exports = function(Watch) {
             return item.DeviceID == GetTicket.deviceId;
         })
         if (!_.isUndefined(find)) {
-            console.log('Send Data:' + GetTicket.deviceId + ": " + GetTicket.Data);
-            find.userSocket.write(new Buffer(Str2Bytes10(GetTicket.Data)));
+            var sendlength = find.userSocket.write(new Buffer(Str2Bytes(GetTicket.Data)));
+            console.log('Send Data:' + GetTicket.deviceId + ": " + GetTicket.Data + ", length:" + sendlength);
+
             cb(null, {
                 status: 1,
                 "result": ""
             });
-        }else{
+        } else {
             cb(null, {
                 status: 0,
                 "result": "device not find!"
