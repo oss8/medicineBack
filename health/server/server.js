@@ -204,7 +204,7 @@ net.createServer(function(sock) {
         //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
 
         var RecvData = Bytes2Str10(data);
-        console.log("ReceData : " + RecvData);
+        EWTRACE("ReceData : " + RecvData);
 
         if ( RecvData.indexOf('8A') != 0 && RecvData.indexOf('80') != 0 ){
             //var _out = new Buffer(Str2Bytes(RecvData));
@@ -220,7 +220,7 @@ net.createServer(function(sock) {
             })
             if ( !_.isUndefined(find)){
                 find.DeviceID = RecvData;
-                console.log('add New deviceId:' + find.DeviceID + ',IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
+                EWTRACE('add New deviceId:' + find.DeviceID + ',IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
             }
         }
         else{
