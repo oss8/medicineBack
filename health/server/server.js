@@ -193,6 +193,7 @@ net.createServer(function(sock) {
     socketClient.remoteAddress = sock.remoteAddress;
     socketClient.remotePort = sock.remotePort;
     socketClient.userSocket = sock;
+    socketClient.DeviceID = 0;
 
     socketList.push(socketClient);
     console.log('add socket client connected:' + sock.remoteAddress + ': ' + sock.remotePort);
@@ -200,26 +201,23 @@ net.createServer(function(sock) {
     // 为这个socket实例添加一个"data"事件处理函数
     sock.on('data', function(data) {
         var socketList = app.get('m_socketList');
-        //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
-
+        
         var RecvData = Bytes2Str10(data);
-        console.log("ReceData : " + RecvData);
-
         if ( RecvData.indexOf('8A') != 0 && RecvData.indexOf('80') != 0 ){
-            //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
-            // var iIndex = containsByID(socketList, RecvData, sock);
-            // if (iIndex >= 0 ){
-            //     socketList[iIndex].userSocket.destroy();
-            // }
+            var iIndex = containsByID(socketList, RecvData, sock);
+            if (iIndex >= 0 ){
+                socketList[iIndex].userSocket.destroy();
+                console.log("destroy DeviceId : " + RecvData);
+            }
             
             var find = _.find(socketList, function(item){
-                return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort;
+                return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort && item.DeviceID == 0;
             })
             if ( !_.isUndefined(find)){
                 find.DeviceID = RecvData;
-                console.log('refresh deviceId:' + find.DeviceID + ',IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
+                console.log('add New deviceId:' + find.DeviceID + ',IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
             }
         }
         else{
