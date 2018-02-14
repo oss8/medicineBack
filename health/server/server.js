@@ -231,7 +231,7 @@ net.createServer(function(sock) {
             }
         }
         else{
-            console.log(RecvData);
+            console.log(Bytes2Str(data));
         }
 
     });
