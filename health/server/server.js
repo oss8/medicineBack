@@ -202,7 +202,8 @@ net.createServer(function(sock) {
     sock.on('data', function(data) {
         var socketList = app.get('m_socketList');
         //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
-
+        console.log(data);
+        
         var RecvData = Bytes2Str10(data);
         EWTRACE("ReceData : " + RecvData + ": length:" + RecvData.length);
 
