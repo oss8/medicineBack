@@ -203,7 +203,7 @@ net.createServer(function(sock) {
         var socketList = app.get('m_socketList');
         //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
         console.log(data.toString('hex').toUpperCase());
-        console.log(data[0].toString('hex')[0]);
+        console.log(data.toString('hex')[0]);
         
         if ( data[0] != new Buffer(Str2Bytes('8a')) && data[0] != new Buffer(Str2Bytes('80')) ){
             var RecvData = Bytes2Str10(data);
