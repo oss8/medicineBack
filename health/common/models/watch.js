@@ -1179,7 +1179,7 @@ module.exports = function(Watch) {
             return item.DeviceID == GetTicket.deviceId;
         })
         if (!_.isUndefined(find)) {
-
+            // 计算二进制BCC校验码，放入发送的最后一个字节中
             var _tmp = Str2Bytes(GetTicket.Data);   
 
             var _val = undefined;
@@ -1191,7 +1191,8 @@ module.exports = function(Watch) {
                 }
             }
             _tmp.push(_val);
-
+            // 计算二进制BCC校验码，放入发送的最后一个字节中
+            
             var sendOver = find.userSocket.write(new Buffer(_tmp));
             console.log('DeviceID:' + GetTicket.deviceId + ": Data：" + GetTicket.Data + ", sendOver:" + sendOver);
 
