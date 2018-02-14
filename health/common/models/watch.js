@@ -1170,7 +1170,8 @@ module.exports = function(Watch) {
         EWTRACE("GetTicket Begin");
 
         // var _tmp = 'NBES,ID=22222222,STATE=FIRST';
-        // var _obj = _tmp.substr(4);        
+        // var _obj = _tmp.substr(4);     
+
 
         var socketList = app.get('m_socketList');
 
@@ -1178,7 +1179,20 @@ module.exports = function(Watch) {
             return item.DeviceID == GetTicket.deviceId;
         })
         if (!_.isUndefined(find)) {
-            var sendOver = find.userSocket.write(new Buffer(Str2Bytes(GetTicket.Data)));
+
+            var _tmp = Str2Bytes(GetTicket.Data);   
+
+            var _val = undefined;
+            for ( var i in _tmp ){
+                if ( _.isUndefined(_val)){
+                    _val = _tmp[i];
+                }else{
+                    _val ^= _tmp[i];
+                }
+            }
+            _tmp.push(_val);
+
+            var sendOver = find.userSocket.write(new Buffer(_tmp));
             console.log('DeviceID:' + GetTicket.deviceId + ": Data：" + GetTicket.Data + ", sendOver:" + sendOver);
 
             cb(null, {
@@ -1203,7 +1217,7 @@ module.exports = function(Watch) {
             accepts: {
                 arg: 'GetTicket',
                 type: 'object',
-                description: '{"deviceId":"11111111","Data":"8A0001119A"}"}'
+                description: '{"deviceId":"11111111","Data":"8A000111"}'
             },
             returns: {
                 arg: 'RegInfo',
