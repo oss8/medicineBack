@@ -210,19 +210,23 @@ net.createServer(function(sock) {
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
-            sock.write(new Buffer(Str2Bytes('8A0101119B')));
-
             var iIndex = containsByID(socketList, RecvData, sock);
             if ( ! _.isUndefined(iIndex) ){
                 socketList[iIndex].userSocket.destroy();
             }
             
             var find = _.find(socketList, function(item){
-                return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort && item.DeviceID == 0;
+                return item.remoteAddress == sock.remoteAddress && item.remotePort == sock.remotePort ;
             })
-            if ( !_.isUndefined(find)){
-                find.DeviceID = RecvData;
-                EWTRACE('add New deviceId:' + find.DeviceID + ',IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
+            if ( !_.isUndefined(find) ){
+                if ( find.DeviceID == 0 ){
+                    find.DeviceID = RecvData;
+                    EWTRACE('add New deviceId:' + find.DeviceID + ',IP:' + sock.remoteAddress + ": Port :" + sock.remotePort);
+                }
+                else{
+                    find.userSocket = sock;
+                }
+
             }
         }
         else{
