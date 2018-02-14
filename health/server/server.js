@@ -205,9 +205,9 @@ net.createServer(function(sock) {
         console.log(data);
 
         var RecvData = Bytes2Str10(data);
-        EWTRACE("ReceData : " + RecvData + ": length:" + RecvData.length);
 
         if ( data[0] != '8a' && data[0] != '80' ){
+            EWTRACE("Rece heartbeat Data : " + RecvData );
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
@@ -231,6 +231,7 @@ net.createServer(function(sock) {
             }
         }
         else{
+            EWTRACE(' Open Door Info~')
             console.log(Bytes2Str(data));
         }
 
