@@ -204,7 +204,7 @@ net.createServer(function(sock) {
         //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
 
         var RecvData = Bytes2Str10(data);
-        EWTRACE("ReceData : " + RecvData);
+        EWTRACE("ReceData : " + RecvData + ": length:" + RecvData.length);
 
         if ( RecvData.indexOf('8A') != 0 && RecvData.indexOf('80') != 0 ){
             //var _out = new Buffer(Str2Bytes(RecvData));
