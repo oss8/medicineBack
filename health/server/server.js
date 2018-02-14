@@ -210,7 +210,7 @@ net.createServer(function(sock) {
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
-            sock.write(Str2Bytes('8A0101119B'));
+            sock.write(new Buffer(Str2Bytes('8A0101119B')));
 
             var iIndex = containsByID(socketList, RecvData, sock);
             if ( ! _.isUndefined(iIndex) ){
