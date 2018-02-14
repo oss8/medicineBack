@@ -206,7 +206,7 @@ net.createServer(function(sock) {
         if ( _headContext != '8A' && _headContext != '80' ){
 
             sock.write(data);
-
+            var RecvData = Bytes2Str10(data);
             var iIndex = containsByID(socketList, RecvData, sock);
             if ( ! _.isUndefined(iIndex) ){
                 socketList[iIndex].userSocket.destroy();
