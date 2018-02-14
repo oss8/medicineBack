@@ -204,7 +204,7 @@ net.createServer(function(sock) {
         //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
         console.log(data);
 
-        if ( data[0] != '8a' && data[0] != '80' ){
+        if ( data[0] != new Buffer(Str2Bytes('8a')) && data[0] != new Buffer(Str2Bytes('80')) ){
             var RecvData = Bytes2Str10(data);
             EWTRACE("Rece heartbeat Data : " + RecvData );
             //var _out = new Buffer(Str2Bytes(RecvData));
