@@ -1203,7 +1203,7 @@ module.exports = function(Watch) {
             accepts: {
                 arg: 'GetTicket',
                 type: 'object',
-                description: '{"deviceId":"12345678","Data":"8A0101119B"}'
+                description: '{"deviceId":"11111111","Data":"8A0001119A"}"}'
             },
             returns: {
                 arg: 'RegInfo',

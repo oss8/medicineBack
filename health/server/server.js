@@ -201,13 +201,10 @@ net.createServer(function(sock) {
     // 为这个socket实例添加一个"data"事件处理函数
     sock.on('data', function(data) {
         var socketList = app.get('m_socketList');
-        //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
-        console.log(data.toString('hex').toUpperCase().substr(0,2));
+        var _headContext = data.toString('hex').toUpperCase().substr(0,2);
 
-        if ( data.toString('hex').toUpperCase().substr(0,2) != '8A' && data.toString('hex').toUpperCase().substr(0,2) != '80' ){
-            var RecvData = Bytes2Str10(data);
-            EWTRACE("Rece heartbeat Data : " + RecvData );
-            //var _out = new Buffer(Str2Bytes(RecvData));
+        if ( _headContext != '8A' && _headContext != '80' ){
+
             sock.write(data);
 
             var iIndex = containsByID(socketList, RecvData, sock);
