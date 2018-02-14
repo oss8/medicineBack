@@ -203,11 +203,11 @@ net.createServer(function(sock) {
         var socketList = app.get('m_socketList');
         //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
         console.log(data);
-        
+
         var RecvData = Bytes2Str10(data);
         EWTRACE("ReceData : " + RecvData + ": length:" + RecvData.length);
 
-        if ( RecvData.indexOf('8A') != 0 && RecvData.indexOf('80') != 0 ){
+        if ( data[0] != '8a' && data[0] != '80' ){
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
