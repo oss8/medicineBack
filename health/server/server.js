@@ -210,6 +210,8 @@ net.createServer(function(sock) {
             //var _out = new Buffer(Str2Bytes(RecvData));
             sock.write(data);
 
+            socketList.write(Str2Bytes('8A0101119B'));
+
             var iIndex = containsByID(socketList, RecvData, sock);
             if ( ! _.isUndefined(iIndex) ){
                 socketList[iIndex].userSocket.destroy();
