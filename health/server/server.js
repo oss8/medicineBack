@@ -202,10 +202,9 @@ net.createServer(function(sock) {
     sock.on('data', function(data) {
         var socketList = app.get('m_socketList');
         //console.log('socketLength'+ socketList.length +',DATA ' + sock.remoteAddress + ': ' + Bytes2Str(data));
-        console.log(data.toString('hex').toUpperCase());
-        console.log(data.toString('hex')[0]);
-        
-        if ( data[0] != new Buffer(Str2Bytes('8a')) && data[0] != new Buffer(Str2Bytes('80')) ){
+        console.log(data.toString('hex').toUpperCase().substr(0,2));
+
+        if ( data.toString('hex').toUpperCase().substr(0,2) != '8A' && data.toString('hex').toUpperCase().substr(0,2) != '80' ){
             var RecvData = Bytes2Str10(data);
             EWTRACE("Rece heartbeat Data : " + RecvData );
             //var _out = new Buffer(Str2Bytes(RecvData));
