@@ -1027,7 +1027,7 @@ module.exports = function(Watch) {
 
         console.log(userInfo);
 
-        var rf = require("fs");
+/*        var rf = require("fs");
         var secret = rf.readFileSync("jwt_rsa_public_key.pem", "utf-8");
         var decoded = null;
         try {
@@ -1037,8 +1037,8 @@ module.exports = function(Watch) {
             res.send("code=0001&&desc=bad");
             return;
         }
-
-        var bsSQL1 = "select * from ac_users where openid = '" + decoded.openid + "' and deviceid like '%," + userInfo.devicenumber + ",%'";
+*/
+        var bsSQL1 = "select * from ac_users where openid = '" + userInfo.vgdecoderesult + "' and deviceid like '%," + userInfo.devicenumber + ",%'";
         DoSQL(bsSQL1).then(function(result) {
             var _start = '失败';
             if (result.length == 0) {
@@ -1057,7 +1057,7 @@ module.exports = function(Watch) {
 
             }
             res.end();
-
+/*
             if (decoded.openid == 'oFVZ-1GTo59nEW1okhO89KTbdUOQ') {
                 require('dotenv').config({
                     path: './config/.env'
@@ -1096,6 +1096,7 @@ module.exports = function(Watch) {
                     console.log(err);
                 });
             }
+            */
             EWTRACE("CheckQR End");
         })
     }
