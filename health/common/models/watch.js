@@ -1038,7 +1038,7 @@ module.exports = function(Watch) {
             return;
         }
 */
-        var bsSQL1 = "select * from ac_users where openid = '" + userInfo.vgdecoderesult + "' and deviceid like '%," + userInfo.devicenumber + ",%'";
+        var bsSQL1 = "select * from ac_users where openid = '" + userInfo.vgdecoderesult + "' and (deviceid like '%," + userInfo.devicenumber + ",%' or deviceid like '%,0,%')";
         DoSQL(bsSQL1).then(function(result) {
             var _start = '失败';
             if (result.length == 0) {
